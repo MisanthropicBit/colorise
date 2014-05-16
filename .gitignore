@@ -1,0 +1,11 @@
+*.py[cod]
+*.c
+__pycache__
+MANIFEST
+TODO
+testme.py
+dist/
+colorise/backup/
+stream_demo1.py
+stream_demo2.py
+stream_demo3.py
