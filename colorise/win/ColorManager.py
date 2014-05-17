@@ -61,7 +61,7 @@ class ColorManager(BaseColorManager):
         self.fg_colors['gray'] = 8
         self.fg_colors['purple'] = 13
         self.fg_colors['darkpurple'] = 5
-        self.fg_inv = {v: k for k, v in self.fg_colors.items()}
+        self.fg_inv = dict(v: k for k, v in self.fg_colors.items())
 
         # Background colors (Also in wincon.h)
         self.bg_colors = self.fg_colors.copy()  # Swallow copy
