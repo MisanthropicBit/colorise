@@ -6,7 +6,7 @@ __date__ = '2014-05-08'  # YYYY-MM-DD
 
 import re
 import itertools
-import compat
+import colorise.compat
 
 
 class ColorSyntaxError(SyntaxError):
@@ -35,8 +35,8 @@ class ColorFormatParser(object):
     def tokenize(self, string):
         """Tokenize a string and return an iterator over its tokens."""
         pos, buf, lm = -1, '', -1
-        it = itertools.ifilter(None, self._pattern.finditer(string))
-        t = compat.next(it)
+        it = colorise.compat.ifilter(None, self._pattern.finditer(string))
+        t = colorise.compat.next(it)
 
         # Check if we need to yield any starting text
         if t.start() > 0:
@@ -86,7 +86,7 @@ class ColorFormatParser(object):
                     txt = ''
 
                 state += 1
-                colors = self.extract_syntax(compat.next(itokens))
+                colors = self.extract_syntax(colorise.compat.next(itokens))
                 colorstack.append(tuple(b or a
                                         for a, b in zip(colorstack[-1],
                                                         colors)))

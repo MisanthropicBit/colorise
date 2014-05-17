@@ -5,8 +5,7 @@
 
 from __future__ import print_function
 
-import sys
-sys.path.append('.')
+__date__ = "2014-05-17"  # YYYY-MM-DD
 
 import random
 import colorise

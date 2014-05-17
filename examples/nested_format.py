@@ -3,6 +3,8 @@
 
 """Demonstrates how colorise's color format syntax can be endlessly nested."""
 
+__date__ = "2014-05-17"  # YYYY-MM-DD
+
 import colorise
 import random
 

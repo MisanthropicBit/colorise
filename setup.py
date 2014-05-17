@@ -23,7 +23,6 @@ setup(
     packages=['colorise', 'colorise.win', 'colorise.nix'],
     package_data={'colorise': ['tests', 'examples']},
     url='https://github.com/MisanthropicBit/colorise',
-    #download_url='https://github.com/MisanthropicBit/colorise/???',
     long_description=open('README.rst').read(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',

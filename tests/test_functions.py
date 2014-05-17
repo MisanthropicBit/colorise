@@ -2,9 +2,8 @@
 
 """py.test file for testing the colorise's testable public functions."""
 
-__date__ = "2014-05-10"  # YYYY-MM-DD
+__date__ = "2014-05-17"  # YYYY-MM-DD
 
-import pytest
 import sys
 sys.path.append('.')
 import colorise

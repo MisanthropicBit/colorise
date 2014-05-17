@@ -3,6 +3,8 @@
 
 """Demonstrates how colorise automatically reset colors when quit."""
 
+__date__ = "2014-05-17"  # YYYY-MM-DD
+
 import colorise
 
 ipsum = """Lorem ipsum dolor sit amet, consectetuer adipiscing elit,

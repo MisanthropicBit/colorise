@@ -2,21 +2,23 @@
 
 """Defines a small set of Python 2/3 compatibility functions and imports."""
 
-__date__ = '2014-05-08'  # YYYY-MM-DD
+__date__ = '2014-05-17'  # YYYY-MM-DD
 
-import sys
 import colorise
+import itertools
 
 
 if colorise._PY2:
     import types
     ClassType = types.ClassType
+    ifilter = itertools.ifilter
 
     def iteritems(d):
         """Return an iterator over the key-value pairs of a dictionary."""
         return d.iteritems()
 else:
     ClassType = type
+    ifilter = filter
 
     def iteritems(d):
         """Return an iterator over the key-value pairs of a dictionary."""

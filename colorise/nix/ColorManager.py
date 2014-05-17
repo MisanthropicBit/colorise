@@ -32,6 +32,7 @@ __date__ = '2014-05-12'  # YYYY-MM-DD
 #     WHITE,
 # ) = range(16)
 
+
 @colorise.decorators.inherit_docstrings
 class ColorManager(BaseColorManager):
 
