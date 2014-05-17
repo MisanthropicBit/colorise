@@ -43,9 +43,9 @@ if _SYSTEM_OS.startswith('win'):
     from colorise.win.ColorManager import ColorManager
 
     if _DEBUG_MODE:
-        print("{} {} ({}-bit)".format(platform.system(),
-                                      platform.release(),
-                                      _32or64bit()))
+        print("{0} {1} ({2}-bit)".format(platform.system(),
+                                         platform.release(),
+                                         _32or64bit()))
 else:
     # Assume nix platform
     from colorise.nix.ColorManager import ColorManager
@@ -56,7 +56,7 @@ else:
         else:
             dist = platform.linux_distribution()
 
-        print("Distribution details: {}, {}, {} ({}-bit)"
+        print("Distribution details: {0}, {1}, {2} ({3}-bit)"
               .format(dist + (_32or64bit())))
 
 

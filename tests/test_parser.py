@@ -2,7 +2,7 @@
 
 """py.test file for testing the ColorFormatParser class."""
 
-__date__ = "2014-05-10"  # YYYY-MM-DD
+__date__ = "2014-05-17"  # YYYY-MM-DD
 
 import pytest
 import sys
@@ -66,7 +66,3 @@ class TestColorFormatParser(object):
         for test in fail_tests:
             with pytest.raises(ColorSyntaxError):
                 list(parser.parse(test))
-
-if __name__ == '__main__':
-    t = TestColorFormatParser()
-    t.test_formats()

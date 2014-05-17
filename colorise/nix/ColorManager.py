@@ -83,7 +83,7 @@ class ColorManager(BaseColorManager):
         if fg or bg:
             for c in [fg, bg]:
                 if c is not None and c not in self.colors:
-                    raise ValueError("Unknown color '{}'".format(c))
+                    raise ValueError("Unknown color '{0}'".format(c))
 
             fgc = self.colors.get(fg, 39)
             bgc = self.colors.get(bg, 39) + 10

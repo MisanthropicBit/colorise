@@ -29,7 +29,7 @@ class ColorFormatParser(object):
     def __init__(self):
         """Initialize the parser."""
         tstr = "".join([self._START_TOKEN, self._FMT_TOKEN, self._STOP_TOKEN])
-        s = r"(({}+)?([{}]))".format(re.escape(self._ESCAPE), tstr)
+        s = r"(({0}+)?([{1}]))".format(re.escape(self._ESCAPE), tstr)
         self._pattern = re.compile(s)
 
     def tokenize(self, string):
@@ -92,7 +92,7 @@ class ColorFormatParser(object):
                                                         colors)))
             elif token == self._FMT_TOKEN:
                 if state == 0:
-                    raise ColorSyntaxError("Missing '{}'"
+                    raise ColorSyntaxError("Missing '{0}'"
                                            .format(self._START_TOKEN))
 
                 if state % 2 != 0:
@@ -101,7 +101,7 @@ class ColorFormatParser(object):
                     txt += token
             elif token == self._STOP_TOKEN:
                 if state < 2:
-                    raise ColorSyntaxError("Missing '{}' or '{}'"
+                    raise ColorSyntaxError("Missing '{0}' or '{1}'"
                                            .format(self._STOP_TOKEN,
                                                    self._FMT_TOKEN))
 
@@ -131,7 +131,7 @@ class ColorFormatParser(object):
                     r[i] = token[3:]
 
             if r == [None, None]:
-                raise ColorSyntaxError("Unexpected color syntax '{}'"
+                raise ColorSyntaxError("Unexpected color syntax '{0}'"
                                        .format(token))
 
         return tuple(r)

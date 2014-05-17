@@ -38,7 +38,7 @@ class WinHandle(object):
         return (self.fg, self.bg, None)
 
     def __str__(self):
-        return "{}, {}: {}".format(self.fg, self.bg, self.color)
+        return "{0}, {1}: {2}".format(self.fg, self.bg, self.color)
 
 
 @colorise.decorators.inherit_docstrings
@@ -151,7 +151,7 @@ class ColorManager(BaseColorManager):
     def set_color(self, fg=None, bg=None):
         if fg:
             if fg not in self.fg_colors:
-                raise ValueError("Unknown color '{}'".format(fg))
+                raise ValueError("Unknown color '{0}'".format(fg))
 
             self._handle.fg = self.fg_colors[fg]
         else:
@@ -159,7 +159,7 @@ class ColorManager(BaseColorManager):
 
         if bg:
             if bg not in self.bg_colors:
-                raise ValueError("Unknown color '{}'".format(bg))
+                raise ValueError("Unknown color '{0}'".format(bg))
 
             self._handle.bg = self.bg_colors[bg]
         else:
