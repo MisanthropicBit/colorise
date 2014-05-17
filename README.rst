@@ -1,6 +1,9 @@
 colorise v0.1.0
 ================
 
+.. image:: https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master
+    :target: https://travis-ci.org/MisanthropicBit/colorise
+
 Provides cross-platform text coloring for consoles, useful functions and a nestable color format syntax.
 
 ``colorise`` has been tested with Python 2.6, 2.7, 3.2 and 3.3.
