@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """py.test file for testing the colorise's testable public functions."""
 
-__date__ = "2014-05-17"  # YYYY-MM-DD
+__date__ = "2014-05-21"  # YYYY-MM-DD
 
 import sys
 sys.path.append('.')

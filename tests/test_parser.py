@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """py.test file for testing the ColorFormatParser class."""
 
-__date__ = "2014-05-17"  # YYYY-MM-DD
+__date__ = "2014-05-21"  # YYYY-MM-DD
 
 import pytest
 import sys

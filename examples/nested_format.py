@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """Demonstrates how colorise's color format syntax can be endlessly nested."""
 
-__date__ = "2014-05-17"  # YYYY-MM-DD
+__date__ = "2014-05-21"  # YYYY-MM-DD
 
 import colorise
 import random
