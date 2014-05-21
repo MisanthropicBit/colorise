@@ -63,6 +63,13 @@ of returning a string:
 
     >>> colorise.highlight("Highlight this text!", fg='blue', indices=[4, 17, 3, 5, 10])
 
+If you have a ``<`` or ``>`` in your string, you can escape it with a backslash ``\``. The backslash
+is automatically removed. Colons ``:`` are ignored if they appear in text.
+
+.. code::
+
+    >>> colorise.fprint("<fg=darkpurple:Some : \> silly \< string>")
+
 Implementation notes
 --------------------
 On Linux and Unix there are no 'dark' themed backgrounds, so calling
