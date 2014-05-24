@@ -1,4 +1,4 @@
-colorise v0.1.0
+colorise v0.1.1
 ================
 
 .. image:: https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master
@@ -64,7 +64,7 @@ of returning a string:
     >>> colorise.highlight("Highlight this text!", fg='blue', indices=[4, 17, 3, 5, 10])
 
 If you have a ``<`` or ``>`` in your string, you can escape it with a backslash ``\``. The backslash
-is automatically removed. Colons ``:`` are ignored if they appear in text.
+is automatically removed. Colons, escaped or not, ``:`` are ignored if they appear as text.
 
 .. code::
 

@@ -2,7 +2,7 @@
 
 """ColorFormatParser class which parses color formatted strings."""
 
-__date__ = '2014-05-08'  # YYYY-MM-DD
+__date__ = '2014-05-24'  # YYYY-MM-DD
 
 import re
 import itertools
@@ -37,10 +37,11 @@ class ColorFormatParser(object):
         pos, buf, lm = -1, '', -1
         it = colorise.compat.ifilter(None, self._pattern.finditer(string))
         t = colorise.compat.next(it)
+        escapeflag = False
 
         # Check if we need to yield any starting text
         if t.start() > 0:
-            yield string[:t.start()]
+            yield string[:t.start()], False
             pos = t.start()
 
         it = itertools.chain([t], it)
@@ -52,26 +53,29 @@ class ColorFormatParser(object):
 
             if escaped:
                 buf += string[pos:m.end(2)-1] + s
+                escapeflag = True
             else:
                 buf += string[pos:m.start(3)]
 
                 if buf:
-                    yield buf
+                    yield buf, escapeflag
                     buf = ''
+                    escapeflag = False
 
                 if lm == start:
-                    yield ''
+                    yield '', False
 
-                yield s
+                yield s, False
                 lm = m.end()
 
             pos = m.end()
 
         if buf:
-            yield buf
+            yield buf, escapeflag
+            escapeflag = False
 
         if pos < len(string):
-            yield string[pos:]
+            yield string[pos:], False
 
     def parse(self, format_string):
         """Parse color syntax from a formatted string."""
@@ -79,27 +83,27 @@ class ColorFormatParser(object):
         colorstack = [(None, None)]
         itokens = self.tokenize(format_string)
 
-        for token in itokens:
-            if token == self._START_TOKEN:
+        for token, escaped in itokens:
+            if token == self._START_TOKEN and not escaped:
                 if txt:
                     yield txt, colorstack[-1]
                     txt = ''
 
                 state += 1
-                colors = self.extract_syntax(colorise.compat.next(itokens))
+                colors = self.extract_syntax(colorise.compat.next(itokens)[0])
                 colorstack.append(tuple(b or a
                                         for a, b in zip(colorstack[-1],
                                                         colors)))
-            elif token == self._FMT_TOKEN:
-                if state == 0:
-                    raise ColorSyntaxError("Missing '{0}'"
-                                           .format(self._START_TOKEN))
+            elif token == self._FMT_TOKEN and not escaped:
+                # if state == 0:
+                #     raise ColorSyntaxError("Missing '{0}'"
+                #                            .format(self._START_TOKEN))
 
                 if state % 2 != 0:
                     state += 1
                 else:
                     txt += token
-            elif token == self._STOP_TOKEN:
+            elif token == self._STOP_TOKEN and not escaped:
                 if state < 2:
                     raise ColorSyntaxError("Missing '{0}' or '{1}'"
                                            .format(self._STOP_TOKEN,
