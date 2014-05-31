@@ -85,10 +85,11 @@ class ColorManager(BaseColorManager):
                 if c is not None and c not in self.colors:
                     raise ValueError("Unknown color '{0}'".format(c))
 
-            fgc = self.colors.get(fg, 39)
-            bgc = self.colors.get(bg, 39) + 10
+            codes = [self.colors.get(fg, 39), self.colors.get(bg, 39) + 10]
 
-            sys.stdout.write(self._to_ansi([fgc, bgc] +
-                                           [1 if fgc in self.attrs else []]))
+            if codes[0] in self.attrs:
+                codes.append(1)
+
+            sys.stdout.write(self._to_ansi(*codes))
         else:
             self.set_defaults()
