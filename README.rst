@@ -1,5 +1,5 @@
-colorise v0.1.2
-================
+colorise v0.1.3
+===============
 
 .. image:: https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master
     :target: https://travis-ci.org/MisanthropicBit/colorise
