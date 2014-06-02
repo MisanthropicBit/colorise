@@ -3,7 +3,7 @@
 
 """py.test file for testing the ColorFormatParser class."""
 
-__date__ = "2014-05-21"  # YYYY-MM-DD
+__date__ = "2014-06-02"  # YYYY-MM-DD
 
 import pytest
 import sys
@@ -28,7 +28,8 @@ class TestColorFormatParser(object):
                     "This has no color, but <fg=yellow:this is yellow>, and "
                     "back to no color",
                     "<fg=yellow:This is yellow :3>",
-                    "<fg=darkblue:>"]  # This is still valid
+                    "<fg=darkblue:>",  # This is still valid
+                    "Just some text"]
 
         ok_tests_results = [(('Some text ', (None, None)),
                              ('and color', ('darkred', None))),
@@ -51,7 +52,8 @@ class TestColorFormatParser(object):
                              ('this is yellow', ('yellow', None)),
                              (', and back to no color', (None, None))),
                             (('This is yellow :3', ('yellow', None)),),
-                            (())]
+                            (()),
+                            (('Just some text', (None, None)),)]
 
         for test, result in zip(ok_tests, ok_tests_results):
             assert tuple(parser.parse(test)) == result

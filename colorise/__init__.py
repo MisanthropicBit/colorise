@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""colorise v0.1.2.
+"""colorise v0.1.3.
 
 A module for printing colored text to the console. Has support for
 custom color format syntax and includes some useful utility functions.
@@ -10,9 +10,9 @@ custom color format syntax and includes some useful utility functions.
 from __future__ import print_function
 
 __author__ = 'Alexander Bock'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __license__ = 'MIT'
-__date__ = '2014-05-21'  # YYYY-MM-DD
+__date__ = '2014-06-02'  # YYYY-MM-DD
 __all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
            'highlight']
 

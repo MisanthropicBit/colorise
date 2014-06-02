@@ -2,7 +2,7 @@
 
 """ColorFormatParser class which parses color formatted strings."""
 
-__date__ = '2014-05-24'  # YYYY-MM-DD
+__date__ = '2014-06-02'  # YYYY-MM-DD
 
 import re
 import itertools
@@ -34,10 +34,15 @@ class ColorFormatParser(object):
 
     def tokenize(self, string):
         """Tokenize a string and return an iterator over its tokens."""
-        pos, buf, lm = -1, '', -1
         it = colorise.compat.ifilter(None, self._pattern.finditer(string))
-        t = colorise.compat.next(it)
-        escapeflag = False
+
+        try:
+            t = colorise.compat.next(it)
+        except StopIteration:
+            yield string, False
+            return
+
+        pos, buf, lm, escapeflag = -1, '', -1, False
 
         # Check if we need to yield any starting text
         if t.start() > 0:
