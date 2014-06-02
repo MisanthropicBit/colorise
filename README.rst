@@ -4,6 +4,9 @@ colorise v0.1.3
 .. image:: https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master
     :target: https://travis-ci.org/MisanthropicBit/colorise
 
+.. image:: https://pypip.in/license/colorise/badge.png
+    :target: https://pypi.python.org/pypi/colorise/
+
 Provides cross-platform text coloring for consoles, useful functions and a nestable color format syntax.
 
 ``colorise`` has been tested with Python 2.6, 2.7, 3.2 and 3.3.
@@ -27,15 +30,10 @@ You can find additional examples in the ``/examples`` folder.
 
 You can directly set the color:
 
-.. code::
+.. image:: https://raw.githubusercontent.com/MisanthropicBit/colorise/master/screenshots/set_color_usage.png
+    :alt: Using the set_color function
 
-    >>> import colorise
-    >>> colorise.set_color('purple')
-    >>> print("This text should be purple")
-    >>> colorise.set_color()
-    >>> print("All colors have been reset!")
-
-You can just print some text in a predefined color
+You can print some text in a predefined color
 
 .. code::
 
@@ -43,9 +41,8 @@ You can just print some text in a predefined color
 
 ``colorise`` has a special color format syntax that allows for nested expressions as well:
 
-.. code::
-
-    >>> colorise.fprint("<bg=cyan:This is cyan, <fg=red:now with red foreground> and <fg=yellow:now yellow>.>")
+.. image:: https://raw.githubusercontent.com/MisanthropicBit/colorise/master/screenshots/fprint_usage.png
+    :alt: Print color formatted text
 
 There are a few useful tools as well:
 
@@ -59,9 +56,8 @@ There are a few useful tools as well:
 ``colorise.highlight`` behaves like ``colorise.formatbyindex``, but will write the output instead
 of returning a string:
 
-.. code::
-
-    >>> colorise.highlight("Highlight this text!", fg='blue', indices=[4, 17, 3, 5, 10])
+.. image:: https://raw.githubusercontent.com/MisanthropicBit/colorise/master/screenshots/highlight_usage.png
+    :alt: Highlighting select characters in a string
 
 If you have a ``<`` or ``>`` in your string, you can escape it with a backslash ``\``. The backslash
 is automatically removed. Colons, escaped or not, ``:`` are ignored if they appear as text.
