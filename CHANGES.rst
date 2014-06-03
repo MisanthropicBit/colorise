@@ -16,3 +16,4 @@ Version log
 0.1.3
 -----
 - Fixed a bug where passing a string without any color formatting would print the empty string
+- Fixed a bug on nix platforms that caused background colors to break

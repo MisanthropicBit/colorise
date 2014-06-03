@@ -51,7 +51,7 @@ class ColorManager(BaseColorManager):
 
         # Define ANSI color codes
         for i, name in enumerate(colornames[1:7], 31):
-            self.colors[name] = str(i)
+            self.colors[name] = i
             self.colors['dark'+name] = self.colors[name]
 
         # Set up color aliases
