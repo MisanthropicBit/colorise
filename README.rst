@@ -68,9 +68,7 @@ Implementation notes
 On Linux and Unix there are no 'dark' themed backgrounds (perhaps "bolded" colors which do not truly represnt darkened colors),
 so calling
 
-.. code::
-
-    >>> colorise.cprint("Isn't this wrong?", bg='darkred')
+    ``>>> colorise.cprint("Isn't this wrong?", bg='darkred')``
 
 will just set the background color to red.
 
