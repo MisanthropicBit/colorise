@@ -12,7 +12,7 @@ from __future__ import print_function
 __author__ = 'Alexander Bock'
 __version__ = '0.1.3'
 __license__ = 'MIT'
-__date__ = '2014-06-02'  # YYYY-MM-DD
+__date__ = '2014-06-11'  # YYYY-MM-DD
 __all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
            'highlight']
 
@@ -32,7 +32,8 @@ from colorise.ColorFormatParser import ColorFormatParser
 if _DEBUG_MODE:
     print("Python " + ".".join(map(str, sys.version_info[:3])))
 
-    def _32or64bit():  # Note: The sys.maxsize tests only works for Python 2.6+
+    # Note: The sys.maxsize¨ tests only works for Python 2.6+
+    def _32or64bit():
         """Determine if the OS is using a 32- or 64-bit architecture."""
         import struct
         return 8*struct.calcsize('P')
@@ -205,10 +206,5 @@ def highlight(string, fg=None, bg=None, indices=[], end='\n',
     target.write(end)
 
 
-def autoreset():
-    """Call at module exit to revert colors back to normal."""
-    set_color()
-
-
 # Ensure colors return to normal when colorise is quit
-atexit.register(autoreset)
+atexit.register(set_color)

@@ -7,30 +7,7 @@ import colorise.compat
 import colorise.decorators
 from colorise.BaseColorManager import BaseColorManager
 
-__date__ = '2014-05-12'  # YYYY-MM-DD
-
-# https://bbs.archlinux.org/viewtopic.php?id=151152&p=1
-# https://github.com/dranjan/termcolors
-# $ echo -en "\033]4;132;?\007"
-
-# (
-#     BLACK,
-#     RED,
-#     GREEN,
-#     YELLOW,
-#     BLUE,
-#     MAGENTA,
-#     CYAN,
-#     LIGHT_GRAY,
-#     DARK_GRAY,
-#     BRIGHT_RED,
-#     BRIGHT_GREEN,
-#     BRIGHT_YELLOW,
-#     BRIGHT_BLUE,
-#     BRIGHT_MAGENTA,
-#     BRIGHT_CYAN,
-#     WHITE,
-# ) = range(16)
+__date__ = '2014-06-09'  # YYYY-MM-DD
 
 
 @colorise.decorators.inherit_docstrings
@@ -85,6 +62,7 @@ class ColorManager(BaseColorManager):
                 if c is not None and c not in self.colors:
                     raise ValueError("Unknown color '{0}'".format(c))
 
+            print(self.colors)
             codes = [self.colors.get(fg, 39), self.colors.get(bg, 39) + 10]
 
             if codes[0] in self.attrs:

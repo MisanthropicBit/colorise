@@ -3,11 +3,9 @@
 
 """py.test file for testing the ColorFormatParser class."""
 
-__date__ = "2014-06-02"  # YYYY-MM-DD
+__date__ = "2014-06-11"  # YYYY-MM-DD
 
 import pytest
-import sys
-sys.path.append('.')
 from colorise.ColorFormatParser import ColorFormatParser, ColorSyntaxError
 
 
