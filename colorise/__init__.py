@@ -23,9 +23,9 @@ import colorise.cluts
 import colorise.parser
 
 __author__ = 'Alexander Bock'
-__version__ = '0.1.4'
+__version__ = '1.0.0'
 __license__ = 'MIT'
-__date__ = '2015-04-29'  # YYYY-MM-DD
+__date__ = '2016-02-05'  # YYYY-MM-DD
 __all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
            'highlight']
 
