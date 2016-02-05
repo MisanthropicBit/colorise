@@ -3,9 +3,9 @@
 
 """py.test file for testing the colorise's testable public functions."""
 
-__date__ = "2014-06-11"  # YYYY-MM-DD
-
 import colorise
+
+__date__ = "2016-02-05"  # YYYY-MM-DD
 
 
 formattests = [({'bg': 'yellow'},

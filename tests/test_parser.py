@@ -3,10 +3,10 @@
 
 """py.test file for testing the ColorFormatParser class."""
 
-__date__ = "2014-06-11"  # YYYY-MM-DD
-
 import pytest
-from colorise.ColorFormatParser import ColorFormatParser, ColorSyntaxError
+from colorise.parser import ColorFormatParser, ColorSyntaxError
+
+__date__ = "2016-02-05"  # YYYY-MM-DD
 
 
 class TestColorFormatParser(object):
