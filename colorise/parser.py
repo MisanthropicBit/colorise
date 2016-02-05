@@ -2,11 +2,43 @@
 
 """ColorFormatParser class which parses color formatted strings."""
 
-__date__ = '2014-06-02'  # YYYY-MM-DD
-
 import re
+import colorsys
 import itertools
+import colorise.cluts
 import colorise.compat
+
+__date__ = '2016-02-05'  # YYYY-MM-DD
+
+# Add support for:
+# colorise.fprint("<fg=(255,0,0): Red>")
+# colorise.fprint("<fg=hls(255,0,0): Color>")
+# colorise.fprint("<fg=hsv(255,0,0): Color>")
+# colorise.fprint("<bg=#8032ab: Color>")
+
+# Regexes for color specifications
+_index_re = re.compile('^\d+$')
+_rgb_re = re.compile('^rgb\((\d{1,3},\d{1,3},\d{1,3})\)$')
+_hex_re = re.compile('^(0x)?(([0-9a-fA-F]{2}){3})$')
+_hsv_re = re.compile('^hsv\((\d+,\d+,\d+)\)$')
+
+# Simple conversion table
+_color_conversions = {
+    'hls': colorsys.hls_to_rgb,
+    'hsv': colorsys.hsv_to_rgb
+}
+
+
+def to_rgb(fromspace, a, b, c):
+    """Convert from one colorspace to RGB."""
+    if fromspace == 'rgb':
+        return a, b, c
+
+    if fromspace not in _color_conversions:
+        raise ColorSyntaxError("Unsupported color space '{0}'"
+                               .format(fromspace))
+
+    _color_conversions[fromspace](a, b, c)
 
 
 class ColorSyntaxError(SyntaxError):
@@ -142,5 +174,35 @@ class ColorFormatParser(object):
             if r == [None, None]:
                 raise ColorSyntaxError("Unexpected color syntax '{0}'"
                                        .format(token))
+
+        return tuple(r)
+
+    def extract_syntax1(self, syntax):
+        """Parse and extract color/markup syntax from a format string."""
+        tokens = syntax.split(self._COLOR_DELIM)
+        r = [None, None]
+
+        for token in tokens:
+            for i, e in enumerate('fg=', 'bg='):
+                if token.startswith(e):
+                    if r[i] is not None:
+                        raise ColorSyntaxError("Multiple color definitions")
+
+                    r[i] = token[3:]
+
+        # Convert colors if necessary
+        for i, color in enumerate(r):
+            if color is not None:
+                if color.isalpha():
+                    r[i] = color
+                elif _index_re.match(color):
+                    r[i] = int(color)
+                elif _hex_re.match(color):
+                    r[i] = colorise.cluts.get_approx_color(
+                        *[int(color[i:i+2], 16) for i in range(0, 6, 2)])
+                elif _hsv_re.match(color):
+                    pass
+                elif _rgb_re.match(color):
+                    r[i] = tuple(int(c) for c in color.split(','))
 
         return tuple(r)

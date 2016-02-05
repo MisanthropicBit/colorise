@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 from distutils.core import setup
+import os
 
 
 def get_version(filename):

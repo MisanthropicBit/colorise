@@ -2,9 +2,9 @@
 
 """Base class for platform specific color managers."""
 
-__date__ = '2014-05-02'  # YYYY-MM-DD
-
 import sys
+
+__date__ = '2014-05-02'  # YYYY-MM-DD
 
 
 class BaseColorManager(object):

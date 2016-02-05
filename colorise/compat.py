@@ -2,10 +2,10 @@
 
 """Defines a small set of Python 2/3 compatibility functions and imports."""
 
-__date__ = '2014-05-17'  # YYYY-MM-DD
-
 import colorise
 import itertools
+
+__date__ = '2016-02-05'  # YYYY-MM-DD
 
 
 if colorise._PY2:

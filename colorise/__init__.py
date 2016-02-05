@@ -9,13 +9,6 @@ custom color format syntax and includes some useful utility functions.
 
 from __future__ import print_function
 
-__author__ = 'Alexander Bock'
-__version__ = '0.1.4'
-__license__ = 'MIT'
-__date__ = '2014-06-11'  # YYYY-MM-DD
-__all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
-           'highlight']
-
 import sys
 import atexit
 import platform
@@ -26,7 +19,15 @@ _PY2 = sys.version_info[0] < 3
 _DEBUG_MODE = False
 _SYSTEM_OS = platform.system().lower()
 
-from colorise.ColorFormatParser import ColorFormatParser
+import colorise.cluts
+import colorise.parser
+
+__author__ = 'Alexander Bock'
+__version__ = '0.1.4'
+__license__ = 'MIT'
+__date__ = '2015-04-29'  # YYYY-MM-DD
+__all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
+           'highlight']
 
 
 if _DEBUG_MODE:
@@ -42,6 +43,9 @@ if _DEBUG_MODE:
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
     from colorise.win.ColorManager import ColorManager
+
+    # Set up the Windows color table
+    colorise.cluts.set_windows_clut()
 
     if _DEBUG_MODE:
         print("{0} {1} ({2}-bit)".format(platform.system(),
@@ -62,8 +66,50 @@ else:
 
 
 # Global, "private" objects, don't use
-_color_format_parser = ColorFormatParser()
+_color_format_parser = colorise.parser.ColorFormatParser()
 _color_manager = ColorManager()
+
+
+def get_num_colors():
+    """Return the number of colors supported by the terminal."""
+    return colorise.cluts.get_num_colors()
+
+
+def can_redefine_colors():
+    """Return True if the terminal supports redefining its colors.
+
+    Only returns True for Windows 7/Vista and beyond as of now.
+
+    """
+    if _SYSTEM_OS.startswith('win'):
+        return colorise.cluts._WIN_CAN_GET_COLORS
+
+
+#def has_256_colors():
+#    """Retrun True for terminals that support 256 different colors.
+#
+#    This is an estimate at best though, as there is no portable way to detect
+#    support for 256 colors.
+#
+#    """
+#    if not sys.stdout.isatty():
+#        return False
+#
+#    try:
+#        import curses
+#        curses.setupterm()
+#
+#        return curses.tigetnum('colors') == 256
+#    except ImportError:
+#        pass
+#
+#    if 'TERM' not in os.environ:
+#        return False
+#
+#    term_env = os.environ['TERM']
+#
+#    return (term_env.startswith('xterm') and '256color' in term_env) or\
+#           term_env == 'vt100'
 
 
 def set_color(fg=None, bg=None):
