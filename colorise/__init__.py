@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""colorise v0.1.4.
+"""colorise
 
 A module for printing colored text to the console. Has support for
 custom color format syntax and includes some useful utility functions.
