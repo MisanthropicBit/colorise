@@ -11,6 +11,9 @@ Provides cross-platform text coloring for consoles, useful functions and a nesta
 
 ``colorise`` has been tested with Python 2.6, 2.7, 3.2 and 3.3.
 
+.. image:: https://raw.githubusercontent.com/MisanthropicBit/colorise/master/demo/colorise_demo.gif
+    :alt: Demo of colorise
+
 Installation:
 -------------
 You can install via `pip <https://pip.pypa.io/en/latest/>`_::
@@ -24,6 +27,17 @@ download directory::
 
 Usage:
 ------
+
+The color format is defined as follows: <(i|rgb|hex|hsv|hsl):text> where
+
+    * i is an index of a 88- or 256-color in the terminal, e.g. "<fg=106:...>"
+    * rgb is a tuple of red, green and blue channel intensities, e.g. "<bg=255,128,34:...>"
+    * hex is a hexadecimal representation of a color, e.g. "<fg=#c3ef41:...>"
+    * hsl is a hue, saturation and luminence representation of a color, e.g. "<fg=hsv(?,?,?):...>"
+    * hsv is a hue, saturation and ? representation of a color, e.g. "<fg=hsl(?,?,?):...>"
+
+If your terminal does not support a given color, `colorise` will attempt to approximate it. For example, if
+you specify a 256-color index on a terminal that supports only 88 colors.
 
 There are a number of ways to color the foreground- and background colors of the output to the console.
 You can find additional examples in the ``/examples`` folder.
