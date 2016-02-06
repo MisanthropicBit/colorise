@@ -6,8 +6,6 @@ import types
 import functools
 import colorise.compat
 
-__date__ = '2016-02-05'  # YYYY-MM-DD
-
 
 def inherit_docstrings(cls):
     """Class decorator for inheriting docstrings.

@@ -8,8 +8,6 @@ import itertools
 import colorise.cluts
 import colorise.compat
 
-__date__ = '2016-02-06'  # YYYY-MM-DD
-
 # Add support for:
 # colorise.fprint("<fg=(255,0,0): Red>")
 # colorise.fprint("<fg=hls(255,0,0): Color>")

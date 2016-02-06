@@ -8,8 +8,6 @@ import colorise
 import colorise.decorators
 from colorise.base_color_manager import BaseColorManager
 
-__date__ = '2016-02-05'  # YYYY-MM-DD
-
 
 # Struct defined in wincon.h
 class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):

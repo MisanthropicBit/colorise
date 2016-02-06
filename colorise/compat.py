@@ -5,9 +5,6 @@
 import colorise
 import itertools
 
-__date__ = '2016-02-05'  # YYYY-MM-DD
-
-
 if colorise._PY2:
     import types
     ClassType = types.ClassType

@@ -7,8 +7,6 @@ import colorise.compat
 import colorise.decorators
 from colorise.base_color_manager import BaseColorManager
 
-__date__ = '2016-02-06'  # YYYY-MM-DD
-
 
 @colorise.decorators.inherit_docstrings
 class ColorManager(BaseColorManager):
