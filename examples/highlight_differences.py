@@ -5,9 +5,9 @@
 
 from __future__ import print_function
 
-__date__ = "2014-05-21"  # YYYY-MM-DD
-
 import colorise
+
+__date__ = "2016-02-06"  # YYYY-MM-DD
 
 
 def highlight_differences(s1, s2, color):

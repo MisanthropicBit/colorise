@@ -3,10 +3,10 @@
 
 """Demonstrates how colorise's color format syntax can be endlessly nested."""
 
-__date__ = "2014-05-21"  # YYYY-MM-DD
-
 import colorise
 import random
+
+__date__ = "2016-02-05"  # YYYY-MM-DD
 
 
 if __name__ == '__main__':
@@ -18,5 +18,5 @@ if __name__ == '__main__':
     s = '<{0}={3}:An example <{1}={4}:of a <{2}={5}:nested> color> syntax' +\
         'string>'
 
-    colorise.fprint(s.format(*([random.choice(['fg', 'bg']) for _ in range(3)]
-                             + random.sample(colors, 3))))
+    colorise.fprint(s.format(*([random.choice(['fg', 'bg'])
+                               for _ in range(3)] + random.sample(colors, 3))))

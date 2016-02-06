@@ -84,6 +84,8 @@ def can_redefine_colors():
     if _SYSTEM_OS.startswith('win'):
         return colorise.cluts._WIN_CAN_GET_COLORS
 
+    return False
+
 
 #def has_256_colors():
 #    """Retrun True for terminals that support 256 different colors.

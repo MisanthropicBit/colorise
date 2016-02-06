@@ -5,10 +5,10 @@
 
 from __future__ import print_function
 
-__date__ = "2014-05-21"  # YYYY-MM-DD
-
 import random
 import colorise
+
+__date__ = "2016-02-05"  # YYYY-MM-DD
 
 
 if __name__ == '__main__':
