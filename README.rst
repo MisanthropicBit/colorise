@@ -36,7 +36,7 @@ The color format is defined as follows: <(i|rgb|hex|hsv|hsl):text> where
     * hsl is a hue, saturation and luminence representation of a color, e.g. "<fg=hsv(?,?,?):...>"
     * hsv is a hue, saturation and ? representation of a color, e.g. "<fg=hsl(?,?,?):...>"
 
-If your terminal does not support a given color, `colorise` will attempt to approximate it. For example, if
+If your terminal does not support a given color, ``colorise`` will attempt to approximate it. For example, if
 you specify a 256-color index on a terminal that supports only 88 colors.
 
 There are a number of ways to color the foreground- and background colors of the output to the console.
