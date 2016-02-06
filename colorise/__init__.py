@@ -42,7 +42,7 @@ if _DEBUG_MODE:
 
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
-    from colorise.win.ColorManager import ColorManager
+    from colorise.win.manager import ColorManager
 
     # Set up the Windows color table
     colorise.cluts.set_windows_clut()
@@ -53,7 +53,7 @@ if _SYSTEM_OS.startswith('win'):
                                          _32or64bit()))
 else:
     # Assume nix platform
-    from colorise.nix.ColorManager import ColorManager
+    from colorise.nix.manager import ColorManager
 
     if _DEBUG_MODE:
         if sys.version_info[:2] < (2, 6):
@@ -85,33 +85,6 @@ def can_redefine_colors():
         return colorise.cluts._WIN_CAN_GET_COLORS
 
     return False
-
-
-#def has_256_colors():
-#    """Retrun True for terminals that support 256 different colors.
-#
-#    This is an estimate at best though, as there is no portable way to detect
-#    support for 256 colors.
-#
-#    """
-#    if not sys.stdout.isatty():
-#        return False
-#
-#    try:
-#        import curses
-#        curses.setupterm()
-#
-#        return curses.tigetnum('colors') == 256
-#    except ImportError:
-#        pass
-#
-#    if 'TERM' not in os.environ:
-#        return False
-#
-#    term_env = os.environ['TERM']
-#
-#    return (term_env.startswith('xterm') and '256color' in term_env) or\
-#           term_env == 'vt100'
 
 
 def set_color(fg=None, bg=None):

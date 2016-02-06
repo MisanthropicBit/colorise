@@ -6,9 +6,9 @@ import ctypes
 from ctypes import windll, wintypes
 import colorise
 import colorise.decorators
-from colorise.BaseColorManager import BaseColorManager
+from colorise.base_color_manager import BaseColorManager
 
-__date__ = '2014-05-12'  # YYYY-MM-DD
+__date__ = '2016-02-05'  # YYYY-MM-DD
 
 
 # Struct defined in wincon.h
@@ -111,23 +111,17 @@ class ColorManager(BaseColorManager):
             bufptr = wintypes.LPWSTR()
 
             # Format as english
-            chars = windll.kernel32.FormatMessageW(SYS_FLAG, None, errid,
-                                                   (LANG_ENGLISH & 0xff) |
-                                                   (SUBLANG_ENGLISH_US & 0xff)
-                                                   << 16,
-                                                   ctypes.byref(bufptr),
-                                                   0,
-                                                   None)
+            chars = windll.kernel32.FormatMessageW(
+                SYS_FLAG, None, errid,
+                (LANG_ENGLISH & 0xff) | (SUBLANG_ENGLISH_US & 0xff) << 16,
+                ctypes.byref(bufptr), 0, None)
 
             # If that fails, format in system neutral language
             if chars == 0:
-                chars = windll.kernel32.FormatMessageW(SYS_FLAG, None, errid,
-                                                       (LANG_NEUTRAL & 0xff) |
-                                                       (SUBLANG_NEUTRAL & 0xff)
-                                                       << 16,
-                                                       ctypes.byref(bufptr),
-                                                       0,
-                                                       None)
+                chars = windll.kernel32.FormatMessageW(
+                    SYS_FLAG, None, errid,
+                    (LANG_NEUTRAL & 0xff) | (SUBLANG_NEUTRAL & 0xff) << 16,
+                    ctypes.byref(bufptr), 0, None)
 
             # Free the message buffer
             msg = bufptr.value[:chars]

@@ -8,37 +8,13 @@ import itertools
 import colorise.cluts
 import colorise.compat
 
-__date__ = '2016-02-05'  # YYYY-MM-DD
+__date__ = '2016-02-06'  # YYYY-MM-DD
 
 # Add support for:
 # colorise.fprint("<fg=(255,0,0): Red>")
 # colorise.fprint("<fg=hls(255,0,0): Color>")
 # colorise.fprint("<fg=hsv(255,0,0): Color>")
 # colorise.fprint("<bg=#8032ab: Color>")
-
-# Regexes for color specifications
-_index_re = re.compile('^\d+$')
-_rgb_re = re.compile('^rgb\((\d{1,3},\d{1,3},\d{1,3})\)$')
-_hex_re = re.compile('^(0x)?(([0-9a-fA-F]{2}){3})$')
-_hsv_re = re.compile('^hsv\((\d+,\d+,\d+)\)$')
-
-# Simple conversion table
-_color_conversions = {
-    'hls': colorsys.hls_to_rgb,
-    'hsv': colorsys.hsv_to_rgb
-}
-
-
-def to_rgb(fromspace, a, b, c):
-    """Convert from one colorspace to RGB."""
-    if fromspace == 'rgb':
-        return a, b, c
-
-    if fromspace not in _color_conversions:
-        raise ColorSyntaxError("Unsupported color space '{0}'"
-                               .format(fromspace))
-
-    _color_conversions[fromspace](a, b, c)
 
 
 class ColorSyntaxError(SyntaxError):
@@ -57,6 +33,19 @@ class ColorFormatParser(object):
     _STOP_TOKEN = '>'
     _COLOR_DELIM = ','
     _ESCAPE = '\\'
+
+    # Regexes for color specifications
+    _INDEX_RE = re.compile('^\d+$')
+    _RGB_RE = re.compile('^rgb\((\d{1,3},\d{1,3},\d{1,3})\)$')
+    _HEX_RE = re.compile('^(0x)?(([0-9a-fA-F]{2}){3})$')
+    _HSV_RE = re.compile('^hsv\((\d+,\d+,\d+)\)$')
+    _HLS_RE = re.compile('^hls\((\d+,\d+,\d+)\)$')
+
+    # Simple conversion table
+    _COLOR_CONVERSIONS = {
+        'hls': colorsys.hls_to_rgb,
+        'hsv': colorsys.hsv_to_rgb
+    }
 
     def __init__(self):
         """Initialize the parser."""
@@ -177,6 +166,17 @@ class ColorFormatParser(object):
 
         return tuple(r)
 
+    def _to_rgb(self, fromspace, a, b, c):
+        """Convert from one colorspace to RGB."""
+        if fromspace == 'rgb':
+            return a, b, c
+
+        if fromspace not in self._COLOR_CONVERSIONS:
+            raise ColorSyntaxError("Unsupported color space '{0}'"
+                                   .format(fromspace))
+
+        self._COLOR_CONVERSIONS[fromspace](a, b, c)
+
     def extract_syntax1(self, syntax):
         """Parse and extract color/markup syntax from a format string."""
         tokens = syntax.split(self._COLOR_DELIM)
@@ -186,7 +186,8 @@ class ColorFormatParser(object):
             for i, e in enumerate('fg=', 'bg='):
                 if token.startswith(e):
                     if r[i] is not None:
-                        raise ColorSyntaxError("Multiple color definitions")
+                        raise ColorSyntaxError("Multiple color definitions of"
+                                               " {}".format(e[:-1]))
 
                     r[i] = token[3:]
 
@@ -195,14 +196,28 @@ class ColorFormatParser(object):
             if color is not None:
                 if color.isalpha():
                     r[i] = color
-                elif _index_re.match(color):
+                elif self._INDEX_RE.match(color):
                     r[i] = int(color)
-                elif _hex_re.match(color):
+
+                m = self._HEX_RE()
+                if self._HEX_RE.match(color):
                     r[i] = colorise.cluts.get_approx_color(
                         *[int(color[i:i+2], 16) for i in range(0, 6, 2)])
-                elif _hsv_re.match(color):
-                    pass
-                elif _rgb_re.match(color):
-                    r[i] = tuple(int(c) for c in color.split(','))
+                    continue
+
+                m = self._HSV_RE.match(color)
+                if m:
+                    r[i] = colorise.cluts.get_approx_color(
+                        self._to_rgb('hsv', m.group(1).split(',')))
+                    continue
+                else:
+                    m = self._HLS_RE.match(color)
+                    if m:
+                        r[i] = colorise.cluts.get_approx_color(
+                            self._to_rgb('hls', m.group(1).split(',')))
+                        continue
+
+                raise ColorSyntaxError('Unrecognised color format: {}'
+                                       .format(color))
 
         return tuple(r)

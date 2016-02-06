@@ -5,9 +5,9 @@
 import sys
 import colorise.compat
 import colorise.decorators
-from colorise.BaseColorManager import BaseColorManager
+from colorise.base_color_manager import BaseColorManager
 
-__date__ = '2014-06-09'  # YYYY-MM-DD
+__date__ = '2016-02-06'  # YYYY-MM-DD
 
 
 @colorise.decorators.inherit_docstrings
@@ -36,13 +36,9 @@ class ColorManager(BaseColorManager):
         self.colors['purple'] = self.colors['magenta']
         self.colors['darkpurple'] = self.colors['darkmagenta']
 
-        # Set up specific color attributes
-        self.attrs = frozenset(['gray', 'grey'] +
-                               ['dark'+e for e in self.colors])
-
-    def _to_ansi(self, *codes):
+    def _to_ansi(self, prefix, *codes):
         """Convert a set of ANSI codes into a valid ANSI sequence."""
-        return '\x1b[' + ';'.join(map(str, codes)) + 'm'
+        return '\x1b[' + (str(prefix) or '') + ';'.join(map(str, codes)) + 'm'
 
     def set_defaults(self):
         sys.stdout.write(self._to_ansi(22, 39, 49))
@@ -65,9 +61,9 @@ class ColorManager(BaseColorManager):
             print(self.colors)
             codes = [self.colors.get(fg, 39), self.colors.get(bg, 39) + 10]
 
-            if codes[0] in self.attrs:
-                codes.append(1)
-
-            sys.stdout.write(self._to_ansi(*codes))
+            if colorise.get_num_colors() >= 88:
+                sys.stdout.write(self._to_ansi(38, *codes))
+            else:
+                sys.stdout.write(self._to_ansi(None, *codes))
         else:
             self.set_defaults()
