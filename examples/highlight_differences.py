@@ -7,8 +7,6 @@ from __future__ import print_function
 
 import colorise
 
-__date__ = "2016-02-06"  # YYYY-MM-DD
-
 
 def highlight_differences(s1, s2, color):
     """Highlight the characters in s2 that differ from those in s1."""

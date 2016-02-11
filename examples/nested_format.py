@@ -6,8 +6,6 @@
 import colorise
 import random
 
-__date__ = "2016-02-05"  # YYYY-MM-DD
-
 
 if __name__ == '__main__':
     # colorise's color format syntax can be nested as much as you want
