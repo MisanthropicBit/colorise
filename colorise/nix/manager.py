@@ -34,9 +34,9 @@ class ColorManager(BaseColorManager):
         self.colors['purple'] = self.colors['magenta']
         self.colors['darkpurple'] = self.colors['darkmagenta']
 
-    def _to_ansi(self, prefix, *codes):
+    def _to_ansi(self, *codes):
         """Convert a set of ANSI codes into a valid ANSI sequence."""
-        return '\x1b[' + (str(prefix) or '') + ';'.join(map(str, codes)) + 'm'
+        return '\x1b[' + ';'.join(map(str, codes)) + 'm'
 
     def set_defaults(self):
         sys.stdout.write(self._to_ansi(22, 39, 49))
@@ -51,17 +51,29 @@ class ColorManager(BaseColorManager):
                 [bg for bg in self.colors.keys() if not bg.startswith('dark')])
 
     def set_color(self, fg=None, bg=None):
+        codes = ['', '']
+
+        # Move syntax extraction out here
         if fg or bg:
-            for c in [fg, bg]:
-                if c is not None and c not in self.colors:
+            for i, c in enumerate([fg, bg]):
+                if c is not None and type(c) not in (int, tuple):
                     raise ValueError("Unknown color '{0}'".format(c))
 
-            print(self.colors)
-            codes = [self.colors.get(fg, 39), self.colors.get(bg, 39) + 10]
+                codes[i] = '' if c is None else str(30 * (i + 1) + c)
 
-            if colorise.get_num_colors() >= 88:
-                sys.stdout.write(self._to_ansi(38, *codes))
-            else:
-                sys.stdout.write(self._to_ansi(None, *codes))
+                if c > 7:
+                    if c <= 256:
+                        codes[i] = '{};5;{}'.format(38 * (i + 1), c)
+                    else:
+                        # RGB capability
+                        if type(c) is tuple and len(c) != 3:
+                            raise ValueError("RGB tuple must contain 3 "
+                                             "elements")
+
+                        # Note: Untested!
+                        codes[i] = '{};2;{}'.format(38 * (i + 1),
+                                                    ";".join(map(str, c)))
+
+            sys.stdout.write(self._to_ansi(*codes))
         else:
             self.set_defaults()

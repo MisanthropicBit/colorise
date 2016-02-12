@@ -148,7 +148,7 @@ class ColorFormatParser(object):
         if txt:
             yield txt, colorstack[-1]
 
-    def extract_syntax(self, syntax):
+    def extract_syntax1(self, syntax):
         """Parse and extract color/markup syntax from a format string."""
         tokens = syntax.split(self._COLOR_DELIM)
         r = [None, None]
@@ -175,13 +175,13 @@ class ColorFormatParser(object):
 
         self._COLOR_CONVERSIONS[fromspace](a, b, c)
 
-    def extract_syntax1(self, syntax):
-        """Parse and extract color/markup syntax from a format string."""
+    def extract_syntax(self, syntax):
+        """Extract color/markup syntax from a parsed string."""
         tokens = syntax.split(self._COLOR_DELIM)
         r = [None, None]
 
         for token in tokens:
-            for i, e in enumerate('fg=', 'bg='):
+            for i, e in enumerate(('fg=', 'bg=')):
                 if token.startswith(e):
                     if r[i] is not None:
                         raise ColorSyntaxError("Multiple color definitions of"
@@ -194,10 +194,12 @@ class ColorFormatParser(object):
             if color is not None:
                 if color.isalpha():
                     r[i] = color
+                    continue
                 elif self._INDEX_RE.match(color):
                     r[i] = int(color)
+                    continue
 
-                m = self._HEX_RE()
+                m = self._HEX_RE.match(color)
                 if self._HEX_RE.match(color):
                     r[i] = colorise.cluts.get_approx_color(
                         *[int(color[i:i+2], 16) for i in range(0, 6, 2)])
@@ -218,4 +220,4 @@ class ColorFormatParser(object):
                 raise ColorSyntaxError('Unrecognised color format: {}'
                                        .format(color))
 
-        return tuple(r)
+        return tuple([colorise.cluts.get_approx_color(e) for e in r])
