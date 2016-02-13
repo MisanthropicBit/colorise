@@ -5,8 +5,6 @@
 
 import colorise
 
-__date__ = "2016-02-05"  # YYYY-MM-DD
-
 
 formattests = [({'bg': 'yellow'},
                 "Yellow like the sun!",

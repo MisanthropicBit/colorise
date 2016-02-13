@@ -6,8 +6,6 @@
 import pytest
 from colorise.parser import ColorFormatParser, ColorSyntaxError
 
-__date__ = "2016-02-05"  # YYYY-MM-DD
-
 
 class TestColorFormatParser(object):
 
