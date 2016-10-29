@@ -7,9 +7,9 @@ colorise v1.0.0
 .. image:: https://pypip.in/license/colorise/badge.png
     :target: https://pypi.python.org/pypi/colorise/
 
-Provides cross-platform text coloring for consoles, useful functions and a nestable color format syntax.
+``colorise`` provides cross-platform text coloring for consoles, some useful functions and a nestable color format syntax that supports Python's (2.6+) string formatting.
 
-``colorise`` has been tested with Python 2.6, 2.7, 3.2 and 3.3.
+``colorise`` has been tested with Python 2.6, 2.7, 3.2 and 3.3, and the following terminals: iTerm 2.1.4, Terminal.app 2.6.1 (361.1) and the Windows console (?).
 
 .. image:: https://raw.githubusercontent.com/MisanthropicBit/colorise/master/demo/colorise_demo.gif
     :alt: Demo of colorise
@@ -79,16 +79,11 @@ is automatically removed. Colons, escaped or not, ``:`` are ignored if they appe
 
 Implementation notes
 --------------------
-On Linux and Unix there are no 'dark' themed backgrounds (perhaps "bolded" colors which do not truly represnt darkened colors),
-so calling
+On Linux and Unix there are no 'dark' themed backgrounds (perhaps "bolded" or "bright" colors are a better name, but do not truly represnt darkened colors), so calling
 
     >>> colorise.cprint("Isn't this wrong?", bg='darkred')
 
-will just set the background color to red.
-
-Due to the many different termnial/console types, it is virtually impossible to correctly map color names to
-their actual colors. You may see variations (like 'yellow' showing up as brownish, e.g. on my Xubuntu box) or
-other discrepancies. ``colorise`` assumes the following available colors:
+will not necessarily give the expected result. This is due to the many different termnial/console types, making it is virtually impossible to correctly map color names to their actual colors. Additionally, some consoles, such as iTerm and the Windows standard console, lets you redefine colors, so that using logical colornames is no guarantee for consistency. ``colorise`` assumes the following available colors on all systems:
 
 - Black
 - Red
@@ -99,4 +94,4 @@ other discrepancies. ``colorise`` assumes the following available colors:
 - Cyan
 - White
 
-It is therefore best to stick to colors which are more likely to be present and correct, like 'red', 'blue' and 'green'.
+It is therefore best to stick to these systems colors which are more likely to be present and "correct", like 'red', 'blue' and 'green'.
