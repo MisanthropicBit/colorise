@@ -284,7 +284,7 @@ else:
                 key, _ = closest_color(_XTERM_CLUT_256[idx], _XTERM_CLUT_88)
                 return _COLOR_PREFIX_88, key
         else:
-            if idx > 8:
+            if idx > 16:
                 key, _ = closest_color(_XTERM_CLUT_256[idx],
                                        _NIX_SYSTEM_COLORS)
                 return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
