@@ -51,29 +51,11 @@ class ColorManager(BaseColorManager):
                 [bg for bg in self.colors.keys() if not bg.startswith('dark')])
 
     def set_color(self, fg=None, bg=None):
-        codes = ['', '']
-
-        # Move syntax extraction out here
         if fg or bg:
-            for i, c in enumerate([fg, bg]):
-                if c is not None and type(c) not in (int, tuple):
-                    raise ValueError("Unknown color '{0}'".format(c))
-
-                codes[i] = '' if c is None else str(30 * (i + 1) + c)
-
-                if c > 7:
-                    if c <= 256:
-                        codes[i] = '{};5;{}'.format(38 * (i + 1), c)
-                    else:
-                        # RGB capability
-                        if type(c) is tuple and len(c) != 3:
-                            raise ValueError("RGB tuple must contain 3 "
-                                             "elements")
-
-                        # Note: Untested!
-                        codes[i] = '{};2;{}'.format(38 * (i + 1),
-                                                    ";".join(map(str, c)))
-
-            sys.stdout.write(self._to_ansi(*codes))
+            for i, [prefix, value] in [colorise.cluts.color_code(c, b)
+                                       for c, b in zip([fg, bg],
+                                                       [False, True])]:
+                if value:
+                    sys.stdout.write(prefix.format(value))
         else:
             self.set_defaults()
