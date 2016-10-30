@@ -249,7 +249,7 @@ else:
 
         return key, value
 
-    def get_color_from_name(name):
+    def get_color_from_name(name, isbg):
         """Return the color value and color count for a given color name."""
         if name not in _NIX_SYSTEM_COLOR_NAMES:
             raise ValueError("Unknown color name '{0}'".format(name))
@@ -264,10 +264,13 @@ else:
                         _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
         else:
             # We fall back on 16 color codes to maintain consistency
-            return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name]
+            return _COLOR_PREFIX_16,\
+                _NIX_SYSTEM_COLOR_NAMES[name] + 30 + 10 * int(isbg)
 
-    def get_color_from_index(idx):
+    def get_color_from_index(idx, isbg):
         """Return the color value and color count for a given color index."""
+        idx = int(idx)
+
         if idx < 0 or idx > 256:
             raise ValueError("Color index must be in range [0-256]")
 
@@ -284,15 +287,15 @@ else:
             if idx > 8:
                 key, _ = closest_color(_XTERM_CLUT_256[idx],
                                        _NIX_SYSTEM_COLORS)
-                return _COLOR_PREFIX_16, key
+                return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
 
-    def get_color(colorspace, values):
+    def get_color(colorspace, values, isbg):
         """Return an approximate color based on the terminal's capabilities."""
         if colorspace == 'name':
             # The color was given as text, e.g. 'red'
-            return get_color_from_name(values)
+            return get_color_from_name(values, isbg)
         elif colorspace == 'index':
-            return get_color_from_index(values)
+            return get_color_from_index(values, isbg)
         elif colorspace == 'hex':
             r, g, b = [int(values[i:i+2], 16) for i in range(0, 6, 2)]
         elif colorspace == 'hsv':
@@ -342,6 +345,6 @@ else:
             return '', None, 0
 
         colorspace = get_color_format(color)
-        prefix, value = get_color(colorspace, color)
+        prefix, value = get_color(colorspace, color, isbg)
 
         return prefix, value
