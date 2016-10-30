@@ -33,7 +33,7 @@ __all__ = ['set_color', 'cprint', 'fprint', 'formatcolor', 'formatbyindex',
 if _DEBUG_MODE:
     print("Python " + ".".join(map(str, sys.version_info[:3])))
 
-    # Note: The sys.maxsize¨ tests only works for Python 2.6+
+    # Note: The sys.maxsize tests only works for Python 2.6+
     def _32or64bit():
         """Determine if the OS is using a 32- or 64-bit architecture."""
         import struct
