@@ -87,6 +87,11 @@ def can_redefine_colors():
     return False
 
 
+def set_num_colors(color_count):
+    """Set the number of colors available instead of autodetecting it."""
+    colorise.cluts.set_num_colors(color_count)
+
+
 def set_color(fg=None, bg=None):
     """Set the current colors.
 

@@ -30,6 +30,9 @@ _COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
 _COLOR_PREFIX_256 = _COLOR_PREFIX_88
 _COLOR_PREFIX_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 
+# User-defined color count (always ignored on Windows as it only ever
+# has 16 colors)
+__NUM_COLORS__ = 0
 
 ###############################################################################
 # Windows color setup
@@ -208,8 +211,25 @@ if 'windows' in colorise._SYSTEM_OS:
         """
         pass
 else:
+    def set_num_colors(color_count):
+        """Set the number of colors available instead of autodetecting it."""
+        color_counts = frozenset([16, 88, 256, 16777216])
+        color_names = frozenset(['true-color'])
+
+        if color_count not in color_counts and color_count not in color_names:
+            raise ValueError("Invalid color count, use {0} or {1}"
+                             .format(", ".join(map(str, color_counts)),
+                                     ", ".join(color_names)))
+
+        # TODO: Find an alternative to globals
+        global __NUM_COLORS__
+        __NUM_COLORS__ = color_count
+
     def get_num_colors():
         """Get the number of colors supported by the terminal."""
+        if __NUM_COLORS__ > 0:
+            return __NUM_COLORS__
+
         # TODO: Do a check to avoid reinitialisation?
         curses.setupterm()
         return curses.tigetnum("colors")
