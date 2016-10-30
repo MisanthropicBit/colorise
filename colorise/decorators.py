@@ -2,9 +2,9 @@
 
 """Contains a single decorator function for inheriting docstrings."""
 
-import types
 import functools
 import colorise.compat
+import collections
 
 
 def inherit_docstrings(cls):
@@ -20,13 +20,13 @@ def inherit_docstrings(cls):
             raise RuntimeError("Type is not a class")
 
         for name, value in colorise.compat.iteritems(vars(cls)):
-            if isinstance(getattr(cls, name), types.MethodType):
+            if isinstance(getattr(cls, name), collections.Callable):
                 if not getattr(value, '__doc__', None):
                     for base in cls.__bases__:
                         basemethod = getattr(base, name, None)
 
-                        if basemethod and getattr(base, '__doc__', None):
-                            value.__doc__ = basemethod.__doc__
+                        if basemethod and getattr(basemethod, '__doc__', None):
+                            setattr(value, '__doc__', basemethod.__doc__)
 
         return cls
 
