@@ -9,14 +9,26 @@
 #
 # If you have suggestions, please do not hesitate to contact me :)
 
-import operator
 import colorise
+import colorsys
+import operator
+import re
 
 try:
     import curses
 except ImportError:
     pass
 
+_RGB_RE = re.compile('^(rgb)?\((\d{1,3},\s*\d{1,3},\s*\d{1,3})\)$')
+_HEX_RE = re.compile('^(0x|#)?(([0-9a-fA-F]{2}){3})$')
+_HSV_RE = re.compile('^hsv\((\d+,\d+,\d+)\)$')
+_HLS_RE = re.compile('^hls\((\d+,\d+,\d+)\)$')
+
+_COLOR_ESCAPE_CODE = '\033['
+_COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '%dm'
+_COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;%dm'
+_COLOR_PREFIX_256 = _COLOR_PREFIX_88
+_COLOR_PREFIX_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;%sm'
 
 ###############################################################################
 # Windows color setup
@@ -60,13 +72,43 @@ _WINDOWS_LOGICAL_NAMES = {}
 
 # System base colors that are assumed to be present for 8 color terminals
 _NIX_SYSTEM_COLORS = {
-    0: (0x00, 0x00, 0x00), 1: (0x80, 0x00, 0x00), 2: (0x00, 0x80, 0x00),
-    3: (0x80, 0x80, 0x00), 4: (0x00, 0x00, 0x80), 5: (0x80, 0x00, 0x80),
-    6: (0x00, 0x80, 0x80), 7: (0xc0, 0xc0, 0xc0), 8: (0x80, 0x80, 0x80),
-    9: (0xff, 0x00, 0x00), 10: (0x00, 0xff, 0x00), 11: (0xff, 0xff, 0x00),
-    12: (0x00, 0x00, 0xff), 13: (0xff, 0x00, 0xff), 14: (0x00, 0xff, 0xff),
-    15: (0xff, 0xff, 0xff)
+    0: (0x00, 0x00, 0x00),   # black
+    1: (0x80, 0x00, 0x00),   # dark red
+    2: (0x00, 0x80, 0x00),   # dark green
+    3: (0x80, 0x80, 0x00),   # dark yellow
+    4: (0x00, 0x00, 0x80),   # dark blue
+    5: (0x80, 0x00, 0x80),   # dark purple
+    6: (0x00, 0x80, 0x80),   # dark cyan
+    7: (0xc0, 0xc0, 0xc0),   # light gray
+    8: (0x80, 0x80, 0x80),   # gray
+    9: (0xff, 0x00, 0x00),   # red
+    10: (0x00, 0xff, 0x00),  # green
+    11: (0xff, 0xff, 0x00),  # yellow
+    12: (0x00, 0x00, 0xff),  # blue
+    13: (0xff, 0x00, 0xff),  # purple
+    14: (0x00, 0xff, 0xff),  # cyan
+    15: (0xff, 0xff, 0xff)   # white
 }
+
+_NIX_SYSTEM_COLOR_NAMES = {
+    'black': 0,
+    'darkred': 1,
+    'darkgreen': 3,
+    'darkyellow': 4,
+    'darkblue': 5,
+    'darkpurple': 6,
+    'darkcyan': 7,
+    'lightgray': 8,
+    'red': 9,
+    'green': 10,
+    'yellow': 11,
+    'blue': 12,
+    'purple': 13,
+    'cyan': 14,
+    'white': 15
+}
+
+_NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 8
 
 # xterm 88-color look-up table (based on 88colres.h)
 _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
@@ -171,19 +213,114 @@ else:
         curses.setupterm()
         return curses.tigetnum("colors")
 
-    def get_approx_color(r, g, b):
-        """Return an approximate color based on the terminal's capabilities."""
+    def get_approx_index(index):
+        """Return the index that represents the closest color to index."""
         colors = get_num_colors()
 
-        if colors == 256:
+        if colors > 88:
+            return
+
+    def closest_color(rgb, clut):
+        """Return the key and value of closest RGB color in the given table."""
+        key, value = min([(idx, color_difference(rgb, clut[idx]))
+                          for idx in clut],
+                         key=operator.itemgetter(1))
+
+        return key, value
+
+    def get_color_from_name(name):
+        """Return the color value and color count for a given color name."""
+        if name not in _NIX_SYSTEM_COLOR_NAMES:
+            raise ValueError("Unknown color name '{0}'".format(name))
+
+        colors = get_num_colors()
+
+        if colors > 256:
+            # True-color
+            return _COLOR_PREFIX_TRUE_COLOR,\
+                ';'.join(
+                    map(str,
+                        _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
+        else:
+            # We fall back on 16 color codes to maintain consistency
+            return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name]
+
+    def get_color_from_index(idx):
+        """Return the color value and color count for a given color index."""
+        if idx < 0 or idx > 256:
+            raise ValueError("Color index must be in range [0-256]")
+
+        colors = get_num_colors()
+
+        if colors > 88:
+            # 256-color and true-color
+            return _COLOR_PREFIX_256, idx
+        elif colors > 8:
+            if idx > 88:
+                key, _ = closest_color(_XTERM_CLUT_256[idx], _XTERM_CLUT_88)
+                return _COLOR_PREFIX_88, key
+        else:
+            if idx > 8:
+                key, _ = closest_color(_XTERM_CLUT_256[idx],
+                                       _NIX_SYSTEM_COLORS)
+                return _COLOR_PREFIX_16, key
+
+    def get_color(colorspace, values):
+        """Return an approximate color based on the terminal's capabilities."""
+        if colorspace == 'name':
+            # The color was given as text, e.g. 'red'
+            return get_color_from_name(values)
+        elif colorspace == 'index':
+            return get_color_from_index(values)
+        elif colorspace == 'hex':
+            r, g, b = [int(values[i:i+2], 16) for i in range(0, 6, 2)]
+        elif colorspace == 'hsv':
+            r, g, b = colorsys.hsv_to_rgb(*values)
+        elif colorspace == 'hls':
+            r, g, b = colorsys.hls_to_rgb(*values)
+        else:
+            r, g, b = values
+
+        colors = get_num_colors()
+
+        if colors > 256:
+            return _COLOR_PREFIX_TRUE_COLOR, (r, g, b)
+        if colors > 88:
+            prefix = _COLOR_PREFIX_256
             clut = _XTERM_CLUT_256
-        elif colors == 88:
+        elif colors > 8:
+            prefix = _COLOR_PREFIX_88
             clut = _XTERM_CLUT_88
         else:
+            prefix = _COLOR_PREFIX_16
             clut = _NIX_SYSTEM_COLORS
 
-        j = min(enumerate([color_difference((r, g, b), clut[i])
-                           for i in range(len(clut))]),
-                key=operator.itemgetter(1))[0]
+        key, _ = closest_color([r, g, b], clut)
 
-        return j, clut[j]
+        return prefix, key
+
+    def get_color_format(color):
+        if _RGB_RE.match(color):
+            return 'rgb'
+        elif color.isdigit():
+            return 'index'
+        elif color in _NIX_SYSTEM_COLOR_NAMES.keys():
+            return 'name'
+        elif _HEX_RE.match(color):
+            return 'hex'
+        elif _HSV_RE.match(color):
+            return 'hsv'
+        elif _HLS_RE.match(color):
+            return 'hls'
+
+        raise ValueError("Unknown color format '{0}'".format(color))
+
+    def color_code(color, isbg):
+        """Return the appropriate color code for a given color format."""
+        if not color:
+            return '', None, 0
+
+        colorspace = get_color_format(color)
+        prefix, value = get_color(colorspace, color)
+
+        return prefix, value
