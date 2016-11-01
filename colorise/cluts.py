@@ -24,7 +24,7 @@ _HEX_RE = re.compile('^(0x|#)?(([0-9a-fA-F]{2}){3})$')
 _HSV_RE = re.compile('^(hsv)\((\d+,\s*\d+,\s*\d+)\)$')
 _HLS_RE = re.compile('^(hls)\((\d+,\s*\d+,\s*\d+)\)$')
 
-_COLOR_ESCAPE_CODE = r'\033['
+_COLOR_ESCAPE_CODE = '\033['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
 _COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
 _COLOR_PREFIX_256 = _COLOR_PREFIX_88
