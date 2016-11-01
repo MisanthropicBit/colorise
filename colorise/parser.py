@@ -189,35 +189,5 @@ class ColorFormatParser(object):
 
                     r[i] = token[3:]
 
-        # Convert colors if necessary
-        for i, color in enumerate(r):
-            if color is not None:
-                if color.isalpha():
-                    r[i] = color
-                    continue
-                elif self._INDEX_RE.match(color):
-                    r[i] = int(color)
-                    continue
-
-                m = self._HEX_RE.match(color)
-                if self._HEX_RE.match(color):
-                    r[i] = colorise.cluts.get_approx_color(
-                        *[int(color[i:i+2], 16) for i in range(0, 6, 2)])
-                    continue
-
-                m = self._HSV_RE.match(color)
-                if m:
-                    r[i] = colorise.cluts.get_approx_color(
-                        self._to_rgb('hsv', m.group(1).split(',')))
-                    continue
-                else:
-                    m = self._HLS_RE.match(color)
-                    if m:
-                        r[i] = colorise.cluts.get_approx_color(
-                            self._to_rgb('hls', m.group(1).split(',')))
-                        continue
-
-                raise ColorSyntaxError('Unrecognised color format: {}'
-                                       .format(color))
-
-        return tuple([colorise.cluts.get_approx_color(e) for e in r])
+        return tuple(r)
+        #return tuple([colorise.cluts.get_approx_color(e) for e in r])
