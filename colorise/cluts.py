@@ -21,8 +21,8 @@ except ImportError:
 
 _RGB_RE = re.compile('^(rgb)?\((\d{1,3},\s*\d{1,3},\s*\d{1,3})\)$')
 _HEX_RE = re.compile('^(0x|#)?(([0-9a-fA-F]{2}){3})$')
-_HSV_RE = re.compile('^hsv\((\d+,\d+,\d+)\)$')
-_HLS_RE = re.compile('^hls\((\d+,\d+,\d+)\)$')
+_HSV_RE = re.compile('^(hsv)\((\d+,\s*\d+,\s*\d+)\)$')
+_HLS_RE = re.compile('^(hls)\((\d+,\s*\d+,\s*\d+)\)$')
 
 _COLOR_ESCAPE_CODE = r'\033['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
