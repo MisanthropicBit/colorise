@@ -52,9 +52,8 @@ class ColorManager(BaseColorManager):
 
     def set_color(self, fg=None, bg=None):
         if fg or bg:
-            for i, [prefix, value] in [colorise.cluts.color_code(c, b)
-                                       for c, b in zip([fg, bg],
-                                                       [False, True])]:
+            for prefix, value in [colorise.cluts.color_code(c, b)
+                                  for c, b in zip([fg, bg], [False, True])]:
                 if value:
                     sys.stdout.write(prefix.format(value))
         else:
