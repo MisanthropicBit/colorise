@@ -181,7 +181,7 @@ class ColorFormatParser(object):
         r = [None, None]
 
         for token in tokens:
-            for i, e in enumerate(('fg=', 'bg=')):
+            for i, e in enumerate(['fg=', 'bg=']):
                 if token.startswith(e):
                     if r[i] is not None:
                         raise ColorSyntaxError("Multiple color definitions of"
