@@ -8,6 +8,9 @@ import colorise
 import colorise.decorators
 from colorise.base_color_manager import BaseColorManager
 
+# TODO: Windows 10 supports 24-bit colors
+# TODO: ConEmu supports 256 colors
+
 
 # Struct defined in wincon.h
 class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
