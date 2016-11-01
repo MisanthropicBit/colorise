@@ -226,6 +226,7 @@ else:
         __NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
             color_count
 
+    # NOTE: Can use TERM_PROGRAM/TERM_PROGRAM_VERSION to detect terminals
     def get_num_colors():
         """Get the number of colors supported by the terminal."""
         if __NUM_COLORS__ > 0:
