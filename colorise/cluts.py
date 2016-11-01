@@ -290,26 +290,28 @@ else:
                                        _NIX_SYSTEM_COLORS)
                 return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
 
-    def get_color(colorspace, values, isbg):
+    def get_color(colorspace, value, isbg):
         """Return an approximate color based on the terminal's capabilities."""
         if colorspace == 'name':
             # The color was given as text, e.g. 'red'
-            return get_color_from_name(values, isbg)
+            return get_color_from_name(value, isbg)
         elif colorspace == 'index':
-            return get_color_from_index(values, isbg)
+            return get_color_from_index(value, isbg)
         elif colorspace == 'hex':
-            r, g, b = [int(values[i:i+2], 16) for i in range(0, 6, 2)]
+            r, g, b = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
         elif colorspace == 'hsv':
-            r, g, b = colorsys.hsv_to_rgb(*values)
+            r, g, b = colorsys.hsv_to_rgb(*_HSV_RE.match(value).group(2)
+                                          .split(','))
         elif colorspace == 'hls':
-            r, g, b = colorsys.hls_to_rgb(*values)
+            r, g, b = colorsys.hls_to_rgb(*_HLS_RE.match(value).group(2)
+                                          .split(','))
         else:
-            r, g, b = values
+            r, g, b = _RGB_RE.match(value).group(2).split(',')
 
         colors = get_num_colors()
 
         if colors > 256:
-            return _COLOR_PREFIX_TRUE_COLOR, (r, g, b)
+            return _COLOR_PREFIX_TRUE_COLOR, ";".join([r, g, b])
         if colors > 88:
             prefix = _COLOR_PREFIX_256
             clut = _XTERM_CLUT_256
@@ -343,7 +345,7 @@ else:
     def color_code(color, isbg):
         """Return the appropriate color code for a given color format."""
         if not color:
-            return '', None, 0
+            return '', None
 
         colorspace = get_color_format(color)
         prefix, value = get_color(colorspace, color, isbg)
