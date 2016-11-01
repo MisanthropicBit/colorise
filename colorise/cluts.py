@@ -213,7 +213,7 @@ if 'windows' in colorise._SYSTEM_OS:
 else:
     def set_num_colors(color_count):
         """Set the number of colors available instead of autodetecting it."""
-        color_counts = frozenset([16, 88, 256, 16777216])
+        color_counts = frozenset([16, 88, 256, 2**24])
         color_names = frozenset(['true-color'])
 
         if color_count not in color_counts and color_count not in color_names:
@@ -223,7 +223,8 @@ else:
 
         # TODO: Find an alternative to globals
         global __NUM_COLORS__
-        __NUM_COLORS__ = color_count
+        __NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
+            color_count
 
     def get_num_colors():
         """Get the number of colors supported by the terminal."""
