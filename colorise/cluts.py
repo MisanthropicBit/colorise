@@ -173,9 +173,10 @@ def hsv_to_rgb(h, s, v):
 def match_color_formats(value):
     """Return the color format of the first format to match the given value."""
     # Use lazy generators to return the first matching format
-    mapped = itertools.imap(lambda f, cs: (f(value), cs), _FORMATS)
+    mapped = itertools.imap(lambda t: (t[0](value), t[1]), _FORMATS)
 
-    return next(((v, colorspace) for m, colorspace in mapped if v), None)
+    return next(((v, colorspace) for v, colorspace in mapped if v),
+                (None, None))
 
 ###############################################################################
 # Global OS-dependent setup and color functions
