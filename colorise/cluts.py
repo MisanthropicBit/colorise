@@ -11,6 +11,7 @@
 
 import colorise
 import colorsys
+import itertools
 import operator
 import re
 
@@ -26,6 +27,16 @@ _HSV_RE = re.compile('^(hsv)\((\d+,\s*\d+,\s*\d+)\)$')
 _HLS_RE = re.compile('^(hls)\(({0},\s*{1},\s*{2})\)$'.format(_FLOAT_RE_FMT,
                                                              _FLOAT_RE_FMT,
                                                              _FLOAT_RE_FMT))
+
+# The order matters!
+_FORMATS = [
+    (_RGB_RE.match, 'rgb'),
+    (str.isdigit,   'index'),
+    (str.isalpha,   'name'),
+    (_HEX_RE.match, 'hex'),
+    (_HLS_RE.match, 'hls'),
+    (_HSV_RE.match, 'hsv')
+]
 
 _COLOR_ESCAPE_CODE = '\033['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
@@ -138,6 +149,25 @@ def color_difference(a, b):
     """Return the scalar difference between two colors."""
     return sum(abs(i - j) for i, j in zip(a, b))
 
+
+def hls_to_rgb(h, l, s):
+    """Convert HLS values to RGB."""
+    return tuple(int(c * 255.) for c in colorsys.hls_to_rgb(h, l, s))
+
+
+def hsv_to_rgb(h, s, v):
+    """Convert HSV values to RGB."""
+    return tuple(int(c * 255.) for c in colorsys.hsv_to_rgb(h/360.,
+                                                            s/100.,
+                                                            v/100.))
+
+
+def match_color_formats(value):
+    """Return the color format of the first format to match the given value."""
+    # Use lazy generators to return the first matching format
+    mapped = itertools.imap(lambda f, cs: (f(value), cs), _FORMATS)
+
+    return next(((v, colorspace) for m, colorspace in mapped if v), None)
 
 ###############################################################################
 # Global color query function setup depending on OS
@@ -294,28 +324,31 @@ else:
                                        _NIX_SYSTEM_COLORS)
                 return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
 
-    def get_color(colorspace, value, isbg):
+    def get_color(value, isbg):
         """Return an approximate color based on the terminal's capabilities."""
+        match, colorspace = match_color_formats(value)
+
         if colorspace == 'name':
             # The color was given as text, e.g. 'red'
             return get_color_from_name(value, isbg)
         elif colorspace == 'index':
             return get_color_from_index(value, isbg)
         elif colorspace == 'hex':
+            value = match.group(2)
             r, g, b = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
         elif colorspace == 'hsv':
-            r, g, b = colorsys.hsv_to_rgb(*_HSV_RE.match(value).group(2)
-                                          .split(','))
+            r, g, b = hsv_to_rgb(*map(float, match.group(2).split(',')))
         elif colorspace == 'hls':
-            r, g, b = colorsys.hls_to_rgb(*_HLS_RE.match(value).group(2)
-                                          .split(','))
+            r, g, b = hls_to_rgb(*map(float, match.group(2).split(',')))
+        elif colorspace == 'rgb':
+            r, g, b = match.group(2).split(',')
         else:
-            r, g, b = _RGB_RE.match(value).group(2).split(',')
+            raise ValueError("Unknown color format '{0}'".format(value))
 
         colors = get_num_colors()
 
         if colors > 256:
-            return _COLOR_PREFIX_TRUE_COLOR, ";".join([r, g, b])
+            return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
         if colors > 88:
             prefix = _COLOR_PREFIX_256
             clut = _XTERM_CLUT_256
@@ -351,7 +384,7 @@ else:
         if not color:
             return '', None
 
-        colorspace = get_color_format(color)
-        prefix, value = get_color(colorspace, color, isbg)
+        # colorspace = get_color_format(color)
+        prefix, value = get_color(color, isbg)
 
         return prefix, value
