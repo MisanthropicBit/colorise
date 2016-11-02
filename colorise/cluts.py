@@ -14,6 +14,7 @@ import colorsys
 import ctypes
 import itertools
 import operator
+import os
 import re
 
 try:
@@ -52,7 +53,8 @@ _COLOR_PREFIX_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 ###############################################################################
 # User-defined color count (always ignored on Windows as it only ever
 # has 16 colors)
-__NUM_COLORS__ = 0
+class settings:
+    __NUM_COLORS__ = 0
 
 ###############################################################################
 # Windows color setup
@@ -261,17 +263,29 @@ else:
                                      ", ".join(color_names)))
 
         # TODO: Find an alternative to globals
-        global __NUM_COLORS__
-        __NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
+        settings.__NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
             color_count
 
     # NOTE: Can use TERM_PROGRAM/TERM_PROGRAM_VERSION to detect terminals
     def get_num_colors():
         """Get the number of colors supported by the terminal."""
-        if __NUM_COLORS__ > 0:
-            return __NUM_COLORS__
+        if settings.__NUM_COLORS__ > 0:
+            return settings.__NUM_COLORS__
+
+        # iTerm supports true-color from version 3 onward, earlier versions
+        # supported 256 colors
+        if os.environ.get('TERM_PROGRAM', '') == 'iTerm.app':
+            version = os.environ.get('TERM_PROGRAM_VERSION', '')
+
+            if version and int(version.split('.')[0]) > 2:
+                settings.__NUM_COLORS__ = 2**24
+            else:
+                settings.__NUM_COLORS__ = 256
+
+            return settings.__NUM_COLORS__
 
         # TODO: Do a check to avoid reinitialisation?
+        # If all else fails, use curses
         curses.setupterm()
         return curses.tigetnum("colors")
 
