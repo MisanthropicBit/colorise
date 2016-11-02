@@ -393,7 +393,6 @@ else:
         if not color:
             return '', None
 
-        # colorspace = get_color_format(color)
         prefix, value = get_color(color, isbg)
 
         return prefix, value
