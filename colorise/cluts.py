@@ -44,13 +44,16 @@ _COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
 _COLOR_PREFIX_256 = _COLOR_PREFIX_88
 _COLOR_PREFIX_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 
+
+###############################################################################
+# Color look-up tables
+###############################################################################
 # User-defined color count (always ignored on Windows as it only ever
 # has 16 colors)
 __NUM_COLORS__ = 0
 
 ###############################################################################
 # Windows color setup
-###############################################################################
 
 # Windows 16-color (logical) look-up table
 _WINDOWS_CLUT = {
@@ -86,7 +89,6 @@ _WINDOWS_LOGICAL_NAMES = {}
 
 ###############################################################################
 # Nix color setup
-###############################################################################
 
 # System base colors that are assumed to be present for 8 color terminals
 _NIX_SYSTEM_COLORS = {
@@ -143,6 +145,8 @@ _XTERM_CLUT_256 = dict(zip(range(16, 233),
                             for g in _XTERM_CLUT_256_STEPS
                             for b in _XTERM_CLUT_256_STEPS]))
 _XTERM_CLUT_256.update(_NIX_SYSTEM_COLORS)
+
+###############################################################################
 
 
 def color_difference(a, b):
