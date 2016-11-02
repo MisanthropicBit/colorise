@@ -228,6 +228,17 @@ if 'windows' in colorise._SYSTEM_OS:
 
     def get_num_colors():
         """Get the number of colors supported by the terminal."""
+        conemu_ansi = os.environ.get('ConEmuANSI', '')
+
+        if conemu_ansi:
+            # ConEmu console detected. It also supports 24-bit colors, but can
+            # we detect this somehow?
+            if conemu_ansi == 'ON':
+                # ANSI escapes code are interpreted
+                return 256
+            elif conemu_ansi == 'OFF':
+                return 16
+
         # Supported colors in Windows are pre-determined. Though you can update
         # the colors in the color table on Vista and beyond, this also changes
         # all colors of text already in the console window
