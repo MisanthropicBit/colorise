@@ -175,7 +175,7 @@ def match_color_formats(value):
     return next(((v, colorspace) for m, colorspace in mapped if v), None)
 
 ###############################################################################
-# Global color query function setup depending on OS
+# Global OS-dependent setup and color functions
 ###############################################################################
 if 'windows' in colorise._SYSTEM_OS:
     from ctypes import windll, wintypes
