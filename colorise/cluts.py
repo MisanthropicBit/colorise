@@ -11,6 +11,7 @@
 
 import colorise
 import colorsys
+import ctypes
 import itertools
 import operator
 import re
@@ -177,7 +178,6 @@ def match_color_formats(value):
 # Global color query function setup depending on OS
 ###############################################################################
 if 'windows' in colorise._SYSTEM_OS:
-    import ctypes
     from ctypes import windll, wintypes
 
     _WIN_CAN_GET_COLORS =\
