@@ -28,6 +28,7 @@ _HSV_RE = re.compile('^(hsv)\((\d+,\s*\d+,\s*\d+)\)$')
 _HLS_RE = re.compile('^(hls)\(({0},\s*{1},\s*{2})\)$'.format(_FLOAT_RE_FMT,
                                                              _FLOAT_RE_FMT,
                                                              _FLOAT_RE_FMT))
+_TRUE_COLOR_RE = re.compile('^true[ -_]?color$')
 
 # The order matters!
 _FORMATS = [
@@ -253,7 +254,8 @@ else:
         color_counts = frozenset([16, 88, 256, 2**24])
         color_names = frozenset(['true-color'])
 
-        if color_count not in color_counts and color_count not in color_names:
+        if color_count not in color_counts and not\
+                _TRUE_COLOR_RE.match(color_count):
             raise ValueError("Invalid color count, use {0} or {1}"
                              .format(", ".join(map(str, color_counts)),
                                      ", ".join(color_names)))
