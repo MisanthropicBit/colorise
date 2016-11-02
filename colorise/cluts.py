@@ -275,13 +275,6 @@ else:
         curses.setupterm()
         return curses.tigetnum("colors")
 
-    def get_approx_index(index):
-        """Return the index that represents the closest color to index."""
-        colors = get_num_colors()
-
-        if colors > 88:
-            return
-
     def closest_color(rgb, clut):
         """Return the key and value of closest RGB color in the given table."""
         key, value = min([(idx, color_difference(rgb, clut[idx]))
