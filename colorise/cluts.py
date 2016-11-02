@@ -367,22 +367,6 @@ else:
 
         return prefix, key
 
-    def get_color_format(color):
-        if _RGB_RE.match(color):
-            return 'rgb'
-        elif color.isdigit():
-            return 'index'
-        elif color in _NIX_SYSTEM_COLOR_NAMES.keys():
-            return 'name'
-        elif _HEX_RE.match(color):
-            return 'hex'
-        elif _HSV_RE.match(color):
-            return 'hsv'
-        elif _HLS_RE.match(color):
-            return 'hls'
-
-        raise ValueError("Unknown color format '{0}'".format(color))
-
     def color_code(color, isbg):
         """Return the appropriate color code for a given color format."""
         if not color:
