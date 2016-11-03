@@ -178,6 +178,15 @@ def match_color_formats(value):
     return next(((v, colorspace) for v, colorspace in mapped if v),
                 (None, None))
 
+
+def closest_color(rgb, clut):
+    """Return the key and value of closest RGB color in the given table."""
+    key, value = min([(idx, color_difference(rgb, clut[idx]))
+                      for idx in clut],
+                     key=operator.itemgetter(1))
+
+    return key, value
+
 ###############################################################################
 # Global OS-dependent setup and color functions
 ###############################################################################
@@ -298,14 +307,6 @@ else:
         # If all else fails, use curses
         curses.setupterm()
         return curses.tigetnum("colors")
-
-    def closest_color(rgb, clut):
-        """Return the key and value of closest RGB color in the given table."""
-        key, value = min([(idx, color_difference(rgb, clut[idx]))
-                          for idx in clut],
-                         key=operator.itemgetter(1))
-
-        return key, value
 
     def get_color_from_name(name, isbg):
         """Return the color value and color count for a given color name."""
