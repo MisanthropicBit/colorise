@@ -386,6 +386,9 @@ else:
         if not color:
             return '', None
 
+        if color == 'reset':
+            _COLOR_PREFIX_16, 39 + 10 * int(isbg)
+
         prefix, value = get_color(color, isbg)
 
         return prefix, value
