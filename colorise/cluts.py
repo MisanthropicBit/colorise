@@ -268,7 +268,7 @@ else:
     def set_num_colors(color_count):
         """Set the number of colors available instead of autodetecting it."""
         color_counts = frozenset([16, 88, 256, 2**24])
-        color_names = frozenset(['truecolor' 'true-color', 'true_color'])
+        color_names = frozenset(['truecolor', 'true-color', 'true_color'])
 
         if color_count not in color_counts and color_count not in color_names:
             raise ValueError("Invalid color count, use {0} or {1}"
