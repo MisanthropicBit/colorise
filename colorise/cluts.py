@@ -297,10 +297,11 @@ else:
 
             return settings.__NUM_COLORS__
 
-        # TODO: Do a check to avoid reinitialisation?
         # If all else fails, use curses
         curses.setupterm()
-        return curses.tigetnum("colors")
+        settings.__NUM_COLORS__ = curses.tigetnum("colors")
+
+        return settings.__NUM_COLORS__
 
     def get_color_from_name(name, isbg):
         """Return the color value and color count for a given color name."""
