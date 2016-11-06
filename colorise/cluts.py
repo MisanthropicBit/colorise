@@ -80,14 +80,14 @@ _WINDOWS_CLUT = {
 }
 
 # List of logical colors names on Windows (as defined by colorise)
-_windows_logical_names = ['black', 'darkblue', 'darkgreen', 'darkcyan',
+_WINDOWS_LOGICAL_NAMES = ['black', 'darkblue', 'darkgreen', 'darkcyan',
                           'darkred', 'magenta', 'yellow', 'white', 'gray',
                           'blue', 'green', 'cyan', 'red', 'purple', 'yellow',
                           'white']
 
 # Mapping from colors in _WINDOWS_CLUT to logical color names
 # (see set_windows_clut below)
-_WINDOWS_LOGICAL_NAMES = {}
+# _WINDOWS_LOGICAL_NAMES = {}
 
 
 ###############################################################################
@@ -231,7 +231,7 @@ if 'windows' in colorise._SYSTEM_OS:
 
         # Create a mapping from windows colors to their logical names
         for color, name in zip(_WINDOWS_CLUT.values(),
-                               _windows_logical_names):
+                               _WINDOWS_LOGICAL_NAMES):
             _WINDOWS_LOGICAL_NAMES[color] = name
 
     def get_num_colors():
