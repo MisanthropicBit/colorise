@@ -122,7 +122,7 @@ def cprint(string, fg=None, bg=None, end='\n', target=sys.stdout):
 def fprint(fmt, *args, **kwargs):
     """Parse and print a colored and perhaps formatted string.
 
-    The remaining keyword arguments are the same as for Python's built-in print
+    The remaining keyword arguments are the same as Python's built-in print
     function. Colors are returning to their defaults before the function
     returns.
 
