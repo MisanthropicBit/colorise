@@ -266,6 +266,13 @@ if 'windows' in colorise._SYSTEM_OS:
         """Return an approximate color based on the terminal's capabilities."""
         return closest_color((r, g, b), _WINDOWS_CLUT)
 
+    def color_code(color, isbg):
+        """Return the appropriate color code for a given color format."""
+        if not color:
+            return '', None
+
+        return '', None
+
     def set_logical_color(r, g, b):
         """Set a logical color name to a specific color on Windows.
 
