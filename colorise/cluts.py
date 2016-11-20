@@ -294,7 +294,6 @@ else:
                              .format(", ".join(map(str, color_counts)),
                                      ", ".join(color_names)))
 
-        # TODO: Find an alternative to globals
         settings.__NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
             color_count
 
