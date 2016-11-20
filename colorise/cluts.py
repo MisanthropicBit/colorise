@@ -15,7 +15,9 @@ import ctypes
 import itertools
 import operator
 import os
+import platform
 import re
+import sys
 
 try:
     import curses
