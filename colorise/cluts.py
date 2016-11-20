@@ -245,9 +245,19 @@ if 'windows' in colorise._SYSTEM_OS:
             else:
                 return 16
 
+        release = platform.win32_ver()[0]
+        build = sys.getwindowsversion()[2]
+
+        # Windows 10 build 14931 has support for 24-bit colors
+        if release == '10' and build >= 14931:
+            settings.__NUM_COLORS__ = 2**24
+            return settings.__NUM_COLORS__
+
         # Supported colors in Windows are pre-determined. Though you can update
         # the colors in the color table on Vista and beyond, this also changes
         # all colors of text already in the console window
+        settings.__NUM_COLORS__ = 16
+
         return 16
 
     def get_approx_color(r, g, b):
