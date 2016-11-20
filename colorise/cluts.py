@@ -188,8 +188,295 @@ def closest_color(rgb, clut):
 
     return key, value
 
+
+def set_num_colors(color_count):
+    """Set the number of colors available instead of autodetecting it."""
+    color_counts = frozenset([16, 88, 256, 2**24])
+    color_names = frozenset(['truecolor', 'true-color', 'true_color'])
+
+    if color_count not in color_counts and color_count not in color_names:
+        raise ValueError("Invalid color count, use {0} or {1}"
+                         .format(", ".join(map(str, color_counts)),
+                                 ", ".join(color_names)))
+
+    settings.__NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
+        color_count
+
+# ttp://stackoverflow.com/questions/4431703/python-resettable-instance-method-memoization-decorator
+# class memoize(object):
+    # """Resettable function decorator for memoizing return values."""
+    # class _memoize(dict):
+        # def __init__(self, f):
+            # self.f = f
+
+        # def __call__(self, *args):
+            # return self[args]
+
+        # def __missing__(self, key):
+            # ret = self[key] = self.f(*key)
+            # return ret
+
+    # return _memoize(f)
+
+
 ###############################################################################
-# Global OS-dependent setup and color functions
+# Windows color functions
+###############################################################################
+def set_windows_clut():
+    """Set the internal Windows color look-up table."""
+    if _WIN_CAN_GET_COLORS:
+        # Windows Vista and beyond you can query the current colors in the
+        # color table. On older platforms, use the default color table
+        csbiex = CONSOLE_SCREEN_BUFFER_INFO_EX()
+        windll.kernel32.GetConsoleScreenBufferInfoEx(
+            colorise._color_manager._handle,
+            ctypes.byref(csbiex)
+        )
+
+        # Update according to the currently set colors
+        for i in range(16):
+            _WINDOWS_CLUT[i] =\
+                (windll.kernel32.GetRValue(csbiex.ColorTable[i]),
+                    windll.kernel32.GetGValue(csbiex.ColorTable[i]),
+                    windll.kernel32.GetBValue(csbiex.ColorTable[i]))
+
+    # Create a mapping from windows colors to their logical names
+    for color, name in zip(_WINDOWS_CLUT.values(),
+                           _WINDOWS_LOGICAL_NAMES):
+        _WINDOWS_LOGICAL_NAMES[color] = name
+
+
+def win_get_num_colors():
+    """Get the number of colors supported by the terminal."""
+    if 'ConEmuANSI' in os.environ:
+        # ConEmu console detected. It also supports 24-bit colors, but can
+        # we detect this somehow?
+        if os.environ['ConEmuANSI'] == 'ON':
+            # ANSI escapes code are interpreted
+            return 256
+        else:
+            return 16
+
+    release = platform.win32_ver()[0]
+    build = sys.getwindowsversion()[2]
+
+    # Windows 10 build 14931 has support for 24-bit colors
+    if release == '10' and build >= 14931:
+        settings.__NUM_COLORS__ = 2**24
+        return settings.__NUM_COLORS__
+
+    # Supported colors in Windows are pre-determined. Though you can update
+    # the colors in the color table on Vista and beyond, this also changes
+    # all colors of text already in the console window
+    settings.__NUM_COLORS__ = 16
+
+    return 16
+
+
+def win_get_color_from_name(name, isbg):
+    """Return the color value and color count for a given color name."""
+    if name not in _WINDOWS_LOGICAL_NAMES:
+        raise ValueError("Unknown color name '{0}'".format(name))
+
+    colors = win_get_num_colors()
+
+    if colors > 256:
+        # True-color
+        return _COLOR_PREFIX_TRUE_COLOR,\
+            ';'.join(
+                map(str,
+                    _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
+    else:
+        # We fall back on 16 color codes to maintain consistency
+        return _COLOR_PREFIX_16,\
+            _NIX_SYSTEM_COLOR_NAMES[name] + 30 + 10 * int(isbg)
+
+
+def win_get_color(value, isbg):
+    """Return an approximate color based on the terminal's capabilities."""
+    match, colorspace = match_color_formats(value)
+
+    if colorspace == 'name':
+        # The color was given as text, e.g. 'red'
+        return win_get_color_from_name(value, isbg)
+    elif colorspace == 'index':
+        return nix_get_color_from_index(value, isbg)
+    elif colorspace == 'hex':
+        value = match.group(2)
+        r, g, b = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
+    elif colorspace == 'hsv':
+        r, g, b = hsv_to_rgb(*map(float, match.group(2).split(',')))
+    elif colorspace == 'hls':
+        r, g, b = hls_to_rgb(*map(float, match.group(2).split(',')))
+    elif colorspace == 'rgb':
+        r, g, b = match.group(2).split(',')
+    else:
+        raise ValueError("Unknown color format '{0}'".format(value))
+
+    colors = nix_get_num_colors()
+
+    if colors > 256:
+        return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
+    if colors > 88:
+        prefix = _COLOR_PREFIX_256
+        clut = _XTERM_CLUT_256
+    elif colors > 8:
+        prefix = _COLOR_PREFIX_88
+        clut = _XTERM_CLUT_88
+    else:
+        prefix = _COLOR_PREFIX_16
+        clut = _NIX_SYSTEM_COLORS
+
+    key, _ = closest_color([r, g, b], clut)
+
+    return prefix, key
+
+
+def win_color_code(color, isbg):
+    """Return the appropriate color code for a given color format."""
+    if not color:
+        return '', None
+
+    return '', None
+
+
+def win_set_logical_color(r, g, b):
+    """Set a logical color name to a specific color on Windows.
+
+    This changes all text in the console that already uses this logical
+    name. E.g. if 'red' is mapped to the color red and this function
+    changes it to another color, all text in red will be rendered with this
+    new color, even though it may already have been written to the console.
+
+    """
+    pass
+
+
+###############################################################################
+# Nix color functions
+###############################################################################
+# NOTE: Can use TERM_PROGRAM/TERM_PROGRAM_VERSION to detect terminals
+def nix_get_num_colors():
+    """Get the number of colors supported by the terminal."""
+    if settings.__NUM_COLORS__ > 0:
+        return settings.__NUM_COLORS__
+
+    # iTerm supports true-color from version 3 onward, earlier versions
+    # supported 256 colors
+    if os.environ.get('TERM_PROGRAM', '') == 'iTerm.app':
+        version = os.environ.get('TERM_PROGRAM_VERSION', '')
+
+        if version and int(version.split('.')[0]) > 2:
+            settings.__NUM_COLORS__ = 2**24
+        else:
+            settings.__NUM_COLORS__ = 256
+
+        return settings.__NUM_COLORS__
+
+    # If all else fails, use curses
+    curses.setupterm()
+    settings.__NUM_COLORS__ = curses.tigetnum("colors")
+
+    return settings.__NUM_COLORS__
+
+
+def nix_get_color_from_name(name, isbg):
+    """Return the color value and color count for a given color name."""
+    if name not in _NIX_SYSTEM_COLOR_NAMES:
+        raise ValueError("Unknown color name '{0}'".format(name))
+
+    colors = nix_get_num_colors()
+
+    if colors > 256:
+        # True-color
+        return _COLOR_PREFIX_TRUE_COLOR,\
+            ';'.join(
+                map(str,
+                    _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
+    else:
+        # We fall back on 16 color codes to maintain consistency
+        return _COLOR_PREFIX_16,\
+            _NIX_SYSTEM_COLOR_NAMES[name] + 30 + 10 * int(isbg)
+
+
+def nix_get_color_from_index(idx, isbg):
+    """Return the color value and color count for a given color index."""
+    idx = int(idx)
+
+    if idx < 0 or idx > 256:
+        raise ValueError("Color index must be in range [0-256]")
+
+    colors = nix_get_num_colors()
+
+    if colors > 88:
+        # 256-color and true-color
+        return _COLOR_PREFIX_256, idx
+    elif colors > 8:
+        if idx > 88:
+            key, _ = closest_color(_XTERM_CLUT_256[idx], _XTERM_CLUT_88)
+            return _COLOR_PREFIX_88, key
+    else:
+        if idx > 16:
+            key, _ = closest_color(_XTERM_CLUT_256[idx],
+                                   _NIX_SYSTEM_COLORS)
+            return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
+
+
+def nix_get_color(value, isbg):
+    """Return an approximate color based on the terminal's capabilities."""
+    match, colorspace = match_color_formats(value)
+
+    if colorspace == 'name':
+        # The color was given as text, e.g. 'red'
+        return nix_get_color_from_name(value, isbg)
+    elif colorspace == 'index':
+        return nix_get_color_from_index(value, isbg)
+    elif colorspace == 'hex':
+        value = match.group(2)
+        r, g, b = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
+    elif colorspace == 'hsv':
+        r, g, b = hsv_to_rgb(*map(float, match.group(2).split(',')))
+    elif colorspace == 'hls':
+        r, g, b = hls_to_rgb(*map(float, match.group(2).split(',')))
+    elif colorspace == 'rgb':
+        r, g, b = match.group(2).split(',')
+    else:
+        raise ValueError("Unknown color format '{0}'".format(value))
+
+    colors = nix_get_num_colors()
+
+    if colors > 256:
+        return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
+    if colors > 88:
+        prefix = _COLOR_PREFIX_256
+        clut = _XTERM_CLUT_256
+    elif colors > 8:
+        prefix = _COLOR_PREFIX_88
+        clut = _XTERM_CLUT_88
+    else:
+        prefix = _COLOR_PREFIX_16
+        clut = _NIX_SYSTEM_COLORS
+
+    key, _ = closest_color([r, g, b], clut)
+
+    return prefix, key
+
+
+def nix_color_code(color, isbg):
+    """Return the appropriate color code for a given color format."""
+    if not color:
+        return '', None
+
+    if color == 'reset':
+        _COLOR_PREFIX_16, 39 + 10 * int(isbg)
+
+    prefix, value = nix_get_color(color, isbg)
+
+    return prefix, value
+
+
+###############################################################################
+# OS-dependent setup and color functions
 ###############################################################################
 if 'windows' in colorise._SYSTEM_OS:
     from ctypes import windll, wintypes
@@ -200,214 +487,25 @@ if 'windows' in colorise._SYSTEM_OS:
     if _WIN_CAN_GET_COLORS:
         # Struct defined in 'wincon.h'
         class CONSOLE_SCREEN_BUFFER_INFO_EX(ctypes.Structure):
-            _fields_ = [('cbSize', wintypes.ULONG),
-                        ('dwSize', wintypes._COORD),
-                        ('dwCursorPosition', wintypes._COORD),
-                        ('wAttributes', ctypes.c_ushort),
-                        ('srWindow', wintypes._SMALL_RECT),
-                        ('dwMaximumWindowSize', wintypes._COORD),
-                        ('wPopupAttributes', wintypes.WORD),
+            _fields_ = [('cbSize',               wintypes.ULONG),
+                        ('dwSize',               wintypes._COORD),
+                        ('dwCursorPosition',     wintypes._COORD),
+                        ('wAttributes',          ctypes.c_ushort),
+                        ('srWindow',             wintypes._SMALL_RECT),
+                        ('dwMaximumWindowSize',  wintypes._COORD),
+                        ('wPopupAttributes',     wintypes.WORD),
                         ('bFullscreenSupported', wintypes.BOOL),
-                        ('ColorTable', wintypes.COLORREF * 16)]
+                        ('ColorTable',           wintypes.COLORREF * 16)]
 
         # Set correct parameter types and return type for 64-bit Windows
         windll.kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
             [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFO_EX)]
         windll.kernel32.GetConsoleScreenBufferInfo.restype = wintypes.BOOL
 
-    def set_windows_clut():
-        """Set the internal Windows color look-up table."""
-        if _WIN_CAN_GET_COLORS:
-            # Windows Vista and beyond you can query the current colors in the
-            # color table. On older platforms, use the default color table
-            csbiex = CONSOLE_SCREEN_BUFFER_INFO_EX()
-            windll.kernel32.GetConsoleScreenBufferInfoEx(self._handle,
-                                                         ctypes.byref(csbiex))
-
-            # Update according to the currently set colors
-            for i in range(16):
-                _WINDOWS_CLUT[i] =\
-                    (windll.kernel32.GetRValue(csbiex.ColorTable[i]),
-                     windll.kernel32.GetGValue(csbiex.ColorTable[i]),
-                     windll.kernel32.GetBValue(csbiex.ColorTable[i]))
-
-        # Create a mapping from windows colors to their logical names
-        for color, name in zip(_WINDOWS_CLUT.values(),
-                               _WINDOWS_LOGICAL_NAMES):
-            _WINDOWS_LOGICAL_NAMES[color] = name
-
-    def get_num_colors():
-        """Get the number of colors supported by the terminal."""
-        if 'ConEmuANSI' in os.environ:
-            # ConEmu console detected. It also supports 24-bit colors, but can
-            # we detect this somehow?
-            if os.environ['ConEmuANSI'] == 'ON':
-                # ANSI escapes code are interpreted
-                return 256
-            else:
-                return 16
-
-        release = platform.win32_ver()[0]
-        build = sys.getwindowsversion()[2]
-
-        # Windows 10 build 14931 has support for 24-bit colors
-        if release == '10' and build >= 14931:
-            settings.__NUM_COLORS__ = 2**24
-            return settings.__NUM_COLORS__
-
-        # Supported colors in Windows are pre-determined. Though you can update
-        # the colors in the color table on Vista and beyond, this also changes
-        # all colors of text already in the console window
-        settings.__NUM_COLORS__ = 16
-
-        return 16
-
-    def get_approx_color(r, g, b):
-        """Return an approximate color based on the terminal's capabilities."""
-        return closest_color((r, g, b), _WINDOWS_CLUT)
-
-    def color_code(color, isbg):
-        """Return the appropriate color code for a given color format."""
-        if not color:
-            return '', None
-
-        return '', None
-
-    def set_logical_color(r, g, b):
-        """Set a logical color name to a specific color on Windows.
-
-        This changes all text in the console that already uses this logical
-        name. E.g. if 'red' is mapped to the color red and this function
-        changes it to another color, all text in red will be rendered with this
-        new color, even though it may already have been written to the console.
-
-        """
-        pass
+    get_num_colors = win_get_num_colors
+    get_color = win_get_color
+    color_code = win_color_code
 else:
-    def set_num_colors(color_count):
-        """Set the number of colors available instead of autodetecting it."""
-        color_counts = frozenset([16, 88, 256, 2**24])
-        color_names = frozenset(['truecolor', 'true-color', 'true_color'])
-
-        if color_count not in color_counts and color_count not in color_names:
-            raise ValueError("Invalid color count, use {0} or {1}"
-                             .format(", ".join(map(str, color_counts)),
-                                     ", ".join(color_names)))
-
-        settings.__NUM_COLORS__ = 2**24 if color_count == 'true-color' else\
-            color_count
-
-    # NOTE: Can use TERM_PROGRAM/TERM_PROGRAM_VERSION to detect terminals
-    def get_num_colors():
-        """Get the number of colors supported by the terminal."""
-        if settings.__NUM_COLORS__ > 0:
-            return settings.__NUM_COLORS__
-
-        # iTerm supports true-color from version 3 onward, earlier versions
-        # supported 256 colors
-        if os.environ.get('TERM_PROGRAM', '') == 'iTerm.app':
-            version = os.environ.get('TERM_PROGRAM_VERSION', '')
-
-            if version and int(version.split('.')[0]) > 2:
-                settings.__NUM_COLORS__ = 2**24
-            else:
-                settings.__NUM_COLORS__ = 256
-
-            return settings.__NUM_COLORS__
-
-        # If all else fails, use curses
-        curses.setupterm()
-        settings.__NUM_COLORS__ = curses.tigetnum("colors")
-
-        return settings.__NUM_COLORS__
-
-    def get_color_from_name(name, isbg):
-        """Return the color value and color count for a given color name."""
-        if name not in _NIX_SYSTEM_COLOR_NAMES:
-            raise ValueError("Unknown color name '{0}'".format(name))
-
-        colors = get_num_colors()
-
-        if colors > 256:
-            # True-color
-            return _COLOR_PREFIX_TRUE_COLOR,\
-                ';'.join(
-                    map(str,
-                        _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
-        else:
-            # We fall back on 16 color codes to maintain consistency
-            return _COLOR_PREFIX_16,\
-                _NIX_SYSTEM_COLOR_NAMES[name] + 30 + 10 * int(isbg)
-
-    def get_color_from_index(idx, isbg):
-        """Return the color value and color count for a given color index."""
-        idx = int(idx)
-
-        if idx < 0 or idx > 256:
-            raise ValueError("Color index must be in range [0-256]")
-
-        colors = get_num_colors()
-
-        if colors > 88:
-            # 256-color and true-color
-            return _COLOR_PREFIX_256, idx
-        elif colors > 8:
-            if idx > 88:
-                key, _ = closest_color(_XTERM_CLUT_256[idx], _XTERM_CLUT_88)
-                return _COLOR_PREFIX_88, key
-        else:
-            if idx > 16:
-                key, _ = closest_color(_XTERM_CLUT_256[idx],
-                                       _NIX_SYSTEM_COLORS)
-                return _COLOR_PREFIX_16, key + 30 + 10 * int(isbg)
-
-    def get_color(value, isbg):
-        """Return an approximate color based on the terminal's capabilities."""
-        match, colorspace = match_color_formats(value)
-
-        if colorspace == 'name':
-            # The color was given as text, e.g. 'red'
-            return get_color_from_name(value, isbg)
-        elif colorspace == 'index':
-            return get_color_from_index(value, isbg)
-        elif colorspace == 'hex':
-            value = match.group(2)
-            r, g, b = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
-        elif colorspace == 'hsv':
-            r, g, b = hsv_to_rgb(*map(float, match.group(2).split(',')))
-        elif colorspace == 'hls':
-            r, g, b = hls_to_rgb(*map(float, match.group(2).split(',')))
-        elif colorspace == 'rgb':
-            r, g, b = match.group(2).split(',')
-        else:
-            raise ValueError("Unknown color format '{0}'".format(value))
-
-        colors = get_num_colors()
-
-        if colors > 256:
-            return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
-        if colors > 88:
-            prefix = _COLOR_PREFIX_256
-            clut = _XTERM_CLUT_256
-        elif colors > 8:
-            prefix = _COLOR_PREFIX_88
-            clut = _XTERM_CLUT_88
-        else:
-            prefix = _COLOR_PREFIX_16
-            clut = _NIX_SYSTEM_COLORS
-
-        key, _ = closest_color([r, g, b], clut)
-
-        return prefix, key
-
-    def color_code(color, isbg):
-        """Return the appropriate color code for a given color format."""
-        if not color:
-            return '', None
-
-        if color == 'reset':
-            _COLOR_PREFIX_16, 39 + 10 * int(isbg)
-
-        prefix, value = get_color(color, isbg)
-
-        return prefix, value
+    get_num_colors = nix_get_num_colors
+    get_color = nix_get_color
+    color_code = nix_color_code
