@@ -39,7 +39,7 @@ class ColorManager(BaseColorManager):
         return '\033[' + ';'.join(map(str, codes)) + 'm'
 
     def set_defaults(self):
-        sys.stdout.write(self._to_ansi(22, 39, 49))
+        sys.stdout.write(self._to_ansi(39, 49))
 
     def get_defaults(self):
         """Not implemented for ANSI sequences. Returns an empty list."""
