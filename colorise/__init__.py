@@ -114,9 +114,10 @@ def cprint(string, fg=None, bg=None, end='\n', target=sys.stdout):
 
     """
     _color_manager.set_color(fg, bg)
-    target.write(string + end)
-    target.flush()  # Needed for Python 3.x
+    target.write(string)
     _color_manager.set_defaults()
+    target.write(end)
+    target.flush()  # Needed for Python 3.x
 
 
 def fprint(fmt, *args, **kwargs):
