@@ -473,7 +473,7 @@ def nix_color_code(color, isbg):
         return '', None
 
     if color == 'reset':
-        _COLOR_PREFIX_16, 39 + 10 * int(isbg)
+        return _COLOR_PREFIX_16, 39 + 10 * int(isbg)
 
     prefix, value = nix_get_color(color, isbg)
 
