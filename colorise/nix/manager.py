@@ -36,7 +36,7 @@ class ColorManager(BaseColorManager):
 
     def _to_ansi(self, *codes):
         """Convert a set of ANSI codes into a valid ANSI sequence."""
-        return '\x1b[' + ';'.join(map(str, codes)) + 'm'
+        return '\033[' + ';'.join(map(str, codes)) + 'm'
 
     def set_defaults(self):
         sys.stdout.write(self._to_ansi(22, 39, 49))
