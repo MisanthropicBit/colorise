@@ -46,7 +46,8 @@ _COLOR_ESCAPE_CODE = '\033['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
 _COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
 _COLOR_PREFIX_256 = _COLOR_PREFIX_88
-_COLOR_PREFIX_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
+_COLOR_PREFIX_FG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
+_COLOR_PREFIX_BG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '48;2;{0}m'
 
 
 ###############################################################################
@@ -282,7 +283,8 @@ def win_get_color_from_name(name, isbg):
 
     if colors > 256:
         # True-color
-        return _COLOR_PREFIX_TRUE_COLOR,\
+        return (_COLOR_PREFIX_BG_TRUE_COLOR if isbg else
+                _COLOR_PREFIX_FG_TRUE_COLOR),\
             ';'.join(
                 map(str,
                     _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
@@ -316,7 +318,8 @@ def win_get_color(value, isbg):
     colors = nix_get_num_colors()
 
     if colors > 256:
-        return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
+        return (_COLOR_PREFIX_BG_TRUE_COLOR if isbg else
+                _COLOR_PREFIX_FG_TRUE_COLOR), ";".join(map(str, [r, g, b]))
     if colors > 88:
         prefix = _COLOR_PREFIX_256
         clut = _XTERM_CLUT_256
@@ -389,7 +392,8 @@ def nix_get_color_from_name(name, isbg):
 
     if colors > 256:
         # True-color
-        return _COLOR_PREFIX_TRUE_COLOR,\
+        return (_COLOR_PREFIX_BG_TRUE_COLOR if isbg else
+                _COLOR_PREFIX_FG_TRUE_COLOR),\
             ';'.join(
                 map(str,
                     _NIX_SYSTEM_COLORS[_NIX_SYSTEM_COLOR_NAMES[name]]))
@@ -446,7 +450,8 @@ def nix_get_color(value, isbg):
     colors = nix_get_num_colors()
 
     if colors > 256:
-        return _COLOR_PREFIX_TRUE_COLOR, ";".join(map(str, [r, g, b]))
+        return (_COLOR_PREFIX_BG_TRUE_COLOR if isbg else
+                _COLOR_PREFIX_FG_TRUE_COLOR), ";".join(map(str, [r, g, b]))
     if colors > 88:
         prefix = _COLOR_PREFIX_256
         clut = _XTERM_CLUT_256
