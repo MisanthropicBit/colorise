@@ -43,8 +43,10 @@ _FORMATS = [
 
 _COLOR_ESCAPE_CODE = '\033['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
-_COLOR_PREFIX_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
-_COLOR_PREFIX_256 = _COLOR_PREFIX_88
+_COLOR_PREFIX_FG_88 = _COLOR_ESCAPE_CODE + '38;5;{0}m'
+_COLOR_PREFIX_BG_88 = _COLOR_ESCAPE_CODE + '48;5;{0}m'
+_COLOR_PREFIX_FG_256 = _COLOR_PREFIX_FG_88
+_COLOR_PREFIX_BG_256 = _COLOR_PREFIX_BG_88
 _COLOR_PREFIX_FG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 _COLOR_PREFIX_BG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '48;2;{0}m'
 
@@ -415,11 +417,11 @@ def nix_get_color_from_index(idx, isbg):
 
     if colors > 88:
         # 256-color and true-color
-        return _COLOR_PREFIX_256, idx
+        return (_COLOR_PREFIX_BG_256 if isbg else _COLOR_PREFIX_FG_256), idx
     elif colors > 8:
         if idx > 88:
             key, _ = closest_color(_XTERM_CLUT_256[idx], _XTERM_CLUT_88)
-            return _COLOR_PREFIX_88, key
+            return (_COLOR_PREFIX_BG_88 if isbg else _COLOR_PREFIX_FG_88), key
     else:
         if idx > 16:
             key, _ = closest_color(_XTERM_CLUT_256[idx],
