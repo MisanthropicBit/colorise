@@ -13,6 +13,7 @@ import colorise
 import colorsys
 import ctypes
 import itertools
+import math
 import operator
 import os
 import platform
@@ -163,7 +164,8 @@ def color_difference(a, b):
 
 def hls_to_rgb(h, l, s):
     """Convert HLS values to RGB."""
-    return tuple(int(c * 255.) for c in colorsys.hls_to_rgb(h, l, s))
+    return tuple(int(math.ceil(c * 255.))
+                 for c in colorsys.hls_to_rgb(h, l, s))
 
 
 def hsv_to_rgb(h, s, v):
