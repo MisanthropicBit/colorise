@@ -29,9 +29,7 @@ _FLOAT_RE_FMT = r'\d+\.(\d+)?'
 _RGB_RE = re.compile('^(rgb)?\((\d{1,3},\s*\d{1,3},\s*\d{1,3})\)$')
 _HEX_RE = re.compile('^(0x|#)?(([0-9a-fA-F]{2}){3})$')
 _HSV_RE = re.compile('^(hsv)\((\d+,\s*\d+,\s*\d+)\)$')
-_HLS_RE = re.compile('^(hls)\(({0},\s*{1},\s*{2})\)$'.format(_FLOAT_RE_FMT,
-                                                             _FLOAT_RE_FMT,
-                                                             _FLOAT_RE_FMT))
+_HLS_RE = re.compile('^(hls)\((\d+(\.\d+)?,\s*\d+(\.\d+)?,\s*\d+(\.\d+)?)\)$')
 
 # The order matters!
 _FORMATS = [
