@@ -444,7 +444,7 @@ def nix_get_color(value, isbg):
     elif colorspace == 'hls':
         r, g, b = hls_to_rgb(*map(float, match.group(2).split(',')))
     elif colorspace == 'rgb':
-        r, g, b = match.group(2).split(',')
+        r, g, b = [c.strip() for c in match.group(2).split(',')]
     else:
         raise ValueError("Unknown color format '{0}'".format(value))
 
