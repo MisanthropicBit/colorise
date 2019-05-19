@@ -15,7 +15,8 @@ def random_hex_color():
 
 def random_rgb_color():
     """Return a random RGB tuple."""
-    return tuple([random.randint(0, 255) for _ in range(3)])
+    return 'rgb({0})'\
+        .format(';'.join(str(random.randint(0, 255)) for _ in range(3)))
 
 
 def emulate(num_colors, color, idx, colors):
@@ -28,8 +29,8 @@ def emulate(num_colors, color, idx, colors):
         color_count = colors[i]
         colorise.set_num_colors(color_count)
 
-        colorise.cprint('Emulating {0} colors on a {1} color system'
-                        .format(color_count, system_color_name), fg=color)
+        colorise.cprint("Emulating 'fg={0}' on a {1} color system"
+                        .format(color, system_color_name), fg=color)
 
 
 if __name__ == '__main__':
@@ -40,23 +41,20 @@ if __name__ == '__main__':
 
     print('>>> Emulating preset colors for debugging')
 
-    for color in ['red', 201, '#ff0000', 'rgb(24,151,87)']:
-        print("Emulating foreground color '{0}'".format(color))
+    for color in ['red', 201, '#ff0000', 'rgb(24;151;87)']:
         emulate(num_colors, color, idx, colors)
         print()
 
     color_names = colorise.color_names()
     random_colors = [
-            # random.choice(color_names),
-            'yellow',
-            random.randint(0, 255),
-            random_hex_color(),
-            random_rgb_color()
-        ]
+        random.choice(color_names),
+        random.randint(0, 255),
+        random_hex_color(),
+        random_rgb_color()
+    ]
 
     print('>>> Emulating random colors')
 
     for color in random_colors:
-        print("Emulating foreground color '{0}'".format(color))
         emulate(num_colors, color, idx, colors)
         print()
