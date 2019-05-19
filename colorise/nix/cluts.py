@@ -30,14 +30,14 @@ _prefix_map = {
 
 # System base colors that are assumed to be present for 8 color terminals
 _NIX_SYSTEM_COLORS = {
-    0: (0x00, 0x00, 0x00),  # black
-    1: (0xff, 0x00, 0x00),  # red
-    2: (0x00, 0xff, 0x00),  # green
-    3: (0xff, 0xff, 0x00),  # yellow
-    4: (0x00, 0x00, 0xff),  # blue
-    5: (0xff, 0x00, 0xff),  # purple
-    6: (0x00, 0xff, 0xff),  # cyan
-    7: (0xff, 0xff, 0xff),  # white
+    30: (0x00, 0x00, 0x00),  # black
+    31: (0xff, 0x00, 0x00),  # red
+    32: (0x00, 0xff, 0x00),  # green
+    33: (0xff, 0xff, 0x00),  # yellow
+    34: (0x00, 0x00, 0xff),  # blue
+    35: (0xff, 0x00, 0xff),  # purple
+    36: (0x00, 0xff, 0xff),  # cyan
+    37: (0xff, 0xff, 0xff),  # white
     # 90: (0x64, 0x64, 0x64),  # gray
 }
 
@@ -62,9 +62,9 @@ _NIX_SYSTEM_COLOR_NAMES = {
 }
 
 # Alias for British english gray and alias for purple
-_NIX_SYSTEM_COLOR_NAMES['grey'] = 7
-_NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 8
-_NIX_SYSTEM_COLOR_NAMES['magenta'] = 5
+_NIX_SYSTEM_COLOR_NAMES['grey'] = 37
+_NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 97
+_NIX_SYSTEM_COLOR_NAMES['magenta'] = 35
 
 # xterm 88-color look-up table (based on 88colres.h)
 _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
