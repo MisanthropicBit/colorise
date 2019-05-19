@@ -18,24 +18,16 @@ if __name__ == '__main__':
     # Set colors manually
     colorise.set_color('red')
     print(humpty[0])
-    colorise.set_color()
+    colorise.reset()
 
     # Use colorise.cprint
     colorise.cprint(humpty[1], 'green')
 
     # Use color formatting
-    colorise.fprint("<fg=purple:{}>", humpty[2])
+    colorise.fprint('{{fg=purple}}{0}'.format(humpty[2]))
 
-    # Alternatively, you can use colorise.formatcolor
-    colorise.fprint(colorise.formatcolor(humpty[3], 'cyan'))
-
-    print()
     randindices = random.sample(range(len(humpty[3])), 12)
 
     # You can also highlight different parts of a string...
-    colorise.highlight(humpty[random.randint(0, 3)], 'white', 'darkyellow',
-                       randindices)
-
-    # ...or use colorise.formatbyindex
-    colorise.fprint(colorise.formatbyindex(humpty[random.randint(0, 3)],
-                                           'darkgreen', 'yellow', randindices))
+    colorise.highlight(humpty[random.randint(0, 3)], fg='yellow', bg='red',
+                       indices=randindices)

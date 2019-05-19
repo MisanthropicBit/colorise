@@ -1,7 +1,7 @@
 """colorise module setup script for distribution."""
 
 from __future__ import with_statement
-from distutils.core import setup
+from setuptools import setup
 import os
 
 
@@ -10,6 +10,11 @@ def get_version(filename):
         for line in fh:
             if line.startswith('__version__'):
                 return line.split('=')[-1].strip()[1:-1]
+
+
+requirements = [
+        'enum34;python_version<"3.4"'
+    ]
 
 
 setup(
@@ -24,16 +29,21 @@ setup(
     packages=['colorise', 'colorise.win', 'colorise.nix'],
     package_data={'colorise': ['tests', 'examples']},
     url='https://github.com/MisanthropicBit/colorise',
-    long_description=open('README.rst').read(),
+    install_requires=requirements,
+    long_description=open('README.md').read(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Utilities',
         'Topic :: Terminals',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3'
+        'Programming Language :: Python :: 3.4'
+        'Programming Language :: Python :: 3.5'
+        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: PyPy'
     ]
 )
