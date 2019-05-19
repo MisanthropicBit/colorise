@@ -179,6 +179,9 @@ def color_from_index(idx, color_count, bg):
     elif color_count == 88:
         prefix = _COLOR_PREFIX_BG_88 if bg else _COLOR_PREFIX_FG_88
 
+        if terminal_name() == 'iTerm.app':
+            return prefix, idx
+
         if idx <= 88:
             return prefix, idx
         else:
