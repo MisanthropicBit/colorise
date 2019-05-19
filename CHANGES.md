@@ -12,7 +12,7 @@
 - Changed parser to use Python's str.format syntax, e.g. '<fg=red>' -> '{fg=red}''
 - Removed formatcolor and formatbyindex functions
 - Removed ColorManager classes since no state needs to be stored
-- Better detection of color capabilities
+- Better detection of terminal color capabilities
 - If e.g. a true-color color is specified and the terminal does not support it,
   colorise will automatically find the color on your system that most closely
   matches the desired color
