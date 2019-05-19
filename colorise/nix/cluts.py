@@ -4,6 +4,7 @@
 """Nix color look-up tables (CLUTs) and functions."""
 
 from colorise.color_tools import closest_color
+from colorise.terminal import terminal_name
 import collections
 import os
 import curses
@@ -109,7 +110,7 @@ def get_prefix(color_count, bg):
 
 def get_clut(color_count):
     """Return the appropriate color look-up table."""
-    if os.environ.get('TERM_PROGRAM', '') == 'iTerm.app':
+    if terminal_name() == 'iTerm.app':
         if color_count == 88:
             # This appears to simply use the 256 color table for 88 color
             # indices
@@ -128,7 +129,7 @@ def num_colors():
     """Attempt to get the number of colors supported by the terminal."""
     # iTerm supports true-color from version 3 onward, earlier versions
     # supported 256 colors
-    if os.environ.get('TERM_PROGRAM', '') == 'iTerm.app':
+    if terminal_name() == 'iTerm.app':
         version = os.environ.get('TERM_PROGRAM_VERSION', '')
 
         if version and int(version.split('.')[0]) > 2:
