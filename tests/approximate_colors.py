@@ -45,7 +45,7 @@ if __name__ == '__main__':
         emulate(num_colors, color, idx, colors)
         print()
 
-    # color_names = colorise.get_color_names()
+    color_names = colorise.color_names()
     random_colors = [
             # random.choice(color_names),
             'yellow',
