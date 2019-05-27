@@ -37,8 +37,7 @@ _NIX_SYSTEM_COLORS = {
     34: (0x00, 0x00, 0xff),  # blue
     35: (0xff, 0x00, 0xff),  # purple
     36: (0x00, 0xff, 0xff),  # cyan
-    37: (0xff, 0xff, 0xff),  # white
-    # 90: (0x64, 0x64, 0x64),  # gray
+    37: (0xff, 0xff, 0xff)   # white
 }
 
 # System color names as given by colorise
@@ -115,14 +114,13 @@ def get_clut(color_count):
         return _XTERM_CLUT_256
 
     return {
-            8:  _NIX_SYSTEM_COLORS,
-            16: _NIX_SYSTEM_COLORS,
-            88: _XTERM_CLUT_88,
+            8:   _NIX_SYSTEM_COLORS,
+            16:  _NIX_SYSTEM_COLORS,
+            88:  _XTERM_CLUT_88,
             256: _XTERM_CLUT_256,
         }.get(color_count, None)
 
 
-# NOTE: Can use TERM_PROGRAM/TERM_PROGRAM_VERSION to detect terminals
 def num_colors():
     """Attempt to get the number of colors supported by the terminal."""
     # iTerm supports true-color from version 3 onward, earlier versions
@@ -169,7 +167,7 @@ def color_from_name(name, color_count, bg):
 def color_from_index(idx, color_count, bg):
     """Return the color value and color count for a given color index."""
     if idx < 0 or idx > 255:
-        raise ValueError('Color index must be in range 0-256 inclusive')
+        raise ValueError('Color index must be in range 0-255 inclusive')
 
     if color_count > 88:
         # NOTE: Assume we can use 256 color prefixes if we have true-color

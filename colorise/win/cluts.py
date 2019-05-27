@@ -17,7 +17,7 @@ import sys
 # We cannot get these through ctypes since they are #defines
 _WIN_ATTRIBUTES = {
         Attr.Bold:      ('_FOREGROUND_INTENSITY',     0x0008),
-        Attr.Intense:   ('_FOREGROUND_INTENSITY',     0x0008),
+        Attr.Intense:   ('_FOREGROUND_INTENSITY',     0x0008),  # Alias
         Attr.Reverse:   ('_COMMON_LVB_REVERSE_VIDEO', 0x4000),
         Attr.Underline: ('_COMMON_LVB_UNDERSCORE',    0x8000)
 
@@ -69,7 +69,7 @@ _WINDOWS_LOGICAL_NAMES = {
 
 
 def attributes():
-    """Get all Windows attributes."""
+    """Return a mapping of all Windows attributes."""
     return _WIN_ATTRIBUTES
 
 
