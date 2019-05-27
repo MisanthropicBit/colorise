@@ -110,11 +110,9 @@ def get_prefix(color_count, bg):
 
 def get_clut(color_count):
     """Return the appropriate color look-up table."""
-    if terminal_name() == 'iTerm.app':
-        if color_count == 88:
-            # This appears to simply use the 256 color table for 88 color
-            # indices
-            return _XTERM_CLUT_256
+    if terminal_name() == 'iTerm.app' and color_count == 88:
+        # Uses the 256 color table for 88 color indices
+        return _XTERM_CLUT_256
 
     return {
             8:  _NIX_SYSTEM_COLORS,

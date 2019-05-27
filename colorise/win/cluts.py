@@ -110,18 +110,13 @@ def set_windows_clut():
 
 def num_colors():
     """Get the number of colors supported by the terminal."""
-    if 'ConEmuANSI' in os.environ:
+    if os.environ.get('ConEmuANSI', '') == 'ON':
+        # ANSI escapes sequences are interpreted. ConEmu console detected which
+        # supports 24-bit colors, but can we detect this somehow?
+        #
         # NOTE: ConEmu also supports more attributes than the normal Windows
-        # console
-
-        # ConEmu console detected which supports 24-bit colors, but can we
-        # detect this somehow?
-        if os.environ['ConEmuANSI'] == 'ON':
-            # ANSI escapes sequences are interpreted
-            return 256
-        else:
-            # Assume 16 colors
-            return 16
+        # console.
+        return 256
 
     release = platform.win32_ver()[0]
     build = sys.getwindowsversion()[2]
