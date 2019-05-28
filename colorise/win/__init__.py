@@ -3,11 +3,11 @@
 
 """Windows color functions."""
 
-import ctypes
 import colorise.cluts
 import colorise.win.cluts
 from colorise.win.win32_functions import get_win_handle,\
     set_console_text_attribute
+from colorise.win.win32_functions import redefine_colors as _redefine_colors
 import operator
 import sys
 
@@ -44,7 +44,6 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
             colorise.nix.set_color(fg, bg, attributes, file)
         else:
             # Ordinary terminal capabilities, use Windows API
-            handle = get_win_handle(file)
             attr_codes = colorise.attributes.to_codes(attributes)
             color_codes = [colorise.cluts.get_color(fg, False),
                            colorise.cluts.get_color(bg, True)]
@@ -53,6 +52,11 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
             # bitwise OR'ed bitflag
             flags = or_bit_flags(attr_codes, color_codes)
 
-            set_console_text_attribute(handle, flags)
+            set_console_text_attribute(get_win_handle(file), flags)
     else:
         reset()
+
+
+def redefine_colors(color_map, file=sys.stdout):
+    """Redefine the base console colors with a new mapping."""
+    _redefine_colors(color_map, file)

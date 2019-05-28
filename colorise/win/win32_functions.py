@@ -20,8 +20,6 @@ _STDERR_HANDLE_ID = -12
 DISABLE_NEWLINE_AUTO_RETURN = 0x0008
 ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
 
-_WIN_CAN_SET_COLORS = windll.kernel32.SetConsoleScreenBufferInfoEx is not None
-
 
 # Struct defined in wincon.h
 class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
@@ -72,9 +70,14 @@ windll.kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
                                                     wintypes.WORD]
 windll.kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
 
-if _WIN_CAN_SET_COLORS:
-    # We can query RGB values of console colors on Windows. Initialise
-    # structures for doing so later
+
+def can_redefine_colors():
+    """Return whether the terminal allows redefinition of colors."""
+    return windll.kernel32.SetConsoleScreenBufferInfoEx is not None
+
+
+if can_redefine_colors():
+    # We can query RGB values of console colors on Windows
     windll.kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
         [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFOEX)]
     windll.kernel32.GetConsoleScreenBufferInfoEx.restype = wintypes.BOOL
@@ -229,8 +232,36 @@ def get_win_handle(target):
     raise ValueError('Only stdout and stderr supported')
 
 
+def set_windows_clut():
+    """Set the internal Windows color look-up table."""
+    if can_redefine_colors():
+        # On Windows Vista and beyond you can query the current colors in the
+        # color table. On older platforms, use the default color table
+        csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
+
+        windll.kernel32.GetConsoleScreenBufferInfoEx(
+            colorise._color_manager._handle,
+            ctypes.byref(csbiex)
+        )
+
+        # Update according to the currently set colors
+        for i in range(16):
+            _WINDOWS_CLUT[i] =\
+                (windll.kernel32.GetRValue(csbiex.ColorTable[i]),
+                 windll.kernel32.GetGValue(csbiex.ColorTable[i]),
+                 windll.kernel32.GetBValue(csbiex.ColorTable[i]))
+
+    # Create a mapping from windows colors to their logical names
+    for color, name in zip(_WINDOWS_CLUT.values(),
+                           _WINDOWS_LOGICAL_NAMES):
+        _WINDOWS_LOGICAL_NAMES[color] = name
+
+
 def enable_virtual_terminal_processing(handle):
     """Enable Windows processing of ANSI escape sequences."""
+    if not handle or handle == INVALID_HANDLE_VALUE:
+        raise ValueError('Invalid handle')
+
     console_mode = 0
 
     if not windll.kernel32.GetConsoleMode(handle, ctypes.byref(console_mode)):
@@ -259,7 +290,7 @@ def restore_console_mode(handle, restore_mode):
         raise ValueError('Invalid handle')
 
     if not windll.kernel32.SetConsoleMode(handle, restore_mode):
-        colorise.win.cluts.raise_win_error()
+        raise_win_error()
 
 
 _WIN_CAN_INTERPRET_ANSI_CODES = enable_virtual_terminal_processing() != 0
@@ -270,18 +301,13 @@ def can_interpret_ansi():
     return _WIN_CAN_INTERPRET_ANSI_CODES
 
 
-def can_redefine_colors():
-    """Return whether the terminal allows redefinition of colors."""
-    return _WIN_CAN_SET_COLORS
-
-
 def set_console_text_attribute(handle, flags):
     """Set the console's text attributes."""
-    if not handle:
+    if not handle or handle == INVALID_HANDLE_VALUE:
         raise ValueError('Invalid handle')
 
     if not windll.kernel32.SetConsoleTextAttribute(handle.handle, flags):
-        colorise.win.cluts.raise_win_error()
+        raise_win_error()
 
 
 def encode_rgb_tuple(rgb):
@@ -301,7 +327,7 @@ def redefine_colors(color_map, file=sys.stdout):
     written to the console.
 
     """
-    if not colorise.win.cluts.can_redefine_colors():
+    if not can_redefine_colors():
         raise RuntimeError('Cannot redefine colors on this system')
 
     if not all(c >= 0 and c < 16 for c in color_map):
@@ -326,4 +352,6 @@ def redefine_colors(color_map, file=sys.stdout):
         csbiex.ColorTable[idx] = encode_rgb_tuple(color)
 
     # Set the new colors
-    windll.kernel32.SetConsoleScreenBufferInfoEx(win_handle.handle, csbiex)
+    if not windll.kernel32.SetConsoleScreenBufferInfoEx(
+                win_handle.handle, csbiex):
+        raise_win_error()

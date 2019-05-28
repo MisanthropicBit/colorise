@@ -4,10 +4,9 @@
 """Windows color look-up tables and functions."""
 
 import colorise.nix.cluts
-import colorise.color_tools
 from colorise.attributes import Attr
-from colorise.win.win32_functions import enable_virtual_terminal_processing,\
-    can_interpret_ansi
+from colorise.color_tools import closest_color
+from colorise.win.win32_functions import can_interpret_ansi
 import os
 import platform
 import sys
@@ -83,31 +82,6 @@ def get_clut(color_count):
     return _WINDOWS_CLUT
 
 
-def set_windows_clut():
-    """Set the internal Windows color look-up table."""
-    pass
-    # if _WIN_CAN_SET_COLORS:
-    #     # On Windows Vista and beyond you can query the current colors in the
-    #     # color table. On older platforms, use the default color table
-    #     csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
-    #     windll.kernel32.GetConsoleScreenBufferInfoEx(
-    #         colorise._color_manager._handle,
-    #         ctypes.byref(csbiex)
-    #     )
-
-    #     # Update according to the currently set colors
-    #     for i in range(16):
-    #         _WINDOWS_CLUT[i] =\
-    #             (windll.kernel32.GetRValue(csbiex.ColorTable[i]),
-    #              windll.kernel32.GetGValue(csbiex.ColorTable[i]),
-    #              windll.kernel32.GetBValue(csbiex.ColorTable[i]))
-
-    # # Create a mapping from windows colors to their logical names
-    # for color, name in zip(_WINDOWS_CLUT.values(),
-    #                        _WINDOWS_LOGICAL_NAMES):
-    #     _WINDOWS_LOGICAL_NAMES[color] = name
-
-
 def num_colors():
     """Get the number of colors supported by the terminal."""
     if os.environ.get('ConEmuANSI', '') == 'ON':
@@ -125,7 +99,7 @@ def num_colors():
     if release == '10' and build >= 14931:
         return 2**24
 
-    if enable_virtual_terminal_processing():
+    if can_interpret_ansi():
         return 2**24
 
     # Supported colors in Windows are pre-determined. Though you can update the
@@ -145,7 +119,7 @@ def color_from_name(name, color_count, isbg):
 def color_from_index(idx, color_count, bg):
     """Return the color value and color count for a given color index."""
     if can_interpret_ansi():
-        # We can interpret ANSI escape sequences, delegate to nix
+        # We can interpret ANSI escape sequences, delegate to nix function
         return colorise.nix.cluts.color_from_index(idx, color_count, bg)
 
     if idx in get_clut(color_count):
@@ -154,15 +128,18 @@ def color_from_index(idx, color_count, bg):
 
     if idx > 88:
         # 256 color index
-        return colorise.color_tools.closest_color(
+        return closest_color(
                 colorise.nix.cluts._XTERM_CLUT_256[idx],
                 _WINDOWS_CLUT
             )
     elif idx == 88:
         # 88 color index
-        return colorise.color_tools.closest_color(
+        return closest_color(
                 colorise.nix.cluts._XTERM_CLUT_88[idx],
                 _WINDOWS_CLUT
             )
 
-    return colorise.color_tools.closest_color(_WINDOWS_CLUT)
+    return closest_color(
+            colorise.nix.cluts._NIX_SYSTEM_COLORS,
+            _WINDOWS_CLUT
+        )
