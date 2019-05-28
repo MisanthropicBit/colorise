@@ -24,11 +24,6 @@ def reset(file=sys.stdout):
     set_color(handle.default_fg, handle.default_bg, file=file)
 
 
-def get_color_names(self):
-    """Return all supported color names."""
-    return colorise.win.cluts.get_color_names()
-
-
 def or_bit_flags(*bit_flags):
     """Bitwise OR together a list of bitflags into a single flag."""
     return reduce(operator.or_, bit_flags)

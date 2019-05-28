@@ -21,11 +21,6 @@ def reset(file=sys.stdout):
     file.write(to_ansi(Attr.Reset.value))
 
 
-def color_names():
-    """Return all supported color names."""
-    return list(colorise.nix.cluts._NIX_SYSTEM_COLOR_NAMES.keys())
-
-
 def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     """Set color and attributes of the terminal.
 

@@ -45,8 +45,7 @@ if _DEBUG_MODE:
 
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
-    from colorise.win import reset, color_names
-    from colorise.win import color_names as _color_names
+    from colorise.win import reset
     from colorise.win import set_color as _set_color
     from colorise.win import redefine_colors as _redefine_colors
 
@@ -62,7 +61,6 @@ if _SYSTEM_OS.startswith('win'):
                                          _32or64bit()))
 else:
     from colorise.nix import reset
-    from colorise.nix import color_names as _color_names
     from colorise.nix import set_color as _set_color
     from colorise.nix import redefine_colors as _redefine_colors
 
@@ -91,7 +89,27 @@ def redefine_colors(color_map, file=sys.stdout):
 
 def color_names():
     """Return a list of supported color names."""
-    return _color_names()
+    return [
+        'black',
+        'red',
+        'green',
+        'yellow',
+        'blue',
+        'purple',
+        'magenta',
+        'cyan',
+        'gray',
+        'grey',
+        'lightblack',
+        'lightred',
+        'lightgreen',
+        'lightyellow',
+        'lightblue',
+        'lightpurple',
+        'lightcyan',
+        'lightgray',
+        'lightgrey'
+    ]
 
 
 def num_colors():
