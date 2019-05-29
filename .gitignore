@@ -13,3 +13,4 @@ colorise/backup/
 misc/
 *.egg-info/
 venv*/
+.python-version
