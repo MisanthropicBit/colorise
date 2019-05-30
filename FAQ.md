@@ -31,3 +31,8 @@ While some terminals do support true-color, there is no reliable way of
 detecting it as of now (apart from hardcoding everything that can be changed in
 the future), so ``colorise`` opts to **not** support true-color, but only the
 256 color palette.
+
+## Q: *The blink and italic attributes do not work in iTerm.app*
+
+This has to be enabled manually. Go into Preferences -> Profiles -> Text and
+check the boxes for "Blinking text allowed" and "Italic text allowed".
