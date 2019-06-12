@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""."""
+"""Test the fprint function."""
 
 import colorise
 import pytest
