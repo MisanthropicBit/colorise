@@ -3,7 +3,6 @@
 
 """Windows color look-up tables and functions."""
 
-import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.color_tools import closest_color
 from colorise.win.win32_functions import can_interpret_ansi
@@ -11,6 +10,8 @@ import os
 import platform
 import sys
 
+if can_interpret_ansi():
+    import colorise.nix.cluts
 
 # Character attributes as defined in wincon.h
 # We cannot get these through ctypes since they are #defines
@@ -46,25 +47,25 @@ _WINDOWS_CLUT = {
     15: (0xff, 0xff, 0xff)   # Light white
 }
 
+_FOREGROUND_RED = 0x0004
+_FOREGROUND_GREEN = 0x0002
+_FOREGROUND_BLUE = 0x0001
+_FOREGROUND_INTENSITY = _WIN_ATTRIBUTES[Attr.Bold][1]
+
 # List of logical colors names on Windows (as defined by colorise)
 _WINDOWS_LOGICAL_NAMES = {
     'black':       0,
-    'red':         1,
-    'green':       2,
-    'yellow':      3,
-    'magenta':     5,
-    'blue':        4,
-    'cyan':        6,
-    'white':       7,
-    'lightblack':  0 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightred':    1 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightgreen':  2 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightyellow': 3 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightblue':   4 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightpurple': 5 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightcyan':   6 | _WIN_ATTRIBUTES[Attr.Bold][1],
-    'lightgray':   7 | _WIN_ATTRIBUTES[Attr.Bold][1],
+    'red':         _FOREGROUND_RED,
+    'green':       _FOREGROUND_GREEN,
+    'yellow':      _FOREGROUND_RED | _FOREGROUND_GREEN,
+    'magenta':     _FOREGROUND_RED | _FOREGROUND_BLUE,
+    'blue':        _FOREGROUND_BLUE,
+    'cyan':        _FOREGROUND_GREEN | _FOREGROUND_BLUE,
+    'white':       _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE,
 }
+
+for name, value in _WINDOWS_LOGICAL_NAMES.items():
+    _WINDOWS_LOGICAL_NAMES['light' + name] = value | _FOREGROUND_INTENSITY
 
 
 def attributes():
@@ -113,7 +114,7 @@ def color_from_name(name, color_count, isbg):
     if name not in _WINDOWS_LOGICAL_NAMES:
         raise ValueError("Unknown color name '{0}'".format(name))
 
-    return _WINDOWS_CLUT[_WINDOWS_LOGICAL_NAMES[name]]
+    return _WINDOWS_LOGICAL_NAMES[name]
 
 
 def color_from_index(idx, color_count, bg):

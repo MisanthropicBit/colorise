@@ -33,7 +33,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     """Set color and attributes in the terminal."""
     if fg or bg or attributes:
         if colorise.cluts.num_colors() > 16 and\
-                colorise.win.cluts.can_use_ansi():
+                colorise.win.cluts.can_interpret_ansi():
             # Extended terminal capabilities for interpreting ANSI escape
             # codes, delegate to nix color function
             colorise.nix.set_color(fg, bg, attributes, file)

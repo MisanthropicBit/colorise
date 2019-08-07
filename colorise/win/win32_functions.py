@@ -42,6 +42,10 @@ class CONSOLE_SCREEN_BUFFER_INFOEX(ctypes.Structure):
                 ('bFullscreenSupported', wintypes.BOOL),
                 ('ColorTable',           wintypes.COLORREF * 16)]
 
+if not hasattr(wintypes, 'LPDWORD'):
+    LPDWORD = wintypes.POINTER(wintypes.DWORD)
+else:
+    LPDWORD = wintypes.LPDWORD
 
 # Set argument and return types for Windows API calls
 windll.kernel32.GetConsoleScreenBufferInfo.argtypes =\
@@ -49,8 +53,7 @@ windll.kernel32.GetConsoleScreenBufferInfo.argtypes =\
 windll.kernel32.GetConsoleScreenBufferInfo.restype = wintypes.BOOL
 windll.kernel32.GetStdHandle.argtypes = [wintypes.DWORD]
 windll.kernel32.GetStdHandle.restype = wintypes.HANDLE
-windll.kernel32.GetConsoleMode.argtypes = [wintypes.HANDLE,
-                                           ctypes.POINTER(wintypes.DWORD)]
+windll.kernel32.GetConsoleMode.argtypes = [wintypes.HANDLE, LPDWORD]
 windll.kernel32.GetConsoleMode.restype = wintypes.BOOL
 windll.kernel32.SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
 windll.kernel32.SetConsoleMode.restype = wintypes.BOOL
@@ -62,7 +65,7 @@ windll.kernel32.FormatMessageW.argtypes = [wintypes.DWORD,
                                            wintypes.DWORD,
                                            wintypes.LPWSTR,
                                            wintypes.DWORD,
-                                           wintypes.va_list]
+                                           wintypes.LPVOID]
 windll.kernel32.FormatMessageW.restype = wintypes.DWORD
 windll.kernel32.LocalFree.argtypes = [wintypes.HLOCAL]
 windll.kernel32.LocalFree.restype = wintypes.HLOCAL
@@ -262,22 +265,24 @@ def enable_virtual_terminal_processing(handle):
     if not handle or handle == INVALID_HANDLE_VALUE:
         raise ValueError('Invalid handle')
 
-    console_mode = 0
+    console_mode = wintypes.DWORD(0)
 
-    if not windll.kernel32.GetConsoleMode(handle, ctypes.byref(console_mode)):
+    if not windll.kernel32.GetConsoleMode(handle.handle,
+                                          ctypes.byref(console_mode)):
         raise_win_error()
 
-    target_mode = console_mode |\
-        ENABLE_VIRTUAL_TERMINAL_PROCESSING |\
-        DISABLE_NEWLINE_AUTO_RETURN
+    target_mode = wintypes.DWORD(console_mode.value |
+                                 ENABLE_VIRTUAL_TERMINAL_PROCESSING |
+                                 DISABLE_NEWLINE_AUTO_RETURN)
 
     # First attempt to set console mode to interpret ANSI escape codes and
     # disable immediately jumping to the next console line
-    if not windll.kernel32.SetConsoleMode(handle, target_mode):
+    if not windll.kernel32.SetConsoleMode(handle.handle, target_mode):
         # If that fails, try just setting the mode for ANSI escape codes
-        target_mode = console_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        target_mode = wintypes.DWORD(console_mode.value |
+                                     ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 
-        if not windll.kernel32.SetConsoleMode(handle, target_mode):
+        if not windll.kernel32.SetConsoleMode(handle.handle, target_mode):
             return None
 
     # Return the original console mode so we can restore it later
@@ -289,11 +294,12 @@ def restore_console_mode(handle, restore_mode):
     if not handle or handle == INVALID_HANDLE_VALUE:
         raise ValueError('Invalid handle')
 
-    if not windll.kernel32.SetConsoleMode(handle, restore_mode):
+    if not windll.kernel32.SetConsoleMode(handle.handle, restore_mode):
         raise_win_error()
 
 
-_WIN_CAN_INTERPRET_ANSI_CODES = enable_virtual_terminal_processing() != 0
+_WIN_CAN_INTERPRET_ANSI_CODES =\
+    enable_virtual_terminal_processing(_STDOUT_HANDLE) is not None
 
 
 def can_interpret_ansi():
@@ -306,7 +312,8 @@ def set_console_text_attribute(handle, flags):
     if not handle or handle == INVALID_HANDLE_VALUE:
         raise ValueError('Invalid handle')
 
-    if not windll.kernel32.SetConsoleTextAttribute(handle.handle, flags):
+    if not windll.kernel32.SetConsoleTextAttribute(handle.handle,
+                                                   wintypes.WORD(flags)):
         raise_win_error()
 
 
