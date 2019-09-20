@@ -79,35 +79,14 @@ request](https://github.com/MisanthropicBit/colorise/pulls) using the
 
 ## Installation
 
-It is recommended to install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
+Install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
 
 ```bash
 pip install colorise
 ```
 
-## Usage
-
-To print colored text, you can use the `cprint` function.
-
-```python
->>> colorise.cprint('This has blue text and a green background', fg='blue', bg='green')
-```
-
-Additionally, you can specify colors via a format string passed to `fprint`.
-
-```python
->>> colorise.fprint('{fg=blue,bg=green}This has blue text and a green background')
-```
-
-Text attributes are also supported.
-
-```python
->>> from colorise.attributes import Attr
->>> colorise.cprint('This has blue text and a green background', fg='blue', bg='green', attributes=[Attr.Bold])
->>> colorise.fprint('{fg=blue,bg=green,bold}This has blue text and a green background')
-```
-
-You can find additional examples in the [`examples`](/examples) folder.
+To get started check out the [tutorial](), [docs]() or the examples in the
+[`examples`](/examples) folder.
 
 ## Implementation notes
 
