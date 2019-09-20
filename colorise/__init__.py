@@ -154,7 +154,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
     file.write(end)
-    file.flush()  # Needed for Python 3.x
+    file.flush()  # Flush before resetting colors
 
 
 # Global color formatter instance
@@ -226,13 +226,13 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
 
         # Write anything up until the start index of the current group
         file.write(string[idx:start_idx])
-        file.flush()  # Needed for Python 3.x
+        file.flush()
 
         set_color(fg, bg, attributes, file)
 
         # Write the range of characters specified by the group
         file.write(string[start_idx:end_idx])
-        file.flush()  # Needed for Python 3.x
+        file.flush()
 
         reset(file)
 
