@@ -148,7 +148,11 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     """
     set_color(fg, bg, attributes, file)
     file.write(string)
+    file.flush()  # Flush before resetting colors
     reset()
+
+    # Make sure to print the end keyword after resetting so the next line is
+    # not affected by a newline or similar
     file.write(end)
     file.flush()  # Needed for Python 3.x
 
@@ -182,6 +186,7 @@ def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout):
     _color_formatter.autoreset = autoreset
     _color_formatter.file = file
     _color_formatter.format(fmt)
+    file.flush()  # Flush before resetting colors
     reset()
 
     # Make sure to print the end keyword after resetting so the next line is
