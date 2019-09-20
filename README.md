@@ -65,8 +65,7 @@
 
 ---
 
-`colorise` has been tested with Python 2.7, 3.2 and 3.3, 3.4, 3.5, 3.6, 3.7 and
-pypy, as well as the following terminals:
+`colorise` has been tested with the following terminals:
 
 * [iTerm 3.2.9](https://iterm2.com/)
 * Terminal.app 2.9.4 (421.1.1)
