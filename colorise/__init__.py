@@ -149,7 +149,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     set_color(fg, bg, attributes, file)
     file.write(string)
     file.flush()  # Flush before resetting colors
-    reset()
+    reset(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -187,7 +187,7 @@ def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout):
     _color_formatter.file = file
     _color_formatter.format(fmt)
     file.flush()  # Flush before resetting colors
-    reset()
+    reset(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -234,7 +234,7 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
         file.write(string[start_idx:end_idx])
         file.flush()  # Needed for Python 3.x
 
-        reset()
+        reset(file)
 
         # Set current index to end of group
         idx = end_idx
