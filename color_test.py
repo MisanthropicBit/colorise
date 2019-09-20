@@ -6,6 +6,7 @@
 import colorise
 from colorise.attributes import Attr
 import os
+import platform
 
 
 def print_stats_and_env():
@@ -15,15 +16,18 @@ def print_stats_and_env():
 
     stats = [
             ('Color count',  color_count_name),
-            ('SHELL',        os.environ.get('SHELL', 'N/A')),
             ('TERM',         os.environ.get('TERM', 'N/A')),
             ('TERM_PROGRAM', os.environ.get('TERM_PROGRAM', 'N/A')),
             ('COLORTERM',    os.environ.get('COLORTERM', 'N/A')),
             ('COLORFGBG',    os.environ.get('COLORFGBG', 'N/A')),
         ]
 
+    system = platform.system().lower()
+    shellvar = 'ComSpec' if system.startswith('win') else 'SHELL'
+    stats.insert(1, (shellvar, os.environ.get(shellvar, 'N/A')))
+
     for name, value in stats:
-        print(('{0:<15}{1:>15}').format(name, value))
+        print(('{0:<15}{1:>25}').format(name, value))
 
 
 def print_system_colors(char):
@@ -91,7 +95,10 @@ if __name__ == "__main__":
     print_stats_and_env()
     print()
     print_system_colors(char)
-    print()
-    print_256_indices(char)
+
+    if colorise.num_colors() >= 256:
+        print()
+        print_256_indices(char)
+
     print()
     print_attributes()
