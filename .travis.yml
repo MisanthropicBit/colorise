@@ -16,4 +16,8 @@ before_script:
     - flake8 .
     - pep257 "--ignore=D100,D101,D102,D103" .
 
-script: py.test .
+script: pytest -r s tests
+
+branches:
+    only:
+        - master
