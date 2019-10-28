@@ -45,7 +45,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
 
             # Combine character attributes and color codes into a single
             # bitwise OR'ed bitflag
-            flags = or_bit_flags(attr_codes, color_codes)
+            flags = or_bit_flags(*(list(attr_codes) + color_codes))
 
             set_console_text_attribute(get_win_handle(file), flags)
     else:
