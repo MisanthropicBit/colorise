@@ -5,6 +5,12 @@
 
 import colorise
 import pytest
+import sys
+
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
 def test_valid_formats():
@@ -40,3 +46,59 @@ def test_invalid_formats():
 
     with pytest.raises(ValueError):
         colorise.fprint('{fg=rgb(167;xxx;255)}Hello')
+
+
+@pytest.mark.skip_on_windows
+def test_valid_named_fprint_output():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=red}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[31mHello\x1b[0m\n'
+
+
+@pytest.mark.skip_on_windows
+@pytest.mark.require_colors(256)
+def test_valid_256_index_fprint_output():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=201}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[38;5;201mHello\x1b[0m\n'
+
+
+@pytest.mark.skip_on_windows
+@pytest.mark.require_colors(256**3)
+def test_valid_truecolor_fprint_output():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=0xa696ff}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
+
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=hls(0.6919;0.7940;1.0)}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
+
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=hsv(249;41;100)}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
+
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=rgb(167;151;255)}Hello', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[38;2;167;151;255mHello\x1b[0m\n'
+
+
+@pytest.mark.skip_on_windows
+def test_fprint_disabled():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint('{fg=red}Hello', file=sys.stdout, enabled=False)
+        assert sio.getvalue() == 'Hello\n'
