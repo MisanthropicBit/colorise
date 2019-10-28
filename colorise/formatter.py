@@ -79,7 +79,7 @@ class ColorFormatter(string.Formatter):
 
                 # Automatically reset colors and attributes if enabled
                 if self.autoreset:
-                    self._reset_func()
+                    self._reset_func(self.file)
 
                 # Set colors and attributes
                 if self.enabled:
