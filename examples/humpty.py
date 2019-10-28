@@ -29,5 +29,4 @@ if __name__ == '__main__':
     randindices = random.sample(range(len(humpty[3])), 12)
 
     # You can also highlight different parts of a string...
-    colorise.highlight(humpty[random.randint(0, 3)], fg='yellow', bg='red',
-                       indices=randindices)
+    colorise.highlight(humpty[3], fg='yellow', bg='red', indices=randindices)
