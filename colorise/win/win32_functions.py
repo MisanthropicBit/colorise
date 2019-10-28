@@ -196,8 +196,8 @@ def create_std_handle(handle_id):
     """Create a Windows standard handle from an identifier."""
     win_handle = WinHandle(windll.kernel32.GetStdHandle(handle_id))
 
-    if win_handle == INVALID_HANDLE_VALUE:
-        colorise.win.cluts.raise_win_error(INVALID_HANDLE_VALUE)
+    if win_handle.handle == INVALID_HANDLE_VALUE:
+        raise_win_error(INVALID_HANDLE_VALUE)
 
     csbi = CONSOLE_SCREEN_BUFFER_INFO()
     retval = windll.kernel32.GetConsoleScreenBufferInfo(
@@ -206,7 +206,7 @@ def create_std_handle(handle_id):
         )
 
     if retval == 0:
-        colorise.win.cluts.raise_win_error(retval)
+        raise_win_error(retval)
 
     # Set defaults color values
     # TODO: Do these need to be reread when colors are redefined?
