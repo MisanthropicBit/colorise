@@ -7,7 +7,6 @@ from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
 import collections
 import os
-import curses
 
 
 _COLOR_ESCAPE_CODE = '\033['
@@ -134,6 +133,7 @@ def num_colors():
             return 256
 
     # If all else fails, use curses
+    import curses
     color_count = 0
 
     try:
