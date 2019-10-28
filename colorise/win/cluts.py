@@ -109,12 +109,14 @@ def num_colors():
     return 16
 
 
-def color_from_name(name, color_count, isbg):
+def color_from_name(name, color_count, bg):
     """Return the color value and color count for a given color name."""
     if name not in _WINDOWS_LOGICAL_NAMES:
         raise ValueError("Unknown color name '{0}'".format(name))
 
-    return _WINDOWS_LOGICAL_NAMES[name]
+    color = _WINDOWS_LOGICAL_NAMES[name]
+
+    return color << 4 if bg else color
 
 
 def color_from_index(idx, color_count, bg):
