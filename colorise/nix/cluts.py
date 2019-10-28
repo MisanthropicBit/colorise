@@ -48,20 +48,20 @@ _NIX_SYSTEM_COLOR_NAMES = {
     'blue':        34,
     'purple':      35,
     'cyan':        36,
-    'gray':        37,
-    'lightblack':  90,
+    'lightgray':   37,
+    'gray':        90,
     'lightred':    91,
     'lightgreen':  92,
     'lightyellow': 93,
     'lightblue':   94,
     'lightpurple': 95,
     'lightcyan':   96,
-    'lightgray':   97,
+    'white':       97,
 }
 
 # Alias for British english gray and alias for purple
-_NIX_SYSTEM_COLOR_NAMES['grey'] = 37
-_NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 97
+_NIX_SYSTEM_COLOR_NAMES['grey'] = 90
+_NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 37
 _NIX_SYSTEM_COLOR_NAMES['magenta'] = 35
 
 # xterm 88-color look-up table (based on 88colres.h)
