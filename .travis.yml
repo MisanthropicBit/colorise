@@ -17,7 +17,3 @@ before_script:
     - pep257 "--ignore=D100,D101,D102,D103" .
 
 script: py.test .
-
-branches:
-    only:
-        - master
