@@ -34,6 +34,7 @@ class ColorFormatter(string.Formatter):
 
         self.autoreset = False
         self.file = None
+        self._enabled = True
         self._set_color_func = set_color_func
         self._reset_func = reset_func
         self._attribute_names = attribute_names()
@@ -56,6 +57,15 @@ class ColorFormatter(string.Formatter):
     def file(self, value):
         self._file = value
 
+    @property
+    def enabled(self):
+        """Whether colors are enabled or not."""
+        return self._enabled
+
+    @enabled.setter
+    def enabled(self, value):
+        self._enabled = value
+
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
         tokens = super(ColorFormatter, self).parse(format_string)
@@ -72,7 +82,9 @@ class ColorFormatter(string.Formatter):
                     self._reset_func()
 
                 # Set colors and attributes
-                self._set_color_func(fg, bg, fg_attrs + bg_attrs, self.file)
+                if self.enabled:
+                    self._set_color_func(fg, bg, fg_attrs + bg_attrs,
+                                         self.file)
             else:
                 # Yield tokens as normal
                 yield literal_text, field_name, format_spec, conversion

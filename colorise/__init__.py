@@ -136,7 +136,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
 
 
 def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
-           file=sys.stdout):
+           file=sys.stdout, enabled=True):
     """Print a string to a target stream with colors and attributes.
 
     The fg and bg keywords specify foreground- and background colors while
@@ -146,10 +146,14 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attribtues are reset before the function returns.
 
     """
-    set_color(fg, bg, attributes, file)
+    if enabled:
+        set_color(fg, bg, attributes, file)
+
     file.write(string)
-    file.flush()  # Flush before resetting colors
-    reset(file)
+
+    if enabled:
+        file.flush()  # Flush before resetting colors
+        reset(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -161,7 +165,8 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
 _color_formatter = colorise.formatter.ColorFormatter(set_color, reset)
 
 
-def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout):
+def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout,
+           enabled=True):
     """Print a string with color formatting.
 
     The autoreset keyword controls if colors and attributes are reset before
@@ -185,9 +190,12 @@ def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout):
     """
     _color_formatter.autoreset = autoreset
     _color_formatter.file = file
+    _color_formatter.enabled = enabled
     _color_formatter.format(fmt)
-    file.flush()  # Flush before resetting colors
-    reset(file)
+
+    if enabled:
+        file.flush()  # Flush before resetting colors
+        reset(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -195,7 +203,7 @@ def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout):
 
 
 def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
-              file=sys.stdout):
+              file=sys.stdout, enabled=True):
     """Highlight characters using indices and print to a target stream.
 
     The indices argument is a list of indices (not necessarily sorted) for
@@ -209,7 +217,8 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attribtues are reset before the function returns.
 
     """
-    if not string or not indices or not (fg or bg or attributes):
+    if not string or not indices or not (fg or bg or attributes)\
+            or not enabled:
         file.write(string + end)
         return
 
