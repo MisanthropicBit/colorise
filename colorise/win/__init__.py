@@ -48,8 +48,6 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
             flags = or_bit_flags(*(list(attr_codes) + color_codes))
 
             set_console_text_attribute(get_win_handle(file), flags)
-    else:
-        reset()
 
 
 def redefine_colors(color_map, file=sys.stdout):
