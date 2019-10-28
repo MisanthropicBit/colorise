@@ -34,13 +34,14 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     if attributes:
         codes.append(to_ansi(*to_codes(attributes)))
 
-    if fg:
-        fg_prefix, fg_color = colorise.cluts.get_color(fg, False)
-        codes.append(fg_prefix.format(fg_color))
+    if Attr.Reset not in attributes:
+        if fg:
+            fg_prefix, fg_color = colorise.cluts.get_color(fg, False)
+            codes.append(fg_prefix.format(fg_color))
 
-    if bg:
-        bg_prefix, bg_color = colorise.cluts.get_color(bg, True)
-        codes.append(bg_prefix.format(bg_color))
+        if bg:
+            bg_prefix, bg_color = colorise.cluts.get_color(bg, True)
+            codes.append(bg_prefix.format(bg_color))
 
     if codes:
         file.write(''.join(codes))
