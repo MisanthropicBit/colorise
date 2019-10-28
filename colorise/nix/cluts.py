@@ -6,6 +6,7 @@
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
 import collections
+import io
 import os
 
 
@@ -140,6 +141,8 @@ def num_colors():
         curses.setupterm()
         color_count = curses.tigetnum('colors')
     except curses.error:
+        pass
+    except io.UnsupportedOperation:
         pass
 
     if color_count <= 0:
