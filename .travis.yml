@@ -1,23 +1,16 @@
 language: python
 
 python:
-    - "2.6"
-    - "2.7"
-    - "3.2"
-    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "3.7"
     - "pypy"
+    - "pypy3"
 
 install:
-    # Use mirrors to not avoid burdening PyPI
     - pip install --use-mirrors -r requirements.txt
-    - pip install -e .
+    - python setup.py install
 
-before_script:
-    - flake8 .
-    - pep257 "--ignore=D100,D101,D102,D103" .
-
-script: pytest -r s tests
-
-branches:
-    only:
-        - master
+script:
+    - pytest -rs tests
