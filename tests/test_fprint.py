@@ -102,3 +102,19 @@ def test_fprint_disabled():
     with pytest.redirect_stdout(sio):
         colorise.fprint('{fg=red}Hello', file=sys.stdout, enabled=False)
         assert sio.getvalue() == 'Hello\n'
+
+
+@pytest.mark.skip_on_windows
+def test_fprint_autoreset():
+    text = '{fg=red}Hello {bg=blue}world!'
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint(text, file=sys.stdout, autoreset=False)
+        assert sio.getvalue() == '\x1b[31mHello \x1b[44mworld!\x1b[0m\n'
+
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.fprint(text, file=sys.stdout, autoreset=True)
+        assert sio.getvalue() == '\x1b[31mHello \x1b[0m\x1b[44mworld!\x1b[0m\n'
