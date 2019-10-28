@@ -20,7 +20,7 @@ _SYSTEM_OS = platform.system().lower()
 
 # OS-dependent imports
 if 'windows' in _SYSTEM_OS:
-    from colorise.win.cluts.num_colors import num_colors as _num_colors
+    from colorise.win.cluts import num_colors as _num_colors
 
     from colorise.win.cluts import get_prefix,\
         get_clut,\
