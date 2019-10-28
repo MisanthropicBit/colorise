@@ -28,7 +28,7 @@ class Attr(Enum):
 
     Reset = 0
     Bold = 1
-    Intense = 1  # Alias from Windows terminology
+    Intense = 1  # Alias for Bold from Windows terminology
     Faint = 2
     Italic = 3
     Underline = 4
