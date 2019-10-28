@@ -125,6 +125,9 @@ def color_from_index(idx, color_count, bg):
         # We can interpret ANSI escape sequences, delegate to nix function
         return colorise.nix.cluts.color_from_index(idx, color_count, bg)
 
+    if idx < 0 or idx > 255:
+        raise ValueError('Color index must be in range 0-255 inclusive')
+
     if idx in get_clut(color_count):
         # Color index is an ordinary Windows logical color table index
         return idx
