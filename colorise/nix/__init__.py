@@ -16,7 +16,7 @@ def to_ansi(*codes):
     return '\033[{0}m'.format(';'.join(str(c) for c in codes))
 
 
-def reset(file=sys.stdout):
+def reset_color(file=sys.stdout):
     """Reset all colors and attributes."""
     file.write(to_ansi(Attr.Reset.value))
 

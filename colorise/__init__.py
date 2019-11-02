@@ -45,7 +45,7 @@ if _DEBUG_MODE:
 
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
-    from colorise.win import reset
+    from colorise.win import reset_color
     from colorise.win import set_color as _set_color
     from colorise.win import redefine_colors as _redefine_colors
 
@@ -60,7 +60,7 @@ if _SYSTEM_OS.startswith('win'):
                                          platform.release(),
                                          _32or64bit()))
 else:
-    from colorise.nix import reset
+    from colorise.nix import reset_color
     from colorise.nix import set_color as _set_color
     from colorise.nix import redefine_colors as _redefine_colors
 
@@ -153,7 +153,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
 
     if enabled:
         file.flush()  # Flush before resetting colors
-        reset(file)
+        reset_color(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -162,7 +162,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
 
 
 # Global color formatter instance
-_color_formatter = colorise.formatter.ColorFormatter(set_color, reset)
+_color_formatter = colorise.formatter.ColorFormatter(set_color, reset_color)
 
 
 def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout,
@@ -195,7 +195,7 @@ def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout,
 
     if enabled:
         file.flush()  # Flush before resetting colors
-        reset(file)
+        reset_color(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar
@@ -243,7 +243,7 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
         file.write(string[start_idx:end_idx])
         file.flush()
 
-        reset(file)
+        reset_color(file)
 
         # Set current index to end of group
         idx = end_idx
@@ -257,4 +257,4 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
 
 # Ensure colors and attributes return to normal when colorise is quit
 if sys.stdout.isatty():
-    atexit.register(reset)
+    atexit.register(reset_color)

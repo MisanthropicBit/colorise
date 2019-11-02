@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 
-def reset(file=sys.stdout):
+def reset_color(file=sys.stdout):
     """Reset all colors and attributes."""
     handle = get_win_handle(file)
     set_color(handle.default_fg, handle.default_bg, file=file)
