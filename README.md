@@ -11,6 +11,9 @@
         <a href="https://pypi.org/project/colorise/">
             <img src="https://img.shields.io/pypi/v/colorise.svg" />
         </a>
+        <a href="https://pypi.org/project/colorise/">
+            <img src="https://img.shields.io/pypi/wheel/colorise" />
+        </a>
         <img src="https://img.shields.io/pypi/pyversions/colorise.svg" />
     </div>
 </center>
