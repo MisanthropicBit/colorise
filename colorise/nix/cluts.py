@@ -118,7 +118,7 @@ def get_clut(color_count):
             16:  _NIX_SYSTEM_COLORS,
             88:  _XTERM_CLUT_88,
             256: _XTERM_CLUT_256,
-        }.get(color_count, None)
+        }[color_count]
 
 
 def num_colors():
