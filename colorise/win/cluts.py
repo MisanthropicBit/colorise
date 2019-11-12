@@ -133,22 +133,25 @@ def color_from_index(idx, color_count, bg):
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
 
-    if idx in get_clut(color_count):
-        # Color index is an ordinary Windows logical color table index
-        return idx
-
-    if idx > 88:
-        # 256 color index
-        return closest_color(
-                colorise.nix.cluts._XTERM_CLUT_256[idx],
+    if idx < 16:
+        color = closest_color(
+                colorise.nix.cluts._NIX_SYSTEM_COLORS,
                 _WINDOWS_CLUT
             )
-    elif idx == 88:
+    elif idx < 88:
         # 88 color index
-        return closest_color(
+        color = closest_color(
                 colorise.nix.cluts._XTERM_CLUT_88[idx],
                 _WINDOWS_CLUT
             )
+    elif idx < 256:
+        # 256 color index
+        color = closest_color(
+                colorise.nix.cluts._XTERM_CLUT_256[idx],
+                _WINDOWS_CLUT
+            )
+
+    return color << 4 if bg else color
 
 
 def get_rgb_color(color_count, bg, rgb):
