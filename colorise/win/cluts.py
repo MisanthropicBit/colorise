@@ -6,24 +6,22 @@
 from colorise.attributes import Attr
 from colorise.color_tools import closest_color
 from colorise.win.win32_functions import can_interpret_ansi
+import colorise.nix.cluts
 import os
 import platform
 import sys
 
-if can_interpret_ansi():
-    import colorise.nix.cluts
-
 # Character attributes as defined in wincon.h
 # We cannot get these through ctypes since they are #defines
 _WIN_ATTRIBUTES = {
-        Attr.Bold:      ('_FOREGROUND_INTENSITY',     0x0008),
-        Attr.Intense:   ('_FOREGROUND_INTENSITY',     0x0008),  # Alias
-        Attr.Reverse:   ('_COMMON_LVB_REVERSE_VIDEO', 0x4000),
-        Attr.Underline: ('_COMMON_LVB_UNDERSCORE',    0x8000)
-
-        # TODO: How do handle this when there is no ANSI escape sequence
-        # equivalent?
-        # ('_BACKGROUND_INTENSITY',     0x0080),
+        Attr.Reset:     0x0000,
+        Attr.Bold:      0x0008,
+        Attr.Intense:   0x0008,  # Alias
+        Attr.Faint:     0x0000,
+        Attr.Italic:    0x0000,
+        Attr.Underline: 0x8000,
+        Attr.Blink:     0x0000,
+        Attr.Reverse:   0x4000,
     }
 
 # Windows 16-color (logical) look-up table
@@ -50,22 +48,29 @@ _WINDOWS_CLUT = {
 _FOREGROUND_RED = 0x0004
 _FOREGROUND_GREEN = 0x0002
 _FOREGROUND_BLUE = 0x0001
-_FOREGROUND_INTENSITY = _WIN_ATTRIBUTES[Attr.Bold][1]
+_FOREGROUND_INTENSITY = _WIN_ATTRIBUTES[Attr.Bold]
 
 # List of logical colors names on Windows (as defined by colorise)
 _WINDOWS_LOGICAL_NAMES = {
-    'black':       0,
-    'red':         _FOREGROUND_RED,
-    'green':       _FOREGROUND_GREEN,
-    'yellow':      _FOREGROUND_RED | _FOREGROUND_GREEN,
-    'magenta':     _FOREGROUND_RED | _FOREGROUND_BLUE,
-    'blue':        _FOREGROUND_BLUE,
-    'cyan':        _FOREGROUND_GREEN | _FOREGROUND_BLUE,
-    'white':       _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE,
+    'black':   0,
+    'red':     _FOREGROUND_RED,
+    'green':   _FOREGROUND_GREEN,
+    'yellow':  _FOREGROUND_RED | _FOREGROUND_GREEN,
+    'magenta': _FOREGROUND_RED | _FOREGROUND_BLUE,
+    'purple':  _FOREGROUND_RED | _FOREGROUND_BLUE,
+    'blue':    _FOREGROUND_BLUE,
+    'cyan':    _FOREGROUND_GREEN | _FOREGROUND_BLUE,
+    'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE,
 }
 
-for name, value in _WINDOWS_LOGICAL_NAMES.items():
-    _WINDOWS_LOGICAL_NAMES['light' + name] = value | _FOREGROUND_INTENSITY
+for name in ['red', 'green', 'blue', 'yellow', 'purple', 'magenta', 'cyan']:
+    _WINDOWS_LOGICAL_NAMES['light' + name] =\
+        _WINDOWS_LOGICAL_NAMES[name] | _FOREGROUND_INTENSITY
+
+_WINDOWS_LOGICAL_NAMES['gray'] = _WINDOWS_LOGICAL_NAMES['black'] |\
+    _FOREGROUND_INTENSITY
+_WINDOWS_LOGICAL_NAMES['grey'] = _WINDOWS_LOGICAL_NAMES['black'] |\
+    _FOREGROUND_INTENSITY
 
 
 def attributes():
