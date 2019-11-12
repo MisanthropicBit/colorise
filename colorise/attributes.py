@@ -41,10 +41,9 @@ if 'windows' in _SYSTEM_OS:
 
     def to_codes(attributes):
         """Convert a set of attributes to Windows character attributes."""
-        codes = [colorise.win.cluts.attributes().get(attr, None)[1]
-                 for attr in attributes]
+        attrs = colorise.win.attributes()
 
-        return filter(None, codes)
+        return [attrs[attr] for attr in attributes]
 else:
     def to_codes(attributes):
         """Convert a set of attributes to ANSI escape codes."""
