@@ -116,16 +116,4 @@ def get_color(value, bg=False):
     else:
         raise ValueError("Unknown color format '{0}'".format(value))
 
-    prefix = get_prefix(color_count, bg)
-
-    if color_count < 2**24:
-        # No true-color capabilities and color was given as a true-color value,
-        # approximate to closest color given current capabilities
-        color_idx = closest_color(rgb, get_clut(color_count))
-
-        if color_count <= 16:
-            return prefix, color_idx + 10 * int(bg)
-        else:
-            return prefix, color_idx
-
-    return prefix, ';'.join(str(c) for c in rgb)
+    return get_rgb_color(color_count, bg, rgb)

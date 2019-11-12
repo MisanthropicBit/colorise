@@ -145,7 +145,15 @@ def color_from_index(idx, color_count, bg):
                 _WINDOWS_CLUT
             )
 
-    return closest_color(
-            colorise.nix.cluts._NIX_SYSTEM_COLORS,
-            _WINDOWS_CLUT
-        )
+
+def get_rgb_color(color_count, bg, rgb):
+    """Get the color for an RGB triple or approximate it if necessary."""
+    if color_count == 2**24:
+        # We have true-color capabilities, delegate to nix function
+        # approximate to closest color given current capabilities
+        return colorise.nix.cluts.get_rgb_color(color_count, bg, rgb)
+
+    # No true-color capabilities, approximate the rgb color
+    idx = closest_color(rgb, get_clut(color_count))
+
+    return idx << 4 if bg else idx
