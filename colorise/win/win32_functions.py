@@ -59,6 +59,8 @@ windll.kernel32.SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
 windll.kernel32.SetConsoleMode.restype = wintypes.BOOL
 windll.kernel32.GetLastError.argtypes = []
 windll.kernel32.GetLastError.restype = wintypes.DWORD
+windll.kernel32.SetLastError.argtypes = [wintypes.DWORD]
+windll.kernel32.SetLastError.restype = None  # void
 windll.kernel32.FormatMessageW.argtypes = [wintypes.DWORD,
                                            wintypes.LPCVOID,
                                            wintypes.DWORD,
@@ -146,50 +148,52 @@ def raise_win_error(error_code=None):
     """Format and raise a Windows specific error."""
     err_id = windll.kernel32.GetLastError()
 
-    if err_id == 0:
-        LANG_NEUTRAL = 0x0
-        SUBLANG_NEUTRAL = 0x0
-        LANG_ENGLISH = 0x9
-        SUBLANG_ENGLISH_US = 0x1
+    LANG_NEUTRAL = 0x0
+    SUBLANG_NEUTRAL = 0x0
+    LANG_ENGLISH = 0x9
+    SUBLANG_ENGLISH_US = 0x1
 
-        # SYS_FLAG is a combination of:
-        # FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_IGNORE_INSERTS and
-        # FORMAT_MESSAGE_FROM_SYSTEM
-        SYS_FLAG = 0x1300
+    # SYS_FLAG is a combination of:
+    # FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_IGNORE_INSERTS and
+    # FORMAT_MESSAGE_FROM_SYSTEM
+    SYS_FLAG = 0x1300
 
-        bufptr = wintypes.LPWSTR()
+    bufptr = wintypes.LPWSTR()
 
-        # Format as english
+    # Format as english
+    chars = windll.kernel32.FormatMessageW(
+            SYS_FLAG,
+            None,
+            err_id,
+            (LANG_ENGLISH & 0xff) | (SUBLANG_ENGLISH_US & 0xff) << 16,
+            ctypes.byref(bufptr),
+            0,
+            None
+        )
+
+    # If english formatting fails, format in system neutral language
+    if chars == 0:
         chars = windll.kernel32.FormatMessageW(
                 SYS_FLAG,
                 None,
                 err_id,
-                (LANG_ENGLISH & 0xff) | (SUBLANG_ENGLISH_US & 0xff) << 16,
+                (LANG_NEUTRAL & 0xff) | (SUBLANG_NEUTRAL & 0xff) << 16,
                 ctypes.byref(bufptr),
                 0,
                 None
             )
 
-        # If english formatting fails, format in system neutral language
-        if chars == 0:
-            chars = windll.kernel32.FormatMessageW(
-                    SYS_FLAG,
-                    None,
-                    err_id,
-                    (LANG_NEUTRAL & 0xff) | (SUBLANG_NEUTRAL & 0xff) << 16,
-                    ctypes.byref(bufptr),
-                    0,
-                    None
-                )
+    msg = ''
 
+    if bufptr:
         # Free the message buffer
         msg = bufptr.value[:chars]
         windll.kernel32.LocalFree(bufptr)
 
-        if error_code:
-            raise WindowsError(error_code, msg)
-        else:
-            raise WindowsError(msg)
+    if error_code:
+        raise WindowsError(error_code, msg)
+    else:
+        raise WindowsError(msg)
 
 
 def create_std_handle(handle_id):
