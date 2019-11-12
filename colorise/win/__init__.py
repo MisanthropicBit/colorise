@@ -23,7 +23,7 @@ except ImportError:
 def reset_color(file=sys.stdout):
     """Reset all colors and attributes."""
     handle = get_win_handle(file)
-    set_color(handle.default_fg, handle.default_bg, file=file)
+    set_console_text_attribute(handle, handle.default_fg | handle.default_bg)
 
 
 def or_bit_flags(*bit_flags):
@@ -41,15 +41,20 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
             colorise.nix.set_color(fg, bg, attributes, file)
         else:
             # Ordinary terminal capabilities, use Windows API
-            attr_codes = colorise.attributes.to_codes(attributes)
-            color_codes = [colorise.cluts.get_color(fg, False),
-                           colorise.cluts.get_color(bg, True)]
+            if Attr.Reset not in attributes:
+                handle = get_win_handle(file)
+                codes = to_codes(attributes)
 
-            # Combine character attributes and color codes into a single
-            # bitwise OR'ed bitflag
-            flags = or_bit_flags(*(list(attr_codes) + color_codes))
+                color.append(get_color(fg, False, attributes)
+                             if fg else handle.default_fg)
+                color.append(get_color(bg, True, attributes)
+                             if bg else handle.default_bg)
 
-            set_console_text_attribute(get_win_handle(file), flags)
+                # Combine attributes and color codes into a single bitflag
+                flags = or_bit_flags(*codes)
+                set_console_text_attribute(handle, flags)
+            else:
+                reset_color(file)
 
 
 def redefine_colors(color_map, file=sys.stdout):
