@@ -20,19 +20,19 @@ _SYSTEM_OS = platform.system().lower()
 
 # OS-dependent imports
 if 'windows' in _SYSTEM_OS:
-    from colorise.win.cluts import num_colors as _num_colors
-
     from colorise.win.cluts import get_prefix,\
         get_clut,\
         color_from_name,\
-        color_from_index
+        color_from_index,\
+        get_rgb_color,\
+        num_colors as _num_colors
 else:
-    from colorise.nix.cluts import num_colors as _num_colors
-
     from colorise.nix.cluts import get_prefix,\
         get_clut,\
         color_from_name,\
-        color_from_index
+        color_from_index,\
+        get_rgb_color,\
+        num_colors as _num_colors
 
 _INNER_DELIMITER = ';'
 _RGB_RE = re.compile(r'^(rgb)?\((\d{1,3};\s*\d{1,3};\s*\d{1,3})\)$')

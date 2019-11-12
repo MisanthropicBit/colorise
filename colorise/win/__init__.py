@@ -3,11 +3,13 @@
 
 """Windows color functions."""
 
-import colorise.cluts
 import colorise.win.cluts
-from colorise.win.win32_functions import get_win_handle,\
-    set_console_text_attribute
-from colorise.win.win32_functions import redefine_colors as _redefine_colors
+from colorise.attributes import Attr, to_codes
+from colorise.cluts import get_color
+from colorise.win.win32_functions import\
+    get_win_handle,\
+    set_console_text_attribute,\
+    redefine_colors as _redefine_colors
 import operator
 import sys
 
