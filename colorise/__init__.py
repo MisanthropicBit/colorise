@@ -102,15 +102,14 @@ def color_names():
         'cyan',
         'gray',
         'grey',
-        'lightblack',
+        'lightgrey',
         'lightred',
         'lightgreen',
         'lightyellow',
         'lightblue',
         'lightpurple',
         'lightcyan',
-        'lightgray',
-        'lightgrey'
+        'white',
     ]
 
 
