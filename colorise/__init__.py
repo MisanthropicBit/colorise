@@ -6,8 +6,8 @@
 from __future__ import print_function
 
 import atexit
-import colorise.cluts
 import colorise.formatter
+from colorise.attributes import Attr
 import itertools
 import os
 import platform
