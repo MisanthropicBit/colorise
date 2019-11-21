@@ -67,10 +67,7 @@ else:
         redefine_colors as _redefine_colors
 
     if _DEBUG_MODE:
-        if sys.version_info[:2] < (2, 6):
-            dist = platform.dist()
-        else:
-            dist = platform.linux_distribution()
+        dist = platform.linux_distribution()
 
         print('{0}, {1}, {2} ({3}-bit)'.format(dist + _32or64bit()))
 
