@@ -7,7 +7,7 @@ This class extends the string.Formatter class.
 
 """
 
-from colorise.attributes import attribute_names, attribute_from_name
+from colorise.attributes import Attr
 import string
 
 
@@ -37,7 +37,7 @@ class ColorFormatter(string.Formatter):
         self._enabled = True
         self._set_color_func = set_color_func
         self._reset_func = reset_func
-        self._attribute_names = attribute_names()
+        self._attribute_names = Attr.names()
 
     @property
     def autoreset(self):
@@ -111,7 +111,7 @@ class ColorFormatter(string.Formatter):
                 is_fg = False
             elif color in self._attribute_names:
                 # This is an attribute
-                result[1 if is_fg else 3].append(attribute_from_name(color))
+                result[1 if is_fg else 3].append(Attr.from_name(color))
             else:
                 raise ValueError("Unknown color format or attribute '{0}'"
                                  .format(color))

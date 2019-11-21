@@ -48,13 +48,16 @@ if _SYSTEM_OS.startswith('win'):
     from colorise.win import\
         reset_color,\
         set_color as _set_color,\
-        redefine_colors as _redefine_colors
+        redefine_colors as _redefine_colors,\
+        num_colors as _num_colors,\
+        set_color as _set_color
 
-    # Set up the Windows color table
-    colorise.win.cluts.set_windows_clut()
+    from colorise.win.win32_functions import\
+        can_redefine_colors as _can_redefine_colors,\
+        restore_console_modes
 
     # Ensure that the console mode set before colorise was loaded is restored
-    # atexit.register(colorise.win.reset_console_mode)
+    atexit.register(restore_console_modes)
 
     if _DEBUG_MODE:
         print('{0} {1} ({2}-bit)'.format(platform.system(),
@@ -64,12 +67,45 @@ else:
     from colorise.nix import\
         reset_color,\
         set_color as _set_color,\
-        redefine_colors as _redefine_colors
+        redefine_colors as _redefine_colors,\
+        num_colors as _num_colors,\
+        set_color as _set_color\
+
+    from colorise.nix.cluts import\
+        can_redefine_colors as _can_redefine_colors
 
     if _DEBUG_MODE:
         dist = platform.linux_distribution()
 
         print('{0}, {1}, {2} ({3}-bit)'.format(dist + _32or64bit()))
+
+# User-defined color count
+__NUM_COLORS__ = 0
+
+
+def num_colors():
+    """Return the number of colors supported by the terminal."""
+    if __NUM_COLORS__ > 0:
+        # Return a user-defined color count
+        return __NUM_COLORS__
+
+    return _num_colors()
+
+
+def set_num_colors(color_count):
+    """Set the number of colors available instead of autodetecting it.
+
+    This is primarily useful for testing and debugging.
+
+    """
+    color_counts = [8, 16, 88, 256, 2**24]
+
+    if color_count not in color_counts:
+        raise ValueError('Invalid color count, expected any of {0}'
+                         .format(', '.join(str(cc) for cc in color_counts)))
+
+    global __NUM_COLORS__
+    __NUM_COLORS__ = color_count
 
 
 def can_redefine_colors():
@@ -78,7 +114,7 @@ def can_redefine_colors():
     Only returns True for Windows 7/Vista and beyond as of now.
 
     """
-    return colorise.cluts.can_redefine_colors()
+    return _can_redefine_colors()
 
 
 def redefine_colors(color_map, file=sys.stdout):
@@ -109,20 +145,6 @@ def color_names():
         'lightcyan',
         'white',
     ]
-
-
-def num_colors():
-    """Return the number of colors supported by the terminal."""
-    return colorise.cluts.num_colors()
-
-
-def set_num_colors(color_count):
-    """Set the number of colors available instead of autodetecting it.
-
-    This is primarily useful for testing and debugging.
-
-    """
-    colorise.cluts.set_num_colors(color_count)
 
 
 def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):

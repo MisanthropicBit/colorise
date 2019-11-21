@@ -121,43 +121,12 @@ def get_clut(color_count):
         }[color_count]
 
 
-def num_colors():
-    """Attempt to get the number of colors supported by the terminal."""
-    # iTerm supports true-color from version 3 onward, earlier versions
-    # supported 256 colors
-    if terminal_name() == 'iTerm.app':
-        version = os.environ.get('TERM_PROGRAM_VERSION', '')
-
-        if version and int(version.split('.')[0]) > 2:
-            return 2**24
-        else:
-            return 256
-
-    # If all else fails, use curses
-    import curses
-    color_count = 0
-
-    try:
-        curses.setupterm()
-        color_count = curses.tigetnum('colors')
-    except curses.error:
-        pass
-    except io.UnsupportedOperation:
-        pass
-
-    if color_count <= 0:
-        # Failed to get color count from curses, default to 16 colors
-        return 16
-
-    return color_count
-
-
 def can_redefine_colors():
     """Return whether the terminal allows redefinition of colors."""
     return False
 
 
-def color_from_name(name, color_count, bg):
+def color_from_name(name, color_count, bg, attributes):
     """Return the color value and color count for a given color name."""
     if name not in _NIX_SYSTEM_COLOR_NAMES:
         raise ValueError("Unknown color name '{0}'".format(name))
@@ -167,7 +136,7 @@ def color_from_name(name, color_count, bg):
     return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name] + 10 * int(bg)
 
 
-def color_from_index(idx, color_count, bg):
+def color_from_index(idx, color_count, bg, attributes):
     """Return the color value and color count for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
@@ -197,7 +166,7 @@ def color_from_index(idx, color_count, bg):
             return _COLOR_PREFIX_16, key + 10 * int(bg)
 
 
-def get_rgb_color(color_count, bg, rgb):
+def get_rgb_color(color_count, bg, rgb, attributes):
     """Get the color for an RGB triple or approximate it if necessary."""
     prefix = get_prefix(color_count, bg)
 

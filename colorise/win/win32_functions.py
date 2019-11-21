@@ -5,12 +5,12 @@
 
 import colorise
 import ctypes
-from ctypes import windll, wintypes
+from ctypes import windll, wintypes, WinError
 import sys
 
 
 # Invalid handle type for error checking
-INVALID_HANDLE_VALUE = ctypes.c_void_p(-1).value
+INVALID_HANDLE_VALUE = ctypes.HANDLE(-1).value
 
 # Handle IDs for stdout and stderr
 _STDOUT_HANDLE_ID = -11
@@ -89,12 +89,12 @@ if can_redefine_colors():
 
 
 class WinHandle(object):
-
     """Represents a Windows stream handle."""
 
     def __init__(self, handle):
         """Initialise the Windows handle."""
         self._handle = handle
+        self._console_mode = 0
         self.fg = 0
         self.bg = 0
 
@@ -139,61 +139,18 @@ class WinHandle(object):
     def default_bg(self, value):
         self._default_bg = value
 
+    @property
+    def console_mode(self):
+        """Return the current console mode for the handle."""
+        return self._console_mode
+
+    @console_mode.setter
+    def console_mode(self, value):
+        self._console_mode = value
+
     def __str__(self):
         return "{0}({1}, {2})".format(self.__class__.__name__,
                                       self.fg, self.bg)
-
-
-def raise_win_error(error_code=None):
-    """Format and raise a Windows specific error."""
-    err_id = windll.kernel32.GetLastError()
-
-    LANG_NEUTRAL = 0x0
-    SUBLANG_NEUTRAL = 0x0
-    LANG_ENGLISH = 0x9
-    SUBLANG_ENGLISH_US = 0x1
-
-    # SYS_FLAG is a combination of:
-    # FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_IGNORE_INSERTS and
-    # FORMAT_MESSAGE_FROM_SYSTEM
-    SYS_FLAG = 0x1300
-
-    bufptr = wintypes.LPWSTR()
-
-    # Format as english
-    chars = windll.kernel32.FormatMessageW(
-            SYS_FLAG,
-            None,
-            err_id,
-            (LANG_ENGLISH & 0xff) | (SUBLANG_ENGLISH_US & 0xff) << 16,
-            ctypes.byref(bufptr),
-            0,
-            None
-        )
-
-    # If english formatting fails, format in system neutral language
-    if chars == 0:
-        chars = windll.kernel32.FormatMessageW(
-                SYS_FLAG,
-                None,
-                err_id,
-                (LANG_NEUTRAL & 0xff) | (SUBLANG_NEUTRAL & 0xff) << 16,
-                ctypes.byref(bufptr),
-                0,
-                None
-            )
-
-    msg = ''
-
-    if bufptr:
-        # Free the message buffer
-        msg = bufptr.value[:chars]
-        windll.kernel32.LocalFree(bufptr)
-
-    if error_code:
-        raise WindowsError(error_code, msg)
-    else:
-        raise WindowsError(msg)
 
 
 def create_std_handle(handle_id):
@@ -201,16 +158,15 @@ def create_std_handle(handle_id):
     win_handle = WinHandle(windll.kernel32.GetStdHandle(handle_id))
 
     if win_handle.handle == INVALID_HANDLE_VALUE:
-        raise_win_error(INVALID_HANDLE_VALUE)
+        raise WinError()
 
     csbi = CONSOLE_SCREEN_BUFFER_INFO()
-    retval = windll.kernel32.GetConsoleScreenBufferInfo(
-            win_handle.handle,
-            ctypes.byref(csbi)
-        )
 
-    if retval == 0:
-        raise_win_error(retval)
+    if windll.kernel32.GetConsoleScreenBufferInfo(
+                win_handle.handle,
+                ctypes.byref(csbi)
+            ) == 0:
+        raise WinError()
 
     # Set defaults color values
     # TODO: Do these need to be reread when colors are redefined?
@@ -239,29 +195,29 @@ def get_win_handle(target):
     raise ValueError('Only stdout and stderr supported')
 
 
-def set_windows_clut():
+def get_windows_clut():
     """Set the internal Windows color look-up table."""
-    if can_redefine_colors():
-        # On Windows Vista and beyond you can query the current colors in the
-        # color table. On older platforms, use the default color table
-        csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
+    # On Windows Vista and beyond you can query the current colors in the
+    # color table. On older platforms, use the default color table
+    csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
+    csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
-        windll.kernel32.GetConsoleScreenBufferInfoEx(
-            colorise._color_manager._handle,
-            ctypes.byref(csbiex)
-        )
+    if windll.kernel32.GetConsoleScreenBufferInfoEx(
+                get_win_handle(sys.stdout).handle,
+                ctypes.byref(csbiex)
+            ) == 0:
+        raise WinError()
 
-        # Update according to the currently set colors
-        for i in range(16):
-            _WINDOWS_CLUT[i] =\
-                (windll.kernel32.GetRValue(csbiex.ColorTable[i]),
-                 windll.kernel32.GetGValue(csbiex.ColorTable[i]),
-                 windll.kernel32.GetBValue(csbiex.ColorTable[i]))
+    clut = {}
 
-    # Create a mapping from windows colors to their logical names
-    for color, name in zip(_WINDOWS_CLUT.values(),
-                           _WINDOWS_LOGICAL_NAMES):
-        _WINDOWS_LOGICAL_NAMES[color] = name
+    # Update according to the currently set colors
+    for i in range(16):
+        clut[i] =\
+            (csbiex.ColorTable[i] & 0xff,
+             (csbiex.ColorTable[i] >> 8) & 0xff,
+             (csbiex.ColorTable[i] >> 16) & 0xff)
+
+    return clut
 
 
 def enable_virtual_terminal_processing(handle):
@@ -271,9 +227,11 @@ def enable_virtual_terminal_processing(handle):
 
     console_mode = wintypes.DWORD(0)
 
-    if not windll.kernel32.GetConsoleMode(handle.handle,
-                                          ctypes.byref(console_mode)):
-        raise_win_error()
+    if windll.kernel32.GetConsoleMode(handle.handle,
+                                      ctypes.byref(console_mode)) == 0:
+        raise WinError()
+
+    handle.console_mode = console_mode
 
     target_mode = wintypes.DWORD(console_mode.value |
                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING |
@@ -281,12 +239,12 @@ def enable_virtual_terminal_processing(handle):
 
     # First attempt to set console mode to interpret ANSI escape codes and
     # disable immediately jumping to the next console line
-    if not windll.kernel32.SetConsoleMode(handle.handle, target_mode):
+    if windll.kernel32.SetConsoleMode(handle.handle, target_mode) == 0:
         # If that fails, try just setting the mode for ANSI escape codes
         target_mode = wintypes.DWORD(console_mode.value |
                                      ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 
-        if not windll.kernel32.SetConsoleMode(handle.handle, target_mode):
+        if windll.kernel32.SetConsoleMode(handle.handle, target_mode) == 0:
             return None
 
     # Return the original console mode so we can restore it later
@@ -299,11 +257,22 @@ def restore_console_mode(handle, restore_mode):
         raise ValueError('Invalid handle')
 
     if not windll.kernel32.SetConsoleMode(handle.handle, restore_mode):
-        raise_win_error()
+        raise WinError()
+
+
+def restore_console_modes():
+    """Restore console modes to their original mode."""
+    if can_interpret_ansi():
+        stdout = get_win_handle(sys.stdout)
+        stderr = get_win_handle(sys.stderr)
+        restore_console_mode(stdout, stdout.console_mode)
+        restore_console_mode(stderr, stderr.console_mode)
 
 
 _WIN_CAN_INTERPRET_ANSI_CODES =\
     enable_virtual_terminal_processing(_STDOUT_HANDLE) is not None
+
+enable_virtual_terminal_processing(_STDERR_HANDLE)
 
 
 def can_interpret_ansi():
@@ -316,9 +285,9 @@ def set_console_text_attribute(handle, flags):
     if not handle or handle == INVALID_HANDLE_VALUE:
         raise ValueError('Invalid handle')
 
-    if not windll.kernel32.SetConsoleTextAttribute(handle.handle,
-                                                   wintypes.WORD(flags)):
-        raise_win_error()
+    if windll.kernel32.SetConsoleTextAttribute(handle.handle,
+                                               wintypes.WORD(flags)) == 0:
+        raise WinError()
 
 
 def encode_rgb_tuple(rgb):
@@ -350,19 +319,23 @@ def redefine_colors(color_map, file=sys.stdout):
     # TODO: Check if allocation succeeds?
     csbiex = colorise.win.cluts.CONSOLE_SCREEN_BUFFER_INFOEX()
 
+    # We must set the size of the structure before using it
+    csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
+
     win_handle = get_win_handle(file)
 
     # Get console color info
-    windll.kernel32.GetConsoleScreenBufferInfoEx(
-            win_handle,
-            ctypes.byref(csbiex)
-        )
+    if windll.kernel32.GetConsoleScreenBufferInfoEx(
+                win_handle,
+                ctypes.byref(csbiex)
+            ) == 0:
+        raise WinError()
 
-    # Redefine colors
-    for idx, color in color_map:
-        csbiex.ColorTable[idx] = encode_rgb_tuple(color)
+    # Redefine colortable
+    for idx in color_map:
+        csbiex.ColorTable[idx] = encode_rgb_tuple(color_map[idx])
 
     # Set the new colors
-    if not windll.kernel32.SetConsoleScreenBufferInfoEx(
-                win_handle.handle, csbiex):
-        raise_win_error()
+    if windll.kernel32.SetConsoleScreenBufferInfoEx(
+            win_handle.handle, csbiex) == 0:
+        raise WinError()

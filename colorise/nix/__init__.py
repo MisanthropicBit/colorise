@@ -3,9 +3,43 @@
 
 """Linux/Mac color functions."""
 
-from colorise.attributes import Attr, to_codes
-import colorise.nix.cluts
+from colorise.attributes import Attr
+from colorise.cluts import get_color
+from colorise.terminal import terminal_name
+import io
+import os
 import sys
+
+
+def num_colors():
+    """Attempt to get the number of colors supported by the terminal."""
+    # iTerm supports true-color from version 3 onward, earlier versions
+    # supported 256 colors
+    if terminal_name() == 'iTerm.app':
+        version = os.environ.get('TERM_PROGRAM_VERSION', '')
+
+        if version and int(version.split('.')[0]) > 2:
+            return 2**24
+        else:
+            return 256
+
+    # If all else fails, use curses
+    import curses
+    color_count = 0
+
+    try:
+        curses.setupterm()
+        color_count = curses.tigetnum('colors')
+    except curses.error:
+        pass
+    except io.UnsupportedOperation:
+        pass
+
+    if color_count <= 0:
+        # Failed to get color count from curses, default to 16 colors
+        return 16
+
+    return color_count
 
 
 def to_ansi(*codes):
@@ -14,6 +48,11 @@ def to_ansi(*codes):
         return ''
 
     return '\033[{0}m'.format(';'.join(str(c) for c in codes))
+
+
+def attributes_to_codes(attributes):
+    """Convert a set of attributes to ANSI escape codes."""
+    return [int(attr.value) for attr in attributes]
 
 
 def reset_color(file=sys.stdout):
@@ -32,16 +71,15 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     codes = []
 
     if attributes:
-        codes.append(to_ansi(*to_codes(attributes)))
+        codes.append(to_ansi(*attributes_to_codes(attributes)))
 
     if Attr.Reset not in attributes:
-        if fg:
-            fg_prefix, fg_color = colorise.cluts.get_color(fg, False)
-            codes.append(fg_prefix.format(fg_color))
+        color_count = num_colors()
 
-        if bg:
-            bg_prefix, bg_color = colorise.cluts.get_color(bg, True)
-            codes.append(bg_prefix.format(bg_color))
+        for colorspec, isbg in ((fg, False), (bg, True)):
+            if colorspec:
+                prefix, color = get_color(colorspec, color_count, isbg)
+                codes.append(prefix.format(color))
 
     if codes:
         file.write(''.join(codes))

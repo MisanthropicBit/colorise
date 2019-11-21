@@ -8,18 +8,10 @@ effect.
 
 """
 
-import platform
-
-try:
-    from enum import Enum  # Python 3
-except ImportError:
-    from enum34 import Enum  # Python 2
-
-_SYSTEM_OS = platform.system().lower()
+from enum import Enum
 
 
 class Attr(Enum):
-
     """Console attributes.
 
     Each attribute's value is defined via its ANSI escape code.
@@ -35,30 +27,16 @@ class Attr(Enum):
     Blink = 5
     Reverse = 7
 
+    @classmethod
+    def from_name(cls, attribute):
+        """Return an attribute object from its name.
 
-if 'windows' in _SYSTEM_OS:
-    import colorise.win.cluts
+        E.g. 'bold' -> Attr.Bold
 
-    def to_codes(attributes):
-        """Convert a set of attributes to Windows character attributes."""
-        attrs = colorise.win.attributes()
+        """
+        return cls[attribute.title()]
 
-        return [attrs[attr] for attr in attributes]
-else:
-    def to_codes(attributes):
-        """Convert a set of attributes to ANSI escape codes."""
-        return [int(attr.value) for attr in attributes]
-
-
-def attribute_from_name(attribute):
-    """Return an attribute object from its name.
-
-    E.g. 'bold' -> Attr.Bold
-
-    """
-    return Attr[attribute.title()]
-
-
-def attribute_names():
-    """Return a set of all attribute names."""
-    return set(attr.name.lower() for attr in Attr)
+    @classmethod
+    def names(cls):
+        """Return a set of all attribute names."""
+        return set(attr.name.lower() for attr in cls)
