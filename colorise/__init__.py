@@ -45,7 +45,7 @@ if _DEBUG_MODE:
 
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
-    from colorise.win import\
+    from colorise.win.color_functions import\
         reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
@@ -64,7 +64,7 @@ if _SYSTEM_OS.startswith('win'):
                                          platform.release(),
                                          _32or64bit()))
 else:
-    from colorise.nix import\
+    from colorise.nix.color_functions import\
         reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
