@@ -103,6 +103,7 @@ def color_names():
         'gray',
         'grey',
         'lightgrey',
+        'lightgray',
         'lightred',
         'lightgreen',
         'lightyellow',
