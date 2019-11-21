@@ -145,19 +145,20 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attribtues are reset before the function returns.
 
     """
-    if enabled:
+    if not enabled:
+        file.write(string)
+        file.write(end)
+        file.flush()
+    else:
         set_color(fg, bg, attributes, file)
-
-    file.write(string)
-
-    if enabled:
+        file.write(string)
         file.flush()  # Flush before resetting colors
         reset_color(file)
 
-    # Make sure to print the end keyword after resetting so the next line is
-    # not affected by a newline or similar
-    file.write(end)
-    file.flush()  # Flush before resetting colors
+        # Make sure to print the end keyword after resetting so the next line
+        # is not affected by a newline or similar
+        file.write(end)
+        file.flush()  # Flush before resetting colors
 
 
 # Global color formatter instance
