@@ -251,8 +251,6 @@ def redefine_colors(color_map, file=sys.stdout):
 
     # Create a new CONSOLE_SCREEN_BUFFER_INFOEX structure based on the given
     # color map
-    #
-    # TODO: Check if allocation succeeds?
     csbiex = colorise.win.cluts.CONSOLE_SCREEN_BUFFER_INFOEX()
 
     # We must set the size of the structure before using it

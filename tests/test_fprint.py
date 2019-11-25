@@ -25,7 +25,6 @@ def test_valid_formats():
 
 
 def test_invalid_formats():
-
     with pytest.raises(ValueError):
         colorise.fprint('{fg=unknown}Hello')
 
