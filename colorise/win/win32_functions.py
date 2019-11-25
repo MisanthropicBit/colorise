@@ -132,7 +132,7 @@ def get_win_handle(target):
 
 
 def get_windows_clut():
-    """Set the internal Windows color look-up table."""
+    """Query and return the internal Windows color look-up table."""
     # On Windows Vista and beyond you can query the current colors in the
     # color table. On older platforms, use the default color table
     csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
@@ -197,7 +197,7 @@ def restore_console_mode(handle, restore_mode):
 
 
 def restore_console_modes():
-    """Restore console modes to their original mode."""
+    """Restore console modes for stdout and stderr to their original mode."""
     if can_interpret_ansi():
         stdout = get_win_handle(sys.stdout)
         stderr = get_win_handle(sys.stderr)
