@@ -90,32 +90,3 @@ pip install colorise
 
 To get started check out the [tutorial](), [docs]() or the examples in the
 [`examples`](/examples) folder.
-
-## Implementation notes
-
-On Linux and Unix there are no 'dark' themed backgrounds (perhaps "bolded" or
-"bright" colors are a better name, but do not truly represnt darkened colors),
-so calling
-
-```bash
->>> colorise.cprint("Isn't this wrong?", bg='darkred')
-```
-
-will not necessarily give the expected result. This is due to the many different
-termnial/console types, making it is virtually impossible to correctly map color
-names to their actual colors. Additionally, some consoles, such as iTerm and the
-Windows standard console, lets you redefine colors, so that using logical
-colornames is no guarantee for consistency. ``colorise`` assumes the following
-available colors on all systems:
-
-* Black
-* Red
-* Green
-* Yellow
-* Blue
-* Magenta
-* Cyan
-* White
-
-It is therefore best to stick to these systems colors which are more likely to
-be present and "correct", like 'red', 'blue' and 'green'.
