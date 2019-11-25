@@ -46,7 +46,7 @@ if _DEBUG_MODE:
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
     from colorise.win.color_functions import\
-        reset_color,\
+        reset_color as _reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
         num_colors as _num_colors,\
@@ -65,7 +65,7 @@ if _SYSTEM_OS.startswith('win'):
                                          _32or64bit()))
 else:
     from colorise.nix.color_functions import\
-        reset_color,\
+        reset_color as _reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
         num_colors as _num_colors,\
@@ -154,6 +154,11 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
 
     """
     _set_color(fg, bg, attributes, file)
+
+
+def reset_color(file=sys.stdout):
+    """Reset all colors and attributes."""
+    _reset_color(file)
 
 
 def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
