@@ -41,7 +41,6 @@
 
 ```python
 >>> colorise.fprint('{fg=red}Hello {bg=blue}world!')
->>> colorise.fprint('{fg=red}Hello {bg=blue}world!', autoreset=True)
 ```
 
 * Automatically find the closest color based on the terminal's
@@ -61,6 +60,7 @@
 
 * Useful functions like [`highlight`](/examples/highlighting.py) that highlights
   individual characters in a string given a list of indices.
+* Support for attributes such as bold, italic, underline etc.
 
 ```python
 >>> colorise.highlight('Hello world', indices=[0, 2, 3, 7, 9], attributes=[Attr.Italic])
@@ -88,5 +88,4 @@ Install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
 pip install colorise
 ```
 
-To get started check out the [tutorial](), [docs]() or the examples in the
-[`examples`](/examples) folder.
+To get started check out the [tutorial](), [docs]() or the [examples]().
