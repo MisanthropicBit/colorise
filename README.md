@@ -20,7 +20,8 @@
 
 ---
 
-`colorise` provides easy cross-platform text coloring for terminals/consoles.
+`colorise` provides easy cross-platform text coloring for terminals/consoles and
+has [been tested](/TESTED_ON.md) on different platforms/terminals.
 
 ## Features
 
@@ -65,20 +66,6 @@
 ```python
 >>> colorise.highlight('Hello world', indices=[0, 2, 3, 7, 9], attributes=[Attr.Italic])
 ```
-
----
-
-`colorise` has been tested with the following terminals:
-
-* [iTerm 3.2.9](https://iterm2.com/)
-* Terminal.app 2.9.4 (421.1.1)
-* The default Windows console (Windows 8.1)
-* [ConEmu](https://conemu.github.io/) vX.X.X (Windows 8.1)
-
-Something not working as expected with your terminal? Please report an
-[issue](https://github.com/MisanthropicBit/colorise/issues) or submit a [pull
-request](https://github.com/MisanthropicBit/colorise/pulls) using the
-[contribution guidelines](/CONTRIBUTING.md).
 
 ## Installation
 
