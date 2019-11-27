@@ -12,8 +12,7 @@ request](https://github.com/MisanthropicBit/colorise/pulls) using the
 
 ## Windows
 
-* The default Windows console (Windows 8.1)
-* [ConEmu](https://conemu.github.io/) vX.X.X (Windows 8.1)
+* Default Windows console (Windows 8.1 Pro, version 6.3, build 9600)
 
 ## Linux
 
