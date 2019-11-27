@@ -5,13 +5,9 @@
 
 import colorise
 from colorise.attributes import Attr
+from io import StringIO
 import pytest
 import sys
-
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 
 @pytest.fixture

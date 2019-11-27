@@ -4,13 +4,10 @@
 """Test the fprint function."""
 
 import colorise
+from io import StringIO
 import pytest
 import sys
 
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 
 def test_valid_formats():
