@@ -26,6 +26,15 @@ def test_valid_cprint():
     colorise.cprint('Hello', bg='hsv(249;41;100)')
     colorise.cprint('Hello', bg='rgb(167;151;255)')
 
+    colorise.cprint('Hello', fg='red', bg='red')
+    colorise.cprint('Hello', fg=201, bg=201)
+    colorise.cprint('Hello', fg='#a696ff', bg='#a696ff')
+    colorise.cprint('Hello', fg='0xa696ff', bg='0xa696ff')
+    colorise.cprint('Hello', fg='hls(0.6919;0.7940;1.0)',
+                    bg='hls(0.6919;0.7940;1.0)')
+    colorise.cprint('Hello', fg='hsv(249;41;100)', bg='hsv(249;41;100)')
+    colorise.cprint('Hello', fg='rgb(167;151;255)', bg='rgb(167;151;255)')
+
 
 def test_invalid_cprint():
     kwargs = [
