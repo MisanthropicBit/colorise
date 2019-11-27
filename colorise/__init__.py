@@ -192,8 +192,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
 _color_formatter = colorise.formatter.ColorFormatter(set_color, reset_color)
 
 
-def fprint(fmt, autoreset=False, end=os.linesep, file=sys.stdout,
-           enabled=True):
+def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
     """Print a string with color formatting.
 
     The autoreset keyword controls if colors and attributes are reset before

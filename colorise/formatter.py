@@ -68,6 +68,7 @@ class ColorFormatter(string.Formatter):
 
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
+        first_format = True
         tokens = super(ColorFormatter, self).parse(format_string)
 
         for literal_text, field_name, format_spec, conversion in tokens:
@@ -77,8 +78,9 @@ class ColorFormatter(string.Formatter):
                 # Emit any literal text
                 yield literal_text, None, None, None
 
-                # Automatically reset colors and attributes if enabled
-                if self.autoreset:
+                # Automatically reset colors and attributes if enabled and if
+                # it is not the first format we encounter
+                if self.autoreset and not first_format:
                     self._reset_func(self.file)
 
                 # Set colors and attributes
@@ -88,6 +90,8 @@ class ColorFormatter(string.Formatter):
             else:
                 # Yield tokens as normal
                 yield literal_text, field_name, format_spec, conversion
+
+            first_format = False
 
     def _parse_color_format(self, colors):
         """Parse and extract the color format from a format field."""

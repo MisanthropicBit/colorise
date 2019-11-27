@@ -114,5 +114,4 @@ def test_fprint_autoreset():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint(text, file=sys.stdout, autoreset=True)
-        assert sio.getvalue() == '\x1b[0m\x1b[31mHello '\
-                                 '\x1b[0m\x1b[44mworld!\x1b[0m\n'
+        assert sio.getvalue() == '\x1b[31mHello \x1b[0m\x1b[44mworld!\x1b[0m\n'
