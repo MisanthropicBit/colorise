@@ -9,39 +9,41 @@ import pytest
 import sys
 
 
+def test_valid_fprint():
+    colorise.fprint('Hello {fg=red}world')
+    colorise.fprint('Hello {fg=201}world')
+    colorise.fprint('Hello {fg=#a696ff}world')
+    colorise.fprint('Hello {fg=0xa696ff}world')
+    colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0)}world')
+    colorise.fprint('Hello {fg=hsv(249;41;100)}world')
+    colorise.fprint('Hello {fg=rgb(167;151;255)}world')
 
-def test_valid_formats():
-    print(colorise.num_colors())
-    colorise.fprint('{fg=red}Hello')
-    colorise.fprint('{fg=201}Hello')
-    colorise.fprint('{fg=#a696ff}Hello')
-    colorise.fprint('{fg=0xa696ff}Hello')
-    colorise.fprint('{fg=hls(0.6923;0.7960;1.0)}Hello')
-    colorise.fprint('{fg=hsv(249;41;100)}Hello')
-    colorise.fprint('{fg=rgb(167;151;255)}Hello')
+    colorise.fprint('Hello {bg=red}world')
+    colorise.fprint('Hello {bg=201}world')
+    colorise.fprint('Hello {bg=#a696ff}world')
+    colorise.fprint('Hello {bg=0xa696ff}world')
+    colorise.fprint('Hello {bg=hls(0.6923;0.7960;1.0)}world')
+    colorise.fprint('Hello {bg=hsv(249;41;100)}world')
+    colorise.fprint('Hello {bg=rgb(167;151;255)}world')
 
 
-def test_invalid_formats():
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=unknown}Hello')
+def test_invalid_fprint():
+    kwargs = [
+        'unknown',
+        '300',
+        '#a69ff',
+        '0xa69ff',
+        'hls(0.6923,0.7960;1.0=',
+        'hsv(249;41;-100)',
+        'rgb(167;xxx;255)',
+    ]
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=300}Hello')
+    for kwarg in kwargs:
+        with pytest.raises(ValueError):
+            colorise.fprint('{fg=' + kwarg + '}Hello')
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=#a69ff}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=0xa69ff}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=hls(0.6923,0.7960;1.0=}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=hsv(249;41;-100)}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=rgb(167;xxx;255)}Hello')
+        with pytest.raises(ValueError):
+            colorise.fprint('{bg=' + kwarg + '}Hello')
 
 
 @pytest.mark.skip_on_windows
@@ -66,29 +68,19 @@ def test_valid_256_index_fprint_output():
 @pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_valid_truecolor_fprint_output():
-    sio = StringIO()
+    tests = [
+        ('fg=0xa696ff',         '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
+        ('fg=0xa696ff',         '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
+        ('fg=hsv(249;41;100)',  '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
+        ('fg=rgb(167;151;255)', '\x1b[38;2;167;151;255mHello\x1b[0m\n'),
+    ]
 
-    with pytest.redirect_stdout(sio):
-        colorise.fprint('{fg=0xa696ff}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
+    for color, expected_result in tests:
+        sio = StringIO()
 
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.fprint('{fg=hls(0.6919;0.7940;1.0)}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
-
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.fprint('{fg=hsv(249;41;100)}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;2;166;150;255mHello\x1b[0m\n'
-
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.fprint('{fg=rgb(167;151;255)}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;2;167;151;255mHello\x1b[0m\n'
+        with pytest.redirect_stdout(sio):
+            colorise.fprint('{' + color + '}Hello', file=sys.stdout)
+            assert sio.getvalue() == expected_result
 
 
 @pytest.mark.skip_on_windows
