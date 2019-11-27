@@ -11,7 +11,7 @@ import sys
 
 
 # Invalid handle type for error checking
-INVALID_HANDLE_VALUE = ctypes.HANDLE(-1).value
+INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
 
 # Handle IDs for stdout and stderr
 _STDOUT_HANDLE_ID = -11
@@ -251,7 +251,7 @@ def redefine_colors(color_map, file=sys.stdout):
 
     # Create a new CONSOLE_SCREEN_BUFFER_INFOEX structure based on the given
     # color map
-    csbiex = colorise.win.cluts.CONSOLE_SCREEN_BUFFER_INFOEX()
+    csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
 
     # We must set the size of the structure before using it
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
@@ -260,7 +260,7 @@ def redefine_colors(color_map, file=sys.stdout):
 
     # Get console color info
     if windll.kernel32.GetConsoleScreenBufferInfoEx(
-                win_handle,
+                win_handle.handle,
                 ctypes.byref(csbiex)
             ) == 0:
         raise WinError()

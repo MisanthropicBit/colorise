@@ -73,9 +73,9 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
                 color_count = num_colors()
                 codes = []
 
-                color.extend(get_color(fg, color_count, False, attributes)
+                codes.extend(get_color(fg, color_count, False, attributes)
                              if fg else [handle.default_fg])
-                color.extend(get_color(bg, color_count, True, attributes)
+                codes.extend(get_color(bg, color_count, True, attributes)
                              if bg else [handle.default_bg])
 
                 # Combine attributes and color codes into a single bitflag
