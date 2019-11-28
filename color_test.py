@@ -35,7 +35,7 @@ def print_system_colors(char):
     print('System colors:')
 
     for i, name in enumerate(colorise.color_names()):
-        if name in ('grey', 'magenta'):
+        if name in ('grey', 'magenta', 'lightgrey'):
             continue  # Skip aliases
 
         colorise.cprint(char, bg=name, end='')
