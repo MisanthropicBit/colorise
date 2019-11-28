@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # Set colors manually
     colorise.set_color('red')
     print(humpty[0])
-    colorise.reset()
+    colorise.reset_color()
 
     # Use colorise.cprint
     colorise.cprint(humpty[1], 'green')
