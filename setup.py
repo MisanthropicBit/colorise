@@ -1,6 +1,5 @@
 """colorise module setup script for distribution."""
 
-from __future__ import with_statement
 from setuptools import setup
 import os
 
@@ -12,24 +11,18 @@ def get_version(filename):
                 return line.split('=')[-1].strip()[1:-1]
 
 
-requirements = [
-        'enum34;python_version<"3.4"'
-    ]
-
-
 setup(
     name='colorise',
-    version=get_version('colorise/__init__.py'),
+    version=get_version(os.path.join('colorise', '__init__.py')),
     author='Alexander Asp Bock',
     author_email='albo.developer@gmail.com',
-    platforms="Platform independent",
+    platforms='Platform independent',
     description=('Easily print colored text to the console'),
     license='MIT License',
-    keywords='text, color, colorise, colorize',
+    keywords='text, color, colorise, colorize, console, terminal',
     packages=['colorise', 'colorise.win', 'colorise.nix'],
     package_data={'colorise': ['tests', 'examples']},
     url='https://github.com/MisanthropicBit/colorise',
-    install_requires=requirements,
     long_description=open('README.md').read(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
