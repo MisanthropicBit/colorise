@@ -13,7 +13,6 @@ import os
 import platform
 import sys
 
-_PY2 = sys.version_info[0] < 3
 _DEBUG_MODE = False
 _SYSTEM_OS = platform.system().lower()
 
