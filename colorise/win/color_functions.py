@@ -10,16 +10,11 @@ from colorise.win.win32_functions import\
     get_win_handle,\
     set_console_text_attribute,\
     redefine_colors as _redefine_colors
+import functools
 import operator
 import os
 import platform
 import sys
-
-try:
-    import functools
-    reduce = functools.reduce
-except ImportError:
-    pass
 
 
 def num_colors():
@@ -56,7 +51,7 @@ def reset_color(file=sys.stdout):
 
 def or_bit_flags(*bit_flags):
     """Bitwise OR together a list of bitflags into a single flag."""
-    return reduce(operator.or_, bit_flags)
+    return functools.reduce(operator.or_, bit_flags)
 
 
 def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
