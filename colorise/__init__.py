@@ -3,8 +3,6 @@
 
 """Python module for easy, cross-platform colored output to the terminal."""
 
-from __future__ import print_function
-
 import atexit
 import colorise.formatter
 from colorise.attributes import Attr

@@ -3,8 +3,6 @@
 
 """Demonstration of the various ways of coloring text."""
 
-from __future__ import print_function
-
 import random
 import colorise
 

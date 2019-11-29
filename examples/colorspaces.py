@@ -3,7 +3,6 @@
 
 """Show how to use different colorspaces."""
 
-from __future__ import print_function
 import colorise
 
 

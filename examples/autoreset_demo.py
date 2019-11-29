@@ -3,8 +3,6 @@
 
 """Demonstration of colorise's autoreset future when exceptions are thrown."""
 
-from __future__ import print_function
-
 import colorise
 
 

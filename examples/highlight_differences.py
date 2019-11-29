@@ -3,8 +3,6 @@
 
 """A simple function that illustrates how to use colorise.highlight."""
 
-from __future__ import print_function
-
 import colorise
 from colorise.attributes import Attr
 
