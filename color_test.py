@@ -27,7 +27,7 @@ def print_stats_and_env():
     stats.insert(1, (shellvar, os.environ.get(shellvar, 'N/A')))
 
     for name, value in stats:
-        print(('{0:<15}{1:>25}').format(name, value))
+        print(('{0:<15}{1:>30}').format(name, value))
 
 
 def print_system_colors(char):
