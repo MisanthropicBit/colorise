@@ -7,6 +7,7 @@ import colorise
 from colorise.win.winhandle import WinHandle
 import ctypes
 from ctypes import windll, wintypes, WinError
+import os
 import sys
 
 
@@ -213,6 +214,9 @@ enable_virtual_terminal_processing(_STDERR_HANDLE)
 
 def can_interpret_ansi():
     """Return True if the Windows console can interpret ANSI escape codes."""
+    if os.environ.get('ConEmuANSI', '') == 'ON':
+        return True
+
     return _WIN_CAN_INTERPRET_ANSI_CODES
 
 
