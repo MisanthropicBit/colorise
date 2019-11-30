@@ -169,6 +169,10 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attribtues are reset before the function returns.
 
     """
+    # Flush any remaining stuff before resetting colors
+    file.flush()
+    reset_color(file)
+
     if not enabled:
         file.write(string)
         file.write(end)
@@ -250,6 +254,10 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
     # Group consecutive indices, e.g. [0, 2, 3, 5, 6] -> [(0), (2, 3), (5, 6)]
     # NOTE: The lambda syntax is necessary to support both Python 2 and 3
     groups = itertools.groupby(enumerate(sorted(indices)), lambda x: x[0]-x[1])
+
+    # Flush any remaining stuff before resetting colors
+    file.flush()
+    reset_color(file)
 
     for _, group in groups:
         # Get the starting and ending indices of the group

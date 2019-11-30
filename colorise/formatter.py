@@ -68,6 +68,10 @@ class ColorFormatter(string.Formatter):
 
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
+        # Flush any remaining stuff before resetting colors
+        self.file.flush()
+        self._reset_func(self.file)
+
         first_format = True
         tokens = super(ColorFormatter, self).parse(format_string)
 
@@ -153,6 +157,7 @@ class ColorFormatter(string.Formatter):
             # Output the literal text
             if literal_text:
                 self.file.write(literal_text)
+                self.file.flush()
 
             # If there's a field, output it
             if field_name is not None:
