@@ -13,6 +13,7 @@ request](https://github.com/MisanthropicBit/colorise/pulls) using the
 ## Windows
 
 * Default Windows console (Windows 8.1 Pro, version 6.3, build 9600)
+* [ConEmu](https://conemu.github.io/), build 191012
 
 ## Linux
 
