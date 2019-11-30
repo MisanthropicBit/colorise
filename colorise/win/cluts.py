@@ -63,7 +63,8 @@ _WINDOWS_LOGICAL_NAMES = {
     'purple':  _FOREGROUND_RED | _FOREGROUND_BLUE,
     'blue':    _FOREGROUND_BLUE,
     'cyan':    _FOREGROUND_GREEN | _FOREGROUND_BLUE,
-    'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE,
+    'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE |\
+        _FOREGROUND_INTENSITY,
 }
 
 for name in ['red', 'green', 'blue', 'yellow', 'purple', 'magenta', 'cyan']:
@@ -74,6 +75,9 @@ _WINDOWS_LOGICAL_NAMES['gray'] = _WINDOWS_LOGICAL_NAMES['black'] |\
     _FOREGROUND_INTENSITY
 _WINDOWS_LOGICAL_NAMES['grey'] = _WINDOWS_LOGICAL_NAMES['black'] |\
     _FOREGROUND_INTENSITY
+_WINDOWS_LOGICAL_NAMES['lightgrey'] = _FOREGROUND_RED | _FOREGROUND_GREEN |\
+    _FOREGROUND_BLUE
+_WINDOWS_LOGICAL_NAMES['lightgray'] = _WINDOWS_LOGICAL_NAMES['lightgrey']
 
 
 def get_clut(color_count):
