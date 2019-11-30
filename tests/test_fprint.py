@@ -6,6 +6,7 @@
 import colorise
 from io import StringIO
 import pytest
+import os
 import sys
 
 
@@ -61,7 +62,7 @@ def test_valid_named_fprint_output():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint('{fg=red}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[31mHello\x1b[0m\n'
+        assert sio.getvalue() == '\x1b[31mHello\x1b[0m' + os.linesep
 
 
 @pytest.mark.skip_on_windows
@@ -71,17 +72,21 @@ def test_valid_256_index_fprint_output():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint('{fg=201}Hello', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;5;201mHello\x1b[0m\n'
+        assert sio.getvalue() == '\x1b[38;5;201mHello\x1b[0m' + os.linesep
 
 
 @pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_valid_truecolor_fprint_output():
     tests = [
-        ('fg=0xa696ff',         '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
-        ('fg=0xa696ff',         '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
-        ('fg=hsv(249;41;100)',  '\x1b[38;2;166;150;255mHello\x1b[0m\n'),
-        ('fg=rgb(167;151;255)', '\x1b[38;2;167;151;255mHello\x1b[0m\n'),
+        ('fg=0xa696ff',
+         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+        ('fg=0xa696ff',
+         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+        ('fg=hsv(249;41;100)',
+         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+        ('fg=rgb(167;151;255)',
+         '\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
     ]
 
     for color, expected_result in tests:
@@ -98,7 +103,7 @@ def test_fprint_disabled():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint('{fg=red}Hello', file=sys.stdout, enabled=False)
-        assert sio.getvalue() == 'Hello\n'
+        assert sio.getvalue() == 'Hello' + os.linesep
 
 
 @pytest.mark.skip_on_windows
@@ -108,10 +113,12 @@ def test_fprint_autoreset():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint(text, file=sys.stdout, autoreset=False)
-        assert sio.getvalue() == '\x1b[31mHello \x1b[44mworld!\x1b[0m\n'
+        assert sio.getvalue() ==\
+            '\x1b[31mHello \x1b[44mworld!\x1b[0m' + os.linesep
 
     sio = StringIO()
 
     with pytest.redirect_stdout(sio):
         colorise.fprint(text, file=sys.stdout, autoreset=True)
-        assert sio.getvalue() == '\x1b[31mHello \x1b[0m\x1b[44mworld!\x1b[0m\n'
+        assert sio.getvalue() ==\
+            '\x1b[31mHello \x1b[0m\x1b[44mworld!\x1b[0m' + os.linesep

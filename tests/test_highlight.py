@@ -6,6 +6,7 @@
 import colorise
 from io import StringIO
 import pytest
+import os
 import sys
 
 
@@ -51,14 +52,14 @@ def test_invalid_highlight():
 @pytest.mark.skip_on_windows
 def test_highlight_named_output():
     sio = StringIO()
-    result = '\x1b[31mH\x1b[0me\x1b[31ml\x1b[0ml\x1b[31mo\x1b[0m\n'
+    result = '\x1b[31mH\x1b[0me\x1b[31ml\x1b[0ml\x1b[31mo\x1b[0m' + os.linesep
 
     with pytest.redirect_stdout(sio):
         colorise.highlight('Hello', [0, 2, 4], fg='red', file=sys.stdout)
         assert sio.getvalue() == result
 
     sio = StringIO()
-    result = '\x1b[41mH\x1b[0me\x1b[41ml\x1b[0ml\x1b[41mo\x1b[0m\n'
+    result = '\x1b[41mH\x1b[0me\x1b[41ml\x1b[0ml\x1b[41mo\x1b[0m' + os.linesep
 
     with pytest.redirect_stdout(sio):
         colorise.highlight('Hello', [0, 2, 4], bg='red', file=sys.stdout)
@@ -70,7 +71,7 @@ def test_highlight_named_output():
 def test_highlight_256_index_output():
     sio = StringIO()
     result = '\x1b[38;5;201mH\x1b[0me\x1b[38;5;201m'\
-             'l\x1b[0ml\x1b[38;5;201mo\x1b[0m\n'
+             'l\x1b[0ml\x1b[38;5;201mo\x1b[0m' + os.linesep
 
     with pytest.redirect_stdout(sio):
         colorise.highlight('Hello', [0, 2, 4], fg=201, file=sys.stdout)
@@ -78,7 +79,7 @@ def test_highlight_256_index_output():
 
     sio = StringIO()
     result = '\x1b[48;5;201mH\x1b[0me\x1b[48;5;201m'\
-             'l\x1b[0ml\x1b[48;5;201mo\x1b[0m\n'
+             'l\x1b[0ml\x1b[48;5;201mo\x1b[0m' + os.linesep
 
     with pytest.redirect_stdout(sio):
         colorise.highlight('Hello', [0, 2, 4], bg=201, file=sys.stdout)
@@ -97,7 +98,7 @@ def test_highlight_truecolor_output():
         {'fg': 'rgb(166;150;255)'},
     ]
     result = '\x1b[38;2;166;150;255mH\x1b[0me\x1b[38;2;166;150;255m'\
-             'l\x1b[0ml\x1b[38;2;166;150;255mo\x1b[0m\n'
+             'l\x1b[0ml\x1b[38;2;166;150;255mo\x1b[0m' + os.linesep
 
     for kwarg in kwargs:
         sio = StringIO()
@@ -114,4 +115,4 @@ def test_highlight_disabled():
     with pytest.redirect_stdout(sio):
         colorise.highlight('Hello', [0, 2, 4], fg='red', file=sys.stdout,
                            enabled=False)
-        assert sio.getvalue() == 'Hello\n'
+        assert sio.getvalue() == 'Hello' + os.linesep

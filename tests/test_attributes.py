@@ -7,19 +7,20 @@ import colorise
 from colorise.attributes import Attr
 from io import StringIO
 import pytest
+import os
 import sys
 
 
 @pytest.fixture
 def expected_results():
     return zip(Attr, [
-            '\x1b[0mHello\x1b[0m\n',
-            '\x1b[1m\x1b[31mHello\x1b[0m\n',
-            '\x1b[2m\x1b[31mHello\x1b[0m\n',
-            '\x1b[3m\x1b[31mHello\x1b[0m\n',
-            '\x1b[4m\x1b[31mHello\x1b[0m\n',
-            '\x1b[5m\x1b[31mHello\x1b[0m\n',
-            '\x1b[7m\x1b[31mHello\x1b[0m\n',
+            '\x1b[0mHello\x1b[0m' + os.linesep,
+            '\x1b[1m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[2m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[3m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[4m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[5m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[7m\x1b[31mHello\x1b[0m' + os.linesep,
         ])
 
 
