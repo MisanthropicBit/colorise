@@ -59,9 +59,9 @@ def test_valid_named_cprint_output():
         ['red', 'red', None],
         [None, 'blue', 'blue'],
         [
-            '\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[31m\x1b[44mHello\x1b[0m' + os.linesep,
-            '\x1b[44mHello\x1b[0m' + os.linesep
+            '\x1b[0m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[31m\x1b[44mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[44mHello\x1b[0m' + os.linesep
         ]
     )
 
@@ -80,7 +80,7 @@ def test_valid_256_index_cprint_output():
 
     with pytest.redirect_stdout(sio):
         colorise.cprint('Hello', 201, file=sys.stdout)
-        assert sio.getvalue() == '\x1b[38;5;201mHello\x1b[0m' + os.linesep
+        assert sio.getvalue() == '\x1b[0m\x1b[38;5;201mHello\x1b[0m' + os.linesep
 
 
 @pytest.mark.skip_on_windows
@@ -88,13 +88,13 @@ def test_valid_256_index_cprint_output():
 def test_valid_truecolor_cprint_output():
     tests = [
         ({'fg': '0xa696ff'},
-         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ({'fg': 'hls(0.6919;0.7940;1.0)'},
-         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ({'fg': 'hsv(249;41;100)'},
-         '\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ({'fg': 'rgb(167;151;255)'},
-         '\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
+         '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
     ]
 
     for kwargs, expected_result in tests:
@@ -111,4 +111,4 @@ def test_cprint_disabled():
 
     with pytest.redirect_stdout(sio):
         colorise.cprint('Hello', fg='red', file=sys.stdout, enabled=False)
-        assert sio.getvalue() == 'Hello' + os.linesep
+        assert sio.getvalue() == '\x1b[0mHello' + os.linesep
