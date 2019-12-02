@@ -3,6 +3,7 @@
 
 """Linux/Mac color functions."""
 
+import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.cluts import get_color
 from colorise.terminal import terminal_name
@@ -78,7 +79,8 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
 
         for colorspec, isbg in ((fg, False), (bg, True)):
             if colorspec:
-                prefix, color = get_color(colorspec, color_count, isbg)
+                prefix, color = get_color(colorspec, color_count,
+                                          colorise.nix.cluts, isbg)
                 codes.append(prefix.format(color))
 
     if codes:

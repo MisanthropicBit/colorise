@@ -13,21 +13,7 @@ If you have corrections or suggestions, please submit an issue.
 """
 
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb, closest_color
-import platform
 import re
-
-_SYSTEM_OS = platform.system().lower()
-
-if _SYSTEM_OS.startswith('win'):
-    from colorise.win.cluts import\
-        color_from_name,\
-        color_from_index,\
-        get_rgb_color
-else:
-    from colorise.nix.cluts import\
-        color_from_name,\
-        color_from_index,\
-        get_rgb_color
 
 _DELIMITER = ';'
 
@@ -58,16 +44,16 @@ def match_color_formats(value):
     return None, None
 
 
-def get_color(value, color_count, bg=False, attributes=[]):
+def get_color(value, color_count, cluts, bg=False, attributes=[]):
     """Return the color given by a color format."""
     match, colorspace = match_color_formats(value)
 
     if colorspace == 'name':
         # Color was given as text, e.g. 'red'
-        return color_from_name(value, color_count, bg, attributes)
+        return cluts.color_from_name(value, color_count, bg, attributes)
     elif colorspace == 'index':
         # Color is a 8, 16, 88 or 256 color index
-        return color_from_index(int(value), color_count, bg, attributes)
+        return cluts.color_from_index(int(value), color_count, bg, attributes)
     elif colorspace == 'hex':
         value = match.group(2)
         rgb = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
@@ -80,4 +66,4 @@ def get_color(value, color_count, bg=False, attributes=[]):
     else:
         raise ValueError("Unknown color format '{0}'".format(value))
 
-    return get_rgb_color(color_count, bg, rgb, attributes)
+    return cluts.get_rgb_color(color_count, bg, rgb, attributes)
