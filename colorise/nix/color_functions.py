@@ -3,6 +3,7 @@
 
 """Linux/Mac color functions."""
 
+import colorise.error
 import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.cluts import get_color
@@ -90,5 +91,5 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
 
 def redefine_colors(color_map, file=sys.stdout):
     """Redefine the base console colors with a new mapping."""
-    # Cannot currently redefine colors on nix systems
-    pass
+    raise colorise.error.NotSupportedError('Cannot redefine colors on nix '
+                                           'systems')
