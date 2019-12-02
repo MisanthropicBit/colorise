@@ -16,11 +16,22 @@ from colorise.color_tools import hls_to_rgb, hsv_to_rgb, closest_color
 import re
 
 _DELIMITER = ';'
-
-_RGB_RE = re.compile(r'^(rgb)?\((\d{1,3};\s*\d{1,3};\s*\d{1,3})\)$')
+_RGB_RE = re.compile(r'^(rgb)?\((\d{1,3}' +
+                     _DELIMITER +
+                     r'\s*\d{1,3}' +
+                     _DELIMITER +
+                     r'\s*\d{1,3})\)$')
 _HEX_RE = re.compile(r'^(0x|#)?(([0-9a-fA-F]{2}){3})$')
-_HSV_RE = re.compile(r'^(hsv)\((\d+;\s*\d+;\s*\d+)\)$')
-_HLS_RE = re.compile(r'^(hls)\((\d+(\.\d+)?;\s*\d+(\.\d+)?;\s*\d+(\.\d+)?)\)$')
+_HSV_RE = re.compile(r'^(hsv)\((\d+' +
+                     _DELIMITER +
+                     r'\s*\d+' +
+                     _DELIMITER +
+                     r'\s*\d+)\)$')
+_HLS_RE = re.compile(r'^(hls)\((\d+(\.\d+)?' +
+                     _DELIMITER +
+                     r'\s*\d+(\.\d+)?' +
+                     _DELIMITER +
+                     r'\s*\d+(\.\d+)?)\)$')
 
 # Supported formats of colorise. The order matters!
 _FORMATS = [
