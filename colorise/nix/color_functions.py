@@ -48,7 +48,8 @@ def to_ansi(*codes):
     if not codes:
         return ''
 
-    return '\033[{0}m'.format(';'.join(str(c) for c in codes))
+    return colorise.nix.cluts._COLOR_ESCAPE_CODE +\
+        '{0}m'.format(';'.join(str(c) for c in codes))
 
 
 def attributes_to_codes(attributes):
