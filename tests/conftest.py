@@ -15,7 +15,7 @@ def pytest_configure(config):  # noqa
 
     config.addinivalue_line(
         'markers',
-        'skip_on_windows: skip test when on windows'
+        'skip_on_windows: skip test on windows'
     )
 
     config.addinivalue_line(
