@@ -30,12 +30,12 @@ has [been tested](/TESTED_ON.md) on different platforms/terminals.
 
 ```python
 >>> colorise.cprint('Hello', fg='red')
->>> colorise.cprint('Hello', fg=201)
+>>> colorise.cprint('Hello', bg=201)
 >>> colorise.cprint('Hello', fg='#a696ff')
->>> colorise.cprint('Hello', fg='0xa696ff')
+>>> colorise.cprint('Hello', bg='0xa696ff')
 >>> colorise.cprint('Hello', fg='hls(0.6923;0.7960;1.0)')
 >>> colorise.cprint('Hello', fg='hsv(249;41;100)')
->>> colorise.cprint('Hello', fg='rgb(167;151;255)')
+>>> colorise.cprint('Hello', bg='rgb(167;151;255)')
 ```
 
 * Custom color format akin to Python 3.0 [string formatting](https://docs.python.org/3.7/library/stdtypes.html#str.format).
