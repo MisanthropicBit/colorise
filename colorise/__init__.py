@@ -22,7 +22,6 @@ __all__ = [
     'redefine_colors',
     'color_names',
     'num_colors',
-    'set_num_colors',
     'set_color',
     'cprint',
     'fprint',
@@ -89,7 +88,7 @@ def num_colors():
     return _num_colors()
 
 
-def set_num_colors(color_count):
+def _set_num_colors(color_count):
     """Set the number of colors available instead of autodetecting it.
 
     This is primarily useful for testing and debugging.
