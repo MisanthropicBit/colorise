@@ -112,3 +112,13 @@ def test_cprint_disabled():
     with pytest.redirect_stdout(sio):
         colorise.cprint('Hello', fg='red', file=sys.stdout, enabled=False)
         assert sio.getvalue() == '\x1b[0mHello' + os.linesep
+
+
+@pytest.mark.skip_on_windows
+def test_cprint_proper_reset():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.set_color(fg='red')
+        colorise.cprint('Hello', bg='blue', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[0m\x1b[44mHello\x1b[0m' + os.linesep

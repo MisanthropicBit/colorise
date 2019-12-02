@@ -108,6 +108,16 @@ def test_fprint_disabled():
 
 
 @pytest.mark.skip_on_windows
+def test_fprint_proper_reset():
+    sio = StringIO()
+
+    with pytest.redirect_stdout(sio):
+        colorise.set_color(fg='red')
+        colorise.fprint('Hel{bg=blue}lo', file=sys.stdout)
+        assert sio.getvalue() == '\x1b[0mHel\x1b[44mlo\x1b[0m' + os.linesep
+
+
+@pytest.mark.skip_on_windows
 def test_fprint_autoreset():
     text = '{fg=red}Hello {bg=blue}world!'
     sio = StringIO()

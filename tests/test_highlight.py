@@ -116,3 +116,14 @@ def test_highlight_disabled():
         colorise.highlight('Hello', [0, 2, 4], fg='red', file=sys.stdout,
                            enabled=False)
         assert sio.getvalue() == 'Hello' + os.linesep
+
+
+@pytest.mark.skip_on_windows
+def test_highlight_proper_reset():
+    sio = StringIO()
+    expected_result = '\x1b[0mH\x1b[44mel\x1b[0ml\x1b[44mo\x1b[0m' + os.linesep
+
+    with pytest.redirect_stdout(sio):
+        colorise.set_color(fg='red')
+        colorise.highlight('Hello', [1, 2, 4], bg='blue', file=sys.stdout)
+        assert sio.getvalue() == expected_result
