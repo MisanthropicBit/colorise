@@ -13,4 +13,6 @@ colorise/backup/
 misc/
 *.egg-info/
 venv*/
+.mypy_cache/
 .python-version
+colorise_logo.py
