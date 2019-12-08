@@ -7,7 +7,6 @@ import colorise
 import platform
 import pytest
 import os
-import sys
 from contextlib import redirect_stdout
 
 def pytest_configure(config):  # noqa

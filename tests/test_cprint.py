@@ -79,8 +79,9 @@ def test_valid_256_index_cprint_output():
     sio = StringIO()
 
     with pytest.redirect_stdout(sio):
-        colorise.cprint('Hello', 201, file=sys.stdout)
-        assert sio.getvalue() == '\x1b[0m\x1b[38;5;201mHello\x1b[0m' + os.linesep
+        colorise.cprint('Hello', fg=201, file=sys.stdout)
+        assert sio.getvalue() == '\x1b[0m\x1b[38;5;201mHello\x1b[0m'\
+            + os.linesep
 
 
 @pytest.mark.skip_on_windows
