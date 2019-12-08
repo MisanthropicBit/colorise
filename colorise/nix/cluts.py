@@ -6,8 +6,6 @@
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
 import collections
-import io
-import os
 
 
 _COLOR_ESCAPE_CODE = '\x1b['

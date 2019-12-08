@@ -52,7 +52,6 @@ if num_colors() > 16 and can_interpret_ansi():
         """Reset all colors and attributes."""
         colorise.nix.color_functions.reset_color(file)
 
-
     def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
         """Set color and attributes in the terminal."""
         colorise.nix.color_functions.set_color(fg, bg, attributes, file,
@@ -65,7 +64,6 @@ else:
         handle = get_win_handle(file)
         set_console_text_attribute(handle,
                                    handle.default_fg | handle.default_bg)
-
 
     def or_bit_flags(*bit_flags):
         """Bitwise OR together a list of bitflags into a single flag."""
@@ -81,10 +79,10 @@ else:
 
                 codes.extend(get_color(fg, color_count, colorise.win.cluts,
                                        False, attributes)
-                            if fg else [handle.default_fg])
+                             if fg else [handle.default_fg])
                 codes.extend(get_color(bg, color_count, colorise.win.cluts,
                                        True, attributes)
-                            if bg else [handle.default_bg])
+                             if bg else [handle.default_bg])
 
                 # Combine attributes and color codes into a single bitflag
                 flags = or_bit_flags(*codes)

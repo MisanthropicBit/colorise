@@ -12,7 +12,7 @@ If you have corrections or suggestions, please submit an issue.
 
 """
 
-from colorise.color_tools import hls_to_rgb, hsv_to_rgb, closest_color
+from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 import re
 
 _DELIMITER = ';'

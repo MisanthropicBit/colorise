@@ -45,8 +45,7 @@ if _SYSTEM_OS.startswith('win'):
         reset_color as _reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
-        num_colors as _num_colors,\
-        set_color as _set_color
+        num_colors as _num_colors
 
     from colorise.win.win32_functions import\
         can_redefine_colors as _can_redefine_colors,\
@@ -64,8 +63,7 @@ else:
         reset_color as _reset_color,\
         set_color as _set_color,\
         redefine_colors as _redefine_colors,\
-        num_colors as _num_colors,\
-        set_color as _set_color\
+        num_colors as _num_colors
 
     from colorise.nix.cluts import\
         can_redefine_colors as _can_redefine_colors

@@ -3,7 +3,6 @@
 
 """Windows API functions."""
 
-import colorise
 from colorise.win.winhandle import WinHandle
 import ctypes
 from ctypes import windll, wintypes, WinError
@@ -43,6 +42,7 @@ class CONSOLE_SCREEN_BUFFER_INFOEX(ctypes.Structure):
                 ('wPopupAttributes',     wintypes.WORD),
                 ('bFullscreenSupported', wintypes.BOOL),
                 ('ColorTable',           wintypes.COLORREF * 16)]
+
 
 if not hasattr(wintypes, 'LPDWORD'):
     LPDWORD = wintypes.POINTER(wintypes.DWORD)
