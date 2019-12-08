@@ -4,7 +4,7 @@
 """Class for Windows handles."""
 
 
-class WinHandle(object):
+class WinHandle:
     """Represents a Windows stream handle."""
 
     def __init__(self, handle):
