@@ -8,7 +8,6 @@ import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.cluts import get_color
 from colorise.terminal import terminal_name
-import io
 import os
 import sys
 
@@ -30,11 +29,11 @@ def num_colors():
     color_count = 0
 
     try:
-        curses.setupterm()
+        # Use the file descriptor of the original value of sys.stdout in case
+        # it has been redirected by pytest, tox or something else
+        curses.setupterm(fd=sys.__stdout__.fileno())
         color_count = curses.tigetnum('colors')
     except curses.error:
-        pass
-    except io.UnsupportedOperation:
         pass
 
     if color_count <= 0:
