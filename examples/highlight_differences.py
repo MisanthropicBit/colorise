@@ -8,9 +8,9 @@ from colorise.attributes import Attr
 
 
 def cprint_missing(ls1, ls2, color, attributes):
-    """."""
+    """Print a padding placeholder for strings of different lengths."""
     if ls2 > ls1:
-        colorise.cprint('_' * (ls2-ls1), fg=color, attributes=[Attr.Bold])
+        colorise.cprint('_' * (ls2-ls1), fg=color, attributes=attributes)
     else:
         print()
 

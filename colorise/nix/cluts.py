@@ -3,9 +3,9 @@
 
 """Nix color look-up tables (CLUTs) and functions."""
 
+import collections
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
-import collections
 
 
 _COLOR_ESCAPE_CODE = '\x1b['
@@ -17,7 +17,7 @@ _COLOR_PREFIX_BG_256 = _COLOR_PREFIX_BG_88
 _COLOR_PREFIX_FG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 _COLOR_PREFIX_BG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '48;2;{0}m'
 
-_prefix_map = {
+_PREFIX_MAP = {
         #       Foreground prefix            Background prefix
         8:     (_COLOR_PREFIX_16,            _COLOR_PREFIX_16),
         16:    (_COLOR_PREFIX_16,            _COLOR_PREFIX_16),
@@ -68,15 +68,18 @@ _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
 _XTERM_CLUT_88_GRAYSCALE = [46, 92, 113, 139, 162, 185, 208, 231]
 _XTERM_CLUT_88 = collections.OrderedDict(_NIX_SYSTEM_COLORS)
 
-_XTERM_CLUT_88.update(zip(
+_XTERM_CLUT_88.update(
+    zip(
         range(16, 88),
         [(r, g, b)
          for r in _XTERM_CLUT_88_STEPS
          for g in _XTERM_CLUT_88_STEPS
-         for b in _XTERM_CLUT_88_STEPS])
+         for b in _XTERM_CLUT_88_STEPS]
     )
+)
 
-_XTERM_CLUT_88.update(zip(
+_XTERM_CLUT_88.update(
+    zip(
         range(80, 89),
         [(g, g, g) for g in _XTERM_CLUT_88_GRAYSCALE])
     )
@@ -86,23 +89,27 @@ _XTERM_CLUT_256_STEPS = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
 _XTERM_CLUT_256_GRAYSCALE = [8 + 10 * i for i in range(24)]
 _XTERM_CLUT_256 = collections.OrderedDict(_NIX_SYSTEM_COLORS)
 
-_XTERM_CLUT_256.update(zip(
+_XTERM_CLUT_256.update(
+    zip(
         range(16, 232),
         [(r, g, b)
          for r in _XTERM_CLUT_256_STEPS
          for g in _XTERM_CLUT_256_STEPS
-         for b in _XTERM_CLUT_256_STEPS])
+         for b in _XTERM_CLUT_256_STEPS]
     )
+)
 
-_XTERM_CLUT_256.update(zip(
+_XTERM_CLUT_256.update(
+    zip(
         range(232, 256),
-        [(g, g, g) for g in _XTERM_CLUT_256_GRAYSCALE])
+        [(g, g, g) for g in _XTERM_CLUT_256_GRAYSCALE]
     )
+)
 
 
 def get_prefix(color_count, bg):
     """Get the color code prefix corresponding to the supported color count."""
-    return _prefix_map[color_count][int(bg)]
+    return _PREFIX_MAP[color_count][int(bg)]
 
 
 def get_clut(color_count):
@@ -112,11 +119,11 @@ def get_clut(color_count):
         return _XTERM_CLUT_256
 
     return {
-            8:   _NIX_SYSTEM_COLORS,
-            16:  _NIX_SYSTEM_COLORS,
-            88:  _XTERM_CLUT_88,
-            256: _XTERM_CLUT_256,
-        }[color_count]
+        8:   _NIX_SYSTEM_COLORS,
+        16:  _NIX_SYSTEM_COLORS,
+        88:  _XTERM_CLUT_88,
+        256: _XTERM_CLUT_256,
+    }[color_count]
 
 
 def can_redefine_colors():

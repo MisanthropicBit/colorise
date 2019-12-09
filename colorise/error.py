@@ -5,5 +5,3 @@
 
 class NotSupportedError(Exception):
     """Raised when functionality is not supported."""
-
-    pass

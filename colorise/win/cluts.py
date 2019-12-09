@@ -64,7 +64,7 @@ _WINDOWS_LOGICAL_NAMES = {
     'blue':    _FOREGROUND_BLUE,
     'cyan':    _FOREGROUND_GREEN | _FOREGROUND_BLUE,
     'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE |
-        _FOREGROUND_INTENSITY,
+               _FOREGROUND_INTENSITY,
 }
 
 for name in ['red', 'green', 'blue', 'yellow', 'purple', 'magenta', 'cyan']:
@@ -107,28 +107,29 @@ def color_from_index(idx, color_count, bg, attributes):
     """Return the color value and color count for a given color index."""
     if can_interpret_ansi():
         # We can interpret ANSI escape sequences, delegate to nix function
-        return colorise.nix.cluts.color_from_index(idx, color_count, bg)
+        return colorise.nix.cluts.color_from_index(idx, color_count, bg,
+                                                   attributes)
 
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
 
     if idx < 16:
         color = closest_color(
-                colorise.nix.cluts._NIX_SYSTEM_COLORS,
-                _WINDOWS_CLUT
-            )
+            colorise.nix.cluts._NIX_SYSTEM_COLORS,
+            _WINDOWS_CLUT
+        )
     elif idx < 88:
         # 88 color index
         color = closest_color(
-                colorise.nix.cluts._XTERM_CLUT_88[idx],
-                _WINDOWS_CLUT
-            )
+            colorise.nix.cluts._XTERM_CLUT_88[idx],
+            _WINDOWS_CLUT
+        )
     elif idx < 256:
         # 256 color index
         color = closest_color(
-                colorise.nix.cluts._XTERM_CLUT_256[idx],
-                _WINDOWS_CLUT
-            )
+            colorise.nix.cluts._XTERM_CLUT_256[idx],
+            _WINDOWS_CLUT
+        )
 
     return to_codes(bg, color, attributes)
 
@@ -138,7 +139,8 @@ def get_rgb_color(color_count, bg, rgb, attributes):
     if color_count == 2**24:
         # We have true-color capabilities, delegate to nix function
         # approximate to closest color given current capabilities
-        return colorise.nix.cluts.get_rgb_color(color_count, bg, rgb)
+        return colorise.nix.cluts.get_rgb_color(color_count, bg, rgb,
+                                                attributes)
 
     # No true-color capabilities, approximate the rgb color
     idx = closest_color(rgb, get_clut(color_count))

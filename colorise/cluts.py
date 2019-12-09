@@ -12,8 +12,8 @@ If you have corrections or suggestions, please submit an issue.
 
 """
 
-from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 import re
+from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
 _DELIMITER = ';'
 _RGB_RE = re.compile(r'^(rgb)?\((\d{1,3}' +
@@ -47,10 +47,10 @@ _FORMATS = [
 def match_color_formats(value):
     """Return the color format of the first format to match the given value."""
     for matcher, name in _FORMATS:
-        m = matcher(str(value))
+        match = matcher(str(value))
 
-        if m:
-            return m, name
+        if match:
+            return match, name
 
     return None, None
 

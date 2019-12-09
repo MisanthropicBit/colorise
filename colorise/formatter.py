@@ -7,8 +7,8 @@ This class extends the string.Formatter class.
 
 """
 
-from colorise.attributes import Attr
 import string
+from colorise.attributes import Attr
 
 
 class ColorFormatter(string.Formatter):
@@ -32,8 +32,8 @@ class ColorFormatter(string.Formatter):
         """
         super(ColorFormatter, self).__init__()
 
-        self.autoreset = False
-        self.file = None
+        self._autoreset = False
+        self._file = None
         self._enabled = True
         self._set_color_func = set_color_func
         self._reset_func = reset_func

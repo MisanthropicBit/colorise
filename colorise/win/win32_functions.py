@@ -3,11 +3,11 @@
 
 """Windows API functions."""
 
-from colorise.win.winhandle import WinHandle
 import ctypes
 from ctypes import windll, wintypes, WinError
 import os
 import sys
+from colorise.win.winhandle import WinHandle
 
 
 # Invalid handle type for error checking
@@ -45,7 +45,7 @@ class CONSOLE_SCREEN_BUFFER_INFOEX(ctypes.Structure):
 
 
 if not hasattr(wintypes, 'LPDWORD'):
-    LPDWORD = wintypes.POINTER(wintypes.DWORD)
+    LPDWORD = ctypes.POINTER(wintypes.DWORD)
 else:
     LPDWORD = wintypes.LPDWORD
 
@@ -101,8 +101,7 @@ def create_std_handle(handle_id):
 
     if windll.kernel32.GetConsoleScreenBufferInfo(
                 win_handle.handle,
-                ctypes.byref(csbi)
-            ) == 0:
+                ctypes.byref(csbi)) == 0:
         raise WinError()
 
     # Set defaults color values
@@ -250,7 +249,7 @@ def redefine_colors(color_map, file=sys.stdout):
     if not can_redefine_colors():
         raise RuntimeError('Cannot redefine colors on this system')
 
-    if not all(c >= 0 and c < 16 for c in color_map):
+    if not all(0 <= c < 16 for c in color_map):
         raise RuntimeError('New color map must contain indices in range 0-15')
 
     # Create a new CONSOLE_SCREEN_BUFFER_INFOEX structure based on the given

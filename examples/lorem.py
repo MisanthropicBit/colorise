@@ -5,7 +5,7 @@
 
 import colorise
 
-ipsum = """Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+IPSUM = """Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
 sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
 aliquam erat volutpat. Ut wisi enim ad minim veniam, quis
 nostrud exerci tation ullamcorper suscipit lobortis nisl ut
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     colorise.set_color('magenta')
 
     # All text print after the above call will be in that color...
-    print(ipsum)
+    print(IPSUM)
 
     # ...until colorise.set_color is called with no argument or colorise
     # is quit as it will automatically reset colorise

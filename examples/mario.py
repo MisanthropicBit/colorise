@@ -7,53 +7,38 @@ import colorise
 
 
 def mario():
+    """Print a mario sprite to stdout."""
     width = 12
     height = 16
 
     # Source: https://github.com/BrianEnigma/NES_Sprite_Display
     yellow = '#e39d25'
     red = '#b13425'
-    green = '#3a8400'
     green = '#6a6b04'
+    color_table = [None, red, green, yellow]
 
     mario_pixels = [
-            [None,   None,   None,   red,    red,    red,    red,    red,
-             None,   None,   None,   None],
-            [None,   None,   red,    red,    red,    red,    red,    red,
-             red,    red,    red,    None],
-            [None,   None,   green,  green,  green,  yellow, yellow, green,
-             yellow, None,   None,   None],
-            [None,   green,  yellow, green,  yellow, yellow, yellow, green,
-             yellow, yellow, yellow, None],
-            [None,   green,  yellow, green,  green,  yellow, yellow, yellow,
-             green,  yellow, yellow, yellow],
-            [None,   green,  green,  yellow, yellow, yellow, yellow, green,
-             green,  green,  green,  None],
-            [None,   None,   None,   yellow, yellow, yellow, yellow, yellow,
-             yellow, yellow, None,   None],
-            [None,   None,   green,  green,  red,    green,  green,  green,
-             None,   None,   None,   None],
-            [None,   green,  green,  green,  red,    green,  green,  red,
-             green,  green,  green,  None],
-            [green,  green,  green,  green,  red,    red,    red,    red,
-             green,  green,  green,  green],
-            [yellow, yellow, green,  red,    yellow, red,    red,    yellow,
-             red,    green,  yellow, yellow],
-            [yellow, yellow, yellow, red,    red,    red,    red,    red,
-             red,    yellow, yellow, yellow],
-            [yellow, yellow, red,    red,    red,    None,   None,   red,
-             red,    red,    yellow, yellow],
-            [None,   None,   red,    red,    red,    None,   None,   red,
-             red,    red,    None,   None],
-            [None,   green,  green,  green,  None,   None,   None,   None,
-             green,  green,  green,  None],
-            [green,  green,  green,  green,  None,   None,   None,   None,
-             green,  green,  green,  green],
-        ]
+        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 2, 2, 2, 3, 3, 2, 3, 0, 0, 0],
+        [0, 2, 3, 2, 3, 3, 3, 2, 3, 3, 3, 0],
+        [0, 2, 3, 2, 2, 3, 3, 3, 2, 3, 3, 3],
+        [0, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 0],
+        [0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 0, 0],
+        [0, 0, 2, 2, 1, 2, 2, 2, 0, 0, 0, 0],
+        [0, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 0],
+        [2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2],
+        [3, 3, 2, 1, 3, 1, 1, 3, 1, 2, 3, 3],
+        [3, 3, 3, 1, 1, 1, 1, 1, 1, 3, 3, 3],
+        [3, 3, 1, 1, 1, 0, 0, 1, 1, 1, 3, 3],
+        [0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 0],
+        [2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2],
+    ]
 
     for y in range(0, height):
         for x in range(0, width):
-            colorise.cprint('  ', bg=mario_pixels[y][x], end='')
+            colorise.cprint('  ', bg=color_table[mario_pixels[y][x]], end='')
 
         print()
 

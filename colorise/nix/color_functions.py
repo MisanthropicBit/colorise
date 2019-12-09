@@ -3,13 +3,13 @@
 
 """Linux/Mac color functions."""
 
+import os
+import sys
 import colorise.error
 import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.cluts import get_color
 from colorise.terminal import terminal_name
-import os
-import sys
 
 
 def num_colors():
@@ -21,8 +21,8 @@ def num_colors():
 
         if version and int(version.split('.')[0]) > 2:
             return 2**24
-        else:
-            return 256
+
+        return 256
 
     # If all else fails, use curses
     import curses

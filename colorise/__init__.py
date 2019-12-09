@@ -4,12 +4,12 @@
 """Python module for easy, cross-platform colored output to the terminal."""
 
 import atexit
-import colorise.formatter
-from colorise.attributes import Attr
 import itertools
 import os
 import platform
 import sys
+import colorise.formatter
+from colorise.attributes import Attr
 
 _SYSTEM_OS = platform.system().lower()
 
@@ -142,7 +142,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
 
 
 # Global color formatter instance
-_color_formatter = colorise.formatter.ColorFormatter(set_color, reset_color)
+_COLOR_FORMATTER = colorise.formatter.ColorFormatter(set_color, reset_color)
 
 
 def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
@@ -167,10 +167,10 @@ def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
     Colors and attribtues are reset before the function returns.
 
     """
-    _color_formatter.autoreset = autoreset
-    _color_formatter.file = file
-    _color_formatter.enabled = enabled
-    _color_formatter.format(fmt)
+    _COLOR_FORMATTER.autoreset = autoreset
+    _COLOR_FORMATTER.file = file
+    _COLOR_FORMATTER.enabled = enabled
+    _COLOR_FORMATTER.format(fmt)
 
     if enabled:
         file.flush()  # Flush before resetting colors

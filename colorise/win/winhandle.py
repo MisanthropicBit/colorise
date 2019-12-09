@@ -11,8 +11,10 @@ class WinHandle:
         """Initialise the Windows handle."""
         self._handle = handle
         self._console_mode = 0
-        self.fg = 0
-        self.bg = 0
+        self._fg = -1
+        self._bg = -1
+        self._default_fg = -1
+        self._default_bg = -1
 
     @property
     def handle(self):

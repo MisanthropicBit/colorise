@@ -8,16 +8,18 @@ import math
 import operator
 
 
-def hls_to_rgb(h, l, s):
+def hls_to_rgb(hue, lightness, saturation):
     """Convert HLS (hue, lightness, saturation) values to RGB."""
     return tuple(int(math.ceil(c * 255.))
-                 for c in colorsys.hls_to_rgb(h, l, s))
+                 for c in colorsys.hls_to_rgb(hue, lightness, saturation))
 
 
-def hsv_to_rgb(h, s, v):
+def hsv_to_rgb(hue, saturation, value):
     """Convert HSV (hue, saturation, value) values to RGB."""
     return tuple(int(c * 255.)
-                 for c in colorsys.hsv_to_rgb(h/360., s/100., v/100.))
+                 for c in colorsys.hsv_to_rgb(hue/360.,
+                                              saturation/100.,
+                                              value/100.))
 
 
 def color_difference(rgb1, rgb2):
