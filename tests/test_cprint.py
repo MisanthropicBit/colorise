@@ -73,7 +73,6 @@ def test_valid_named_cprint_output():
             assert sio.getvalue() == result
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
 def test_valid_256_index_cprint_output():
     sio = StringIO()
@@ -84,7 +83,6 @@ def test_valid_256_index_cprint_output():
             + os.linesep
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_valid_truecolor_cprint_output():
     tests = [

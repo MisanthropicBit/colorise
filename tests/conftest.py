@@ -6,7 +6,6 @@
 import colorise
 import platform
 import pytest
-import os
 from contextlib import redirect_stdout
 
 def pytest_configure(config):  # noqa
@@ -36,8 +35,7 @@ def pytest_runtest_setup(item):  # noqa
     for mark in item.iter_markers():
         if mark.name == 'skip_on_windows':
             if _PLATFORM.startswith('win'):
-                if os.environ.get('ConEmuANSI', '') in ('', 'OFF'):
-                    pytest.skip('Test skipped on Windows systems')
+                pytest.skip('Test skipped on Windows systems')
         elif mark.name == 'skip_on_nix':
             if not _PLATFORM.startswith('win'):
                 pytest.skip('Test skipped on nix systems')

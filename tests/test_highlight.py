@@ -68,7 +68,6 @@ def test_highlight_named_output():
         assert sio.getvalue() == result
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
 def test_highlight_256_index_output():
     sio = StringIO()
@@ -88,7 +87,6 @@ def test_highlight_256_index_output():
         assert sio.getvalue() == result
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_highlight_truecolor_output():
     text = 'Hello'

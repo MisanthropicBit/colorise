@@ -65,7 +65,6 @@ def test_valid_named_fprint_output():
         assert sio.getvalue() == '\x1b[0m\x1b[31mHello\x1b[0m' + os.linesep
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
 def test_valid_256_index_fprint_output():
     sio = StringIO()
@@ -76,7 +75,6 @@ def test_valid_256_index_fprint_output():
             + os.linesep
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_valid_truecolor_fprint_output():
     tests = [
