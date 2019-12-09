@@ -52,33 +52,9 @@ else:
     from colorise.nix.cluts import\
         can_redefine_colors as _can_redefine_colors
 
-# User-defined color count
-__NUM_COLORS__ = 0
-
-
 def num_colors():
     """Return the number of colors supported by the terminal."""
-    if __NUM_COLORS__ > 0:
-        # Return a user-defined color count
-        return __NUM_COLORS__
-
     return _num_colors()
-
-
-def _set_num_colors(color_count):
-    """Set the number of colors available instead of autodetecting it.
-
-    This is primarily useful for testing and debugging.
-
-    """
-    color_counts = [8, 16, 88, 256, 2**24]
-
-    if color_count not in color_counts:
-        raise ValueError('Invalid color count, expected any of {0}'
-                         .format(', '.join(str(cc) for cc in color_counts)))
-
-    global __NUM_COLORS__
-    __NUM_COLORS__ = color_count
 
 
 def can_redefine_colors():
