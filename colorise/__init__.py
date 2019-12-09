@@ -11,7 +11,6 @@ import os
 import platform
 import sys
 
-_DEBUG_MODE = False
 _SYSTEM_OS = platform.system().lower()
 
 __author__ = 'Alexander Asp Bock'
@@ -29,16 +28,6 @@ __all__ = [
 ]
 
 
-if _DEBUG_MODE:
-    sys.stderr.write('Python {0}'.format(sys.version))
-
-    import struct
-
-    def _32or64bit():
-        """Determine if the OS is using a 32- or 64-bit architecture."""
-        return 8 * struct.calcsize('P')
-
-
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
     from colorise.win.color_functions import\
@@ -53,11 +42,6 @@ if _SYSTEM_OS.startswith('win'):
 
     # Ensure that the console mode set before colorise was loaded is restored
     atexit.register(restore_console_modes)
-
-    if _DEBUG_MODE:
-        print('{0} {1} ({2}-bit)'.format(platform.system(),
-                                         platform.release(),
-                                         _32or64bit()))
 else:
     from colorise.nix.color_functions import\
         reset_color as _reset_color,\
@@ -67,11 +51,6 @@ else:
 
     from colorise.nix.cluts import\
         can_redefine_colors as _can_redefine_colors
-
-    if _DEBUG_MODE:
-        dist = platform.linux_distribution()
-
-        print('{0}, {1}, {2} ({3}-bit)'.format(dist + _32or64bit()))
 
 # User-defined color count
 __NUM_COLORS__ = 0
