@@ -1,3 +1,4 @@
 pydocstyle
 flake8
 pytest
+tox>=2.0
