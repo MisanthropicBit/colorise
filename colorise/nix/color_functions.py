@@ -62,7 +62,8 @@ def reset_color(file=sys.stdout):
     file.write(to_ansi(Attr.Reset.value))
 
 
-def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
+def set_color(fg=None, bg=None, attributes=[], file=sys.stdout,
+              num_colors_func=num_colors):
     """Set color and attributes of the terminal.
 
     'fg' and 'bg' specify foreground- and background colors while 'attributes'
@@ -76,7 +77,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
         codes.append(to_ansi(*attributes_to_codes(attributes)))
 
     if Attr.Reset not in attributes:
-        color_count = num_colors()
+        color_count = num_colors_func()
 
         for colorspec, isbg in ((fg, False), (bg, True)):
             if colorspec:
