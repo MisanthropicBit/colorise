@@ -8,4 +8,5 @@
 4. Make sure all tests pass when run with
    [tox](https://tox.readthedocs.io/en/latest/) (missing interpreters are ok)
    and on [Travis](https://travis-ci.org/MisanthropicBit/colorise).
-5. Make sure to update the documentation if necessary.
+5. Make sure to update the documentation if necessary and make sure that it
+   builds (run `make html` in the [docs](/docs) folder).
