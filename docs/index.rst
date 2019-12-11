@@ -36,7 +36,7 @@
    tested_systems
    who_is_using
 
-`colorise` is a Python module for printing colored text in terminals.
+colorise is a Python module for printing colored text in terminals.
 
 You can install it via `pip <https://pip.pypa.io/en/latest/>`_.
 
@@ -48,7 +48,7 @@ Features
 ========
 
 * Supports 8, 16, 88, 256 colors and true-color.
-* Colors can be specified by name, index, hexadecimal, HLS, HSV or RGB formats.
+* Colors can be specified by name, index, hexadecimal, `HLS, HSV <https://en.wikipedia.org/wiki/HSL_and_HSV>`__ or RGB formats.
 * Custom color format akin to Python 3.0 `string formatting <https://docs.python.org/3.7/library/stdtypes.html#str.format>`_.
 * Automatically find the closest color based on the terminal's capabilities.
 
