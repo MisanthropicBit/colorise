@@ -22,6 +22,7 @@ __all__ = [
     'color_names',
     'num_colors',
     'set_color',
+    'reset_color',
     'cprint',
     'fprint',
     'highlight'
