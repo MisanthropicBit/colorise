@@ -3,7 +3,7 @@
     <h3 align="center">v1.0.0</h3>
     <div align="center">
         <a href="https://travis-ci.org/MisanthropicBit/colorise">
-            <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=rgb_256_exts" />
+            <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master" />
         </a>
         <a href="/LICENSE">
             <img src="https://img.shields.io/github/license/MisanthropicBit/colorise.svg" />
