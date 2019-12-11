@@ -4,6 +4,7 @@
 *.task[s]
 __pycache__
 MANIFEST
+_build/
 dist/
 colorise/backup/
 .DS_Store
