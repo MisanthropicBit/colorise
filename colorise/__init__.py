@@ -118,7 +118,7 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     attributes is a list of desired attributes. The remaining two keyword
     arguments are the same as Python's built-in print function.
 
-    Colors and attribtues are reset before the function returns.
+    Colors and attributes are reset before the function returns.
 
     """
     # Flush any remaining stuff before resetting colors
