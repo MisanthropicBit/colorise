@@ -23,6 +23,16 @@
 `colorise` provides easy cross-platform text coloring for terminals/consoles and
 has [been tested](/TESTED_ON.md) on different platforms/terminals.
 
+## Installation
+
+Install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
+
+```bash
+pip install colorise
+```
+
+To get started check out the [tutorial](), [docs]() or the [examples]().
+
 ## Features
 
 * Supports 8, 16, 88, 256 colors and true-color.
@@ -66,13 +76,3 @@ has [been tested](/TESTED_ON.md) on different platforms/terminals.
 ```python
 >>> colorise.highlight('Hello world', indices=[0, 2, 3, 7, 9], attributes=[Attr.Italic])
 ```
-
-## Installation
-
-Install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
-
-```bash
-pip install colorise
-```
-
-To get started check out the [tutorial](), [docs]() or the [examples]().
