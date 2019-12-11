@@ -1,5 +1,5 @@
 <center>
-    <img src="colorise-logo.png" />
+    <img src="docs/images/colorise-logo.png" />
     <h3 align="center">v1.0.0</h3>
     <div align="center">
         <a href="https://travis-ci.org/MisanthropicBit/colorise">
@@ -50,9 +50,9 @@ has [been tested](/TESTED_ON.md) on different platforms/terminals.
   for 256 and 16 color indices in the two right-most images.
 
 <div align="center">
-    <img src="/screenshots/mario-true-color.png" width="150" />
-    <img src="/screenshots/mario-256-color.png" width="150" />
-    <img src="/screenshots/mario-16-color.png" width="150" />
+    <img src="/docs/images/mario-true-color.png" width="150" />
+    <img src="/docs/images/mario-256-color.png" width="150" />
+    <img src="/docs/images/mario-16-color.png" width="150" />
 </div>
 <div align="center">
     <i>From left to right: True-color, 256 color and 16 color.</i>

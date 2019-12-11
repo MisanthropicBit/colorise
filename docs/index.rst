@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: colorise-logo.png
-   :target: /_images/colorise-logo.png
+.. image:: images/colorise-logo.png
+   :target: images/colorise-logo.png
 
 .. image:: https://img.shields.io/pypi/v/colorise.svg
    :target: https://pypi.python.org/pypi/colorise/
