@@ -40,6 +40,14 @@ def pytest_runtest_setup(item):  # noqa
             if not _PLATFORM.startswith('win'):
                 pytest.skip('Test skipped on nix systems')
         elif mark.name == 'require_colors':
+            required_num_colors = mark.args[0]
+
             if colorise.num_colors() < mark.args[0]:
-                pytest.skip('Test only relevant for terminals with {0} colors'
-                            .format(mark.args[0]))
+                msg = 'Test only relevant for terminals with {0}'
+
+                if required_num_colors == 256**3:
+                    color_name = 'true-color'
+                else:
+                    color_name = str(required_num_colors) + ' colors'
+
+                pytest.skip(msg.format(color_name))
