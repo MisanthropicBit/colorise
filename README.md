@@ -31,7 +31,10 @@ Install `colorise` via [`pip`](https://pip.pypa.io/en/latest/).
 pip install colorise
 ```
 
-To get started check out the [tutorial](), [docs]() or the [examples]().
+To get started check out the
+[docs](https://colorise.readthedocs.io/en/latest/index.html),
+[tutorial](https://colorise.readthedocs.io/en/latest/tutorial.html) or the
+[examples](/examples).
 
 ## Features
 
