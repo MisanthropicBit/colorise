@@ -10,3 +10,17 @@
    and on [Travis](https://travis-ci.org/MisanthropicBit/colorise).
 5. Make sure to update the documentation if necessary and make sure that it
    builds (run `make html` in the [docs](/docs) folder).
+
+## Contributing to Tested Systems
+
+If you want to help test colorise on a new system (see [this
+list](https://colorise.readthedocs.io/en/latest/tested_systems.html) for
+currently tested systems), run the [tests](/tests) with pytest and tox, the
+[`color_test.py`](/color_test.py) and all the [examples](/examples). Then please
+submit a [pull request](https://github.com/MisanthropicBit/colorise/pulls) and
+provide the following details.
+
+1. Full details of the terminal/console you tested on.
+2. Full details of the operating system you tested on.
+3. The Python version you used for the test (make sure it is a version actually
+   [supported by colorise](https://pypi.org/project/colorise/)).
