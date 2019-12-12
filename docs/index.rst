@@ -13,6 +13,10 @@
    :alt: Build status
    :target: https://travis-ci.org/MisanthropicBit/colorise
 
+.. image:: https://readthedocs.org/projects/colorise/badge/?version=latest
+   :target: https://colorise.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 .. image:: https://img.shields.io/pypi/wheel/colorise
    :alt: Wheel support
    :target: https://img.shields.io/pypi/wheel/colorise

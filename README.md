@@ -5,6 +5,7 @@
         <a href="https://travis-ci.org/MisanthropicBit/colorise">
             <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master" />
         </a>
+        <img src="https://readthedocs.org/projects/colorise/badge/?version=latest" />
         <a href="/LICENSE">
             <img src="https://img.shields.io/github/license/MisanthropicBit/colorise.svg" />
         </a>
