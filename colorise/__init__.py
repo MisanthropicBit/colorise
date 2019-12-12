@@ -68,7 +68,14 @@ def can_redefine_colors():
 
 
 def redefine_colors(color_map, file=sys.stdout):
-    """Redefine colors using a color map of indices and RGB tuples."""
+    """Redefine colors using a color map of indices and RGB tuples.
+
+    .. note::
+
+        It is not currently possible to redefine colors on Mac and Linux
+        systems via colorise.
+
+    """
     _redefine_colors(color_map, file)
 
 
