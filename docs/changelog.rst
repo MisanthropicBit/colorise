@@ -47,39 +47,39 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 - [:refactor:`refactor`] Removed formatcolor and formatbyindex functions.
 - [:docs:`docs`] Online documentation and updated comments.
 
-`0.1.4 <https://github.com/MisanthropicBit/colorise/tree/bd00f84c5b7723732e942f25714df0c0f00bd19f>`__
------------------------------------------------------------------------------------------------------
+`0.1.4 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.4>`__ (pre-release)
+-----------------------------------------------------------------------------------------
 
 2014-06-11
 
 - [:fix:`Fix`] Fixed a bug on nix platforms that caused background colors to break.
 
-`0.1.3 <https://github.com/MisanthropicBit/colorise/tree/6f795e40ee7fe5fa3089e975d59b8434a5f87f75>`__
------------------------------------------------------------------------------------------------------
+`0.1.3 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.3>`__ (pre-release)
+-----------------------------------------------------------------------------------------
 
 2014-06-02
 
 - [:fix:`Fix`] Fixed a bug where passing a string without any color formatting would print
   the empty string.
 
-`0.1.2 <https://github.com/MisanthropicBit/colorise/tree/efee35dd90542e19532828d447ab18970f29f126>`__
------------------------------------------------------------------------------------------------------
+`0.1.2 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.2>`__ (pre-release)
+-----------------------------------------------------------------------------------------
 
 2014-05-31
 
 - [:fix:`Fix`] Fixed a bug in ``nix/ColorManager.py`` which caused ``set_color`` to
   malfunction.
 
-`0.1.1 <https://github.com/MisanthropicBit/colorise/tree/6b2b3ca0eb1f83fc6be823a7195e8b6f78cc0a98>`__
------------------------------------------------------------------------------------------------------
+`0.1.1 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.1>`__ (pre-release)
+-----------------------------------------------------------------------------------------
 
 2014-05-24
 
 - [:fix:`Fix`] Fixed a bug where putting a ``:`` or escaped ``>`` or ``<`` just before or
   after some color formatted text would raise a ``ColorSyntaxError``.
 
-`0.1.0 <https://github.com/MisanthropicBit/colorise/tree/00f58d7fd4cf8df5b16bb450cfee9de978d6278d>`__ 
------------------------------------------------------------------------------------------------------
+`0.1.0 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.0>`__ (pre-release)
+-----------------------------------------------------------------------------------------
 
 2014-05-14
 
