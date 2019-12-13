@@ -27,8 +27,10 @@ to guess the number of colors supported.
 256
 
 Returned values may be 8, 16, 88, 256 and 16,777,216 (or 256^3 i.e. 24-bit
-true-color). To set the current color, you can use the
-:py:func:`colorise.set_color` function. For example,
+true-color). You can also run the `color_test.py script
+<https://github.com/MisanthropicBit/colorise/blob/master/color_test.py>`__
+which prints all the capabilities of your console. To set the current color,
+you can use the :py:func:`colorise.set_color` function.  For example,
 
 .. raw:: html
 
