@@ -43,6 +43,7 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
   support it (e.g. an RGB color in a 16 color terminal), colorise will
   automatically find color on your system that matches the desired color (via
   linear distance).
+- :new:`[new]` More thorough testing.
 - :refactor:`[refactor]` Reworked entire library.
 - :refactor:`[refactor]` Removed formatcolor and formatbyindex functions.
 - :docs:`[docs]` Online documentation and updated comments.
