@@ -1,7 +1,8 @@
 <center>
     <img src="docs/images/colorise-logo.png" />
-    <h3 align="center">v1.0.0</h3>
     <div align="center">
+        <img src="https://img.shields.io/github/v/release/MisanthropicBit/colorise?include_prereleases"><br />
+        <br />
         <a href="https://travis-ci.org/MisanthropicBit/colorise">
             <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master" />
         </a>
