@@ -24,6 +24,7 @@ setup(
     package_data={'colorise': ['tests', 'examples']},
     url='https://github.com/MisanthropicBit/colorise',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
