@@ -1,1 +1,3 @@
-include README.md CHANGES.md LICENSE MANIFEST.in tests/*.py examples/*.py
+include README.md LICENSE examples/*.py tests/*.py
+recursive-include docs Makefile make.bat requirements-docs.txt *.rst *.py
+recursive-include docs/images *.png
