@@ -26,7 +26,7 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 1.0.0
 -----
 
-2019-11-28
+2019-12-17
 
 .. warning::
 
