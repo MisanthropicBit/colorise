@@ -47,6 +47,7 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 - :refactor:`[refactor]` Reworked entire library.
 - :refactor:`[refactor]` Removed formatcolor and formatbyindex functions.
 - :docs:`[docs]` Online documentation and updated comments.
+- Changed license from MIT to BSD 3-clause.
 
 `0.1.4 <https://github.com/MisanthropicBit/colorise/releases/tag/v0.1.4>`__ (pre-release)
 -----------------------------------------------------------------------------------------
