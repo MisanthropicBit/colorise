@@ -28,7 +28,6 @@ __all__ = [
     'highlight'
 ]
 
-
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
     from colorise.win.color_functions import\
@@ -52,6 +51,7 @@ else:
 
     from colorise.nix.cluts import\
         can_redefine_colors as _can_redefine_colors
+
 
 def num_colors():
     """Return the number of colors supported by the terminal."""
