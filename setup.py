@@ -23,6 +23,10 @@ setup(
     packages=['colorise', 'colorise.win', 'colorise.nix'],
     package_data={'colorise': ['tests', 'examples']},
     url='https://github.com/MisanthropicBit/colorise',
+    project_urls={
+        'Issue Tracker': 'https://github.com/MisanthropicBit/colorise/issues',
+        'Documentation': 'https://colorise.readthedocs.io/en/latest/'
+    },
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     classifiers=[
