@@ -64,12 +64,12 @@ To get started check out the
   Pixels are specified as RGB so `colorise` automatically approximates colors
   for 256 and 16 color indices in the two right-most images.
 
-<div style="text-align:center">
+<div align="center">
     <img src="https://raw.githubusercontent.com/MisanthropicBit/colorise/master/docs/images/mario-true-color.png" width="150" />
     <img src="https://raw.githubusercontent.com/MisanthropicBit/colorise/master/docs/images/mario-256-color.png" width="150" />
     <img src="https://raw.githubusercontent.com/MisanthropicBit/colorise/master/docs/images/mario-16-color.png" width="150" />
 </div>
-<div style="text-align:center">
+<div align="center">
     <i>From left to right: True-color, 256 color and 16 color.</i>
 </div>
 <br />
