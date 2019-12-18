@@ -17,6 +17,7 @@ setup(
     author='Alexander Asp Bock',
     author_email='albo.developer@gmail.com',
     platforms='Platform independent',
+    python_requires='>=3.4',
     description=('Easily print colored text to the console'),
     license='BSD 3-Clause License',
     keywords='text, color, colorise, colorize, console, terminal',
