@@ -38,7 +38,6 @@
    faq
    changelog
    tested_systems
-   who_is_using
 
 colorise is a Python module for printing colored text in terminals.
 
