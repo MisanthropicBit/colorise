@@ -73,7 +73,7 @@ html_theme_options = {
 html_static_path = ['_static']
 
 base_url = 'https://github.com/{github_user}/{github_repo}/blob/{branch}'\
-    .format(branch='rgb_256_exts', **html_theme_options)
+    .format(branch='master', **html_theme_options)
 
 
 def linkcode_resolve(domain, info):
