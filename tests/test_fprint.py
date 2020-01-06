@@ -29,7 +29,6 @@ def test_valid_fprint():
 
     colorise.fprint('Hello {fg=red ,bg=red}world')
     colorise.fprint('Hello { fg=201,bg=201}world')
-    colorise.fprint('Hello {bg=#a696ff,bg=#a696ff }world')
     colorise.fprint('Hello {fg=0xa696ff,bg=0xa696ff}world')
     colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0),'
                     'bg=hls(0.6923;0.7960;1.0)}world')
@@ -54,6 +53,14 @@ def test_invalid_fprint():
 
         with pytest.raises(ValueError):
             colorise.fprint('{bg=' + kwarg + '}Hello')
+
+
+def test_duplicate_color_spec():
+    with pytest.raises(ValueError, match='foreground'):
+        colorise.fprint('Hello {fg=red,fg=red}world')
+
+    with pytest.raises(ValueError, match='background'):
+        colorise.fprint('Hello {bg=red,bg=red}world')
 
 
 @pytest.mark.skip_on_windows

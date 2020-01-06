@@ -112,6 +112,11 @@ class ColorFormatter(string.Formatter):
 
             if re.match('[fb]g=', color):
                 index = 0 if color[0] == 'f' else 2
+
+                if result[index]:
+                    raise ValueError('Duplicate {0}ground color format'
+                                     .format('back' if index > 0 else 'fore'))
+
                 result[index] = color[3:]
                 is_fg = index == 0
             elif color in self._attribute_names:
