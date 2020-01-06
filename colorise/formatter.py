@@ -7,6 +7,7 @@ This class extends the string.Formatter class.
 
 """
 
+import re
 import string
 from colorise.attributes import Attr
 
@@ -109,14 +110,10 @@ class ColorFormatter(string.Formatter):
         for color in colors.split(','):
             color = color.strip()
 
-            if color.startswith('fg='):
-                # Foreground color
-                result[0] = color[3:]
-                is_fg = True
-            elif color.startswith('bg='):
-                # Background color
-                result[2] = color[3:]
-                is_fg = False
+            if re.match('[fb]g=', color):
+                index = 0 if color[0] == 'f' else 2
+                result[index] = color[3:]
+                is_fg = index == 0
             elif color in self._attribute_names:
                 # This is an attribute
                 result[1 if is_fg else 3].append(Attr.from_name(color))
