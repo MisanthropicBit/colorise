@@ -37,16 +37,16 @@ def test_attributes():
 
 
 def test_invalid_attributes():
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         colorise.fprint('{overlined}Hello')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         colorise.fprint('{fg=red,overlined}Hello')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         colorise.fprint('{bg=blue,overlined}Hello')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         colorise.fprint('{fg=red,bg=blue,overlined}Hello')
 
 

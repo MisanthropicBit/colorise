@@ -7,6 +7,7 @@ This class extends the string.Formatter class.
 
 """
 
+import re
 import string
 from colorise.attributes import Attr
 
@@ -30,14 +31,14 @@ class ColorFormatter(string.Formatter):
         color.
 
         """
-        super(ColorFormatter, self).__init__()
+        super().__init__()
 
         self._autoreset = False
         self._file = None
         self._enabled = True
         self._set_color_func = set_color_func
         self._reset_func = reset_func
-        self._attribute_names = Attr.names()
+        self._attribute_names = Attr.names_with_aliases()
 
     @property
     def autoreset(self):
@@ -69,62 +70,95 @@ class ColorFormatter(string.Formatter):
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
         # Flush any remaining stuff before resetting colors
-        self.file.flush()
-        self._reset_func(self.file)
-
         first_format = True
         tokens = super(ColorFormatter, self).parse(format_string)
 
         for literal_text, field_name, format_spec, conversion in tokens:
-            fg, fg_attrs, bg, bg_attrs = self._parse_color_format(field_name)
+            # print('1', [literal_text, field_name, format_spec, conversion])
+            color_spec, real_field_name, real_format_spec =\
+                self._extract_color_format(field_name, format_spec)
 
-            if fg or fg_attrs or bg or bg_attrs:
-                # Emit any literal text
-                yield literal_text, None, None, None
+            # print(f'2 "{color_spec}", "{real_field_name}", "{real_format_spec}"')
+            # print(f'lit: {literal_text}')
 
-                # Automatically reset colors and attributes if enabled and if
-                # it is not the first format we encounter
-                if self.autoreset and not first_format:
-                    self._reset_func(self.file)
+            if any(spec for spec in color_spec):
+                fg, fg_attrs, bg, bg_attrs = color_spec
 
-                # Set colors and attributes
+                # Emit any literal text that should not be colored
+                if literal_text:
+                    yield literal_text, None, '', None
+
                 if self.enabled:
+                    # Automatically reset colors and attributes if enabled and
+                    # if it is not the first format we encounter
+                    if self.autoreset and not first_format:
+                        self._reset_func(self.file)
+
+                    # Set colors and attributes
                     self._set_color_func(fg, bg, fg_attrs + bg_attrs,
                                          self.file)
+
+                yield '', real_field_name, real_format_spec, conversion
             else:
                 # Yield tokens as normal
-                yield literal_text, field_name, format_spec, conversion
+                yield literal_text, real_field_name, real_format_spec,\
+                    conversion
 
             first_format = False
 
-    def _parse_color_format(self, colors):
+    def _extract_color_spec(self, color_spec, colors, default_value):
+        """Extract the color specification from a format specification."""
+        is_fg = False
+        real_spec = []
+        result = colors
+        # print(f'Extracting {color_spec}')
+
+        if color_spec is None:
+            return colors, default_value
+
+        for color in color_spec.split(';'):
+            stripped_color = color.strip()
+
+            if re.match('[fb]g=', stripped_color):
+                index = 0 if stripped_color[0] == 'f' else 2
+
+                if result[index]:
+                    raise ValueError('Duplicate {0}ground color format'
+                                     .format('back' if index > 0 else 'fore'))
+
+                result[index] = stripped_color[3:]
+                is_fg = index == 0
+            elif stripped_color in self._attribute_names:
+                # This is an attribute
+                attr = Attr.from_name(stripped_color)
+                result[1 if is_fg else 3].append(attr)
+            else:
+                # print(color)
+                real_spec.append(color)
+                # real_spec = color
+
+        # print(f'Result: {result, ";".join(real_spec)}')
+        return result, ';'.join(real_spec) if real_spec else default_value
+
+    def _extract_color_format(self, field_name, format_spec):
         """Parse and extract the color format from a format field."""
-        result = [None, [], None, []]
+        colors = [None, [], None, []]
+        real_field_name, real_format_spec = '', ''
 
         if not colors:
-            return result
+            return colors, None, ''
 
-        is_fg = False
+        # print(field_name, format_spec)
 
-        for color in colors.split(','):
-            color = color.strip()
+        colors, real_field_name =\
+            self._extract_color_spec(field_name, colors, None)
+        # print('4', field_name, real_field_name)
+        colors, real_format_spec =\
+            self._extract_color_spec(format_spec, colors, '')
+        # print(colors)
 
-            if color.startswith('fg='):
-                # Foreground color
-                result[0] = color[3:]
-                is_fg = True
-            elif color.startswith('bg='):
-                # Background color
-                result[2] = color[3:]
-                is_fg = False
-            elif color in self._attribute_names:
-                # This is an attribute
-                result[1 if is_fg else 3].append(Attr.from_name(color))
-            else:
-                raise ValueError("Unknown color format or attribute '{0}'"
-                                 .format(color))
-
-        return result
+        # print(colors, real_field_name, real_format_spec)
+        return colors, real_field_name, real_format_spec
 
     def vformat(self, format_string, args, kwargs):
         """Hijack the internals of string.Formatter.vformat.
@@ -133,11 +167,14 @@ class ColorFormatter(string.Formatter):
         return a formatted string.
 
         """
+        self.file.flush()
+        self._reset_func(self.file)
+
         used_args = set()
-        self._vformat(format_string, args, kwargs, used_args, 2)
+        _, _ = self._vformat(format_string, args, kwargs, used_args, 2)
         self.check_unused_args(used_args, args, kwargs)
 
-    def _vformat(self, format_string, args, kwargs, used_args,
+    def _vformat(self, format_string, args, kwargs, used_args, recursion_depth,
                  auto_arg_index=0):
         """Hijack the internals of string.Formatter._vformat.
 
@@ -151,14 +188,31 @@ class ColorFormatter(string.Formatter):
         always guaranteed to work. A better work-around is needed.
 
         """
+        if recursion_depth < 0:
+            raise ValueError('Max string recursion exceeded')
+
         tokens = self.parse(format_string)
 
+        # Keep the results around is necessary to support nested format
+        # specification like string.format
+        result = []
+
         for literal_text, field_name, format_spec, conversion in tokens:
+            # print(3, [literal_text, field_name, format_spec, conversion])
             # Output the literal text
             if literal_text:
-                self.file.write(literal_text)
-                self.file.flush()
+                result.append(literal_text)
 
+                if recursion_depth == 2:
+                    self.file.write(literal_text)
+                    self.file.flush()
+
+            # Extract any color spec from the field name and the real field
+            # name itself
+            # colors = [None, [], None, []]
+            # colors, field_name = self._extract_color_spec(field_name, None)
+
+            # print('field_name: ', field_name)
             # If there's a field, output it
             if field_name is not None:
                 # This is some markup, find the object and do the formatting.
@@ -171,6 +225,7 @@ class ColorFormatter(string.Formatter):
                     field_name = str(auto_arg_index)
                     auto_arg_index += 1
                 elif field_name.isdigit():
+                    # print(field_name, auto_arg_index)
                     if auto_arg_index:
                         raise ValueError('cannot switch from manual field '
                                          'specification to automatic field '
@@ -181,11 +236,36 @@ class ColorFormatter(string.Formatter):
 
                 # Given the field_name, find the object it references and the
                 # argument it came from
+                # print(field_name,args)
                 obj, arg_used = self.get_field(field_name, args, kwargs)
+                # print('acb', obj, arg_used, format_spec)
                 used_args.add(arg_used)
 
                 # Do any conversion on the resulting object
                 obj = self.convert_field(obj, conversion)
 
+                # print(f'1: "{format_spec}"')
+                format_spec, auto_arg_index = self._vformat(
+                    format_spec, args, kwargs,
+                    used_args, recursion_depth-1,
+                    auto_arg_index=auto_arg_index)
+                # print(f'2: "{format_spec}"')
+                # print(f'"{result}"')
+
+                # TODO: Set colors here instead to ensure that nested format
+                # fields work? E.g. colorise.fprint('{0:fg={color}}', text,
+                #                                   color=color)
+                # print(f'oi "{obj}", "{format_spec}"')
+
                 # Format the object and append to the result
-                self.file.write(self.format_field(obj, format_spec))
+                formatted_field = self.format_field(obj, format_spec)
+                # print(f'"{formatted_field}"')
+                result.append(formatted_field)
+
+                if recursion_depth == 2:
+                    self.file.write(formatted_field)
+
+                    if self.autoreset:
+                        self._reset_func(self.file)
+
+        return ''.join(result), auto_arg_index

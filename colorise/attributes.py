@@ -38,5 +38,10 @@ class Attr(Enum):
 
     @classmethod
     def names(cls):
-        """Return a set of all attribute names."""
+        """Return a set of all attribute names without aliases."""
         return set(attr.name.lower() for attr in cls)
+
+    @classmethod
+    def names_with_aliases(cls):
+        """Return a set of all attribute names with aliases."""
+        return set(attr.lower() for attr in cls.__members__)
