@@ -30,7 +30,7 @@ class ColorFormatter(string.Formatter):
         color.
 
         """
-        super(ColorFormatter, self).__init__()
+        super().__init__()
 
         self._autoreset = False
         self._file = None
@@ -73,7 +73,7 @@ class ColorFormatter(string.Formatter):
         self._reset_func(self.file)
 
         first_format = True
-        tokens = super(ColorFormatter, self).parse(format_string)
+        tokens = super().parse(format_string)
 
         for literal_text, field_name, format_spec, conversion in tokens:
             fg, fg_attrs, bg, bg_attrs = self._parse_color_format(field_name)
