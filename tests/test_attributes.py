@@ -36,6 +36,18 @@ def test_attributes():
     colorise.fprint('{fg=red,bg=blue,bold}Hello')
 
 
+def test_attribute_aliases():
+    colorise.cprint('Hello',                       attributes=[Attr.Intense])
+    colorise.cprint('Hello', fg='red',             attributes=[Attr.Intense])
+    colorise.cprint('Hello',            bg='blue', attributes=[Attr.Intense])
+    colorise.cprint('Hello', fg='red',  bg='blue', attributes=[Attr.Intense])
+
+    colorise.fprint('{intense}Hello')
+    colorise.fprint('{fg=red,intense}Hello')
+    colorise.fprint('{bg=blue,intense}Hello')
+    colorise.fprint('{fg=red,bg=blue,intense}Hello')
+
+
 def test_invalid_attributes():
     with pytest.raises(ValueError):
         colorise.fprint('{overlined}Hello')

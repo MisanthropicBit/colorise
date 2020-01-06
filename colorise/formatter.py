@@ -37,7 +37,7 @@ class ColorFormatter(string.Formatter):
         self._enabled = True
         self._set_color_func = set_color_func
         self._reset_func = reset_func
-        self._attribute_names = Attr.names()
+        self._attribute_names = Attr.names_with_aliases()
 
     @property
     def autoreset(self):
