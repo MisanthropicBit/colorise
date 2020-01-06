@@ -34,6 +34,7 @@ class ColorFormatter(string.Formatter):
         super().__init__()
 
         self._autoreset = False
+        self._first_color_spec = False
         self._file = None
         self._enabled = True
         self._set_color_func = set_color_func
@@ -48,6 +49,15 @@ class ColorFormatter(string.Formatter):
     @autoreset.setter
     def autoreset(self, value):
         self._autoreset = value
+
+    @property
+    def first_color_spec(self):
+        """Whether it is the first time a color specification is found."""
+        return self._first_color_spec
+
+    @first_color_spec.setter
+    def first_color_spec(self, value):
+        self._first_color_spec = value
 
     @property
     def file(self):
@@ -69,7 +79,6 @@ class ColorFormatter(string.Formatter):
 
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
-        # Flush any remaining stuff before resetting colors
         first_format = True
         tokens = super(ColorFormatter, self).parse(format_string)
 
@@ -106,6 +115,19 @@ class ColorFormatter(string.Formatter):
 
             first_format = False
 
+    def _set_color(self, fg, fg_attrs, bg, bg_attrs):
+        """Set the current color."""
+        if self.enabled and (fg or fg_attrs or bg or bg_attrs):
+            # Automatically reset colors and attributes if enabled and
+            # if it is not the first format we encounter
+            if self.autoreset and not self.first_color_spec:
+                self._reset_func(self.file)
+
+            # Set colors and attributes
+            self._set_color_func(fg, bg, fg_attrs + bg_attrs, self.file)
+
+            self.first_color_spec = False
+
     def _extract_color_spec(self, color_spec, colors, default_value):
         """Extract the color specification from a format specification."""
         is_fg = False
@@ -140,6 +162,10 @@ class ColorFormatter(string.Formatter):
         # print(f'Result: {result, ";".join(real_spec)}')
         return result, ';'.join(real_spec) if real_spec else default_value
 
+    def _is_valid_color_spec(self, color_spec):
+        """Return True if the color specification is valid."""
+        return any(spec for spec in color_spec)
+
     def _extract_color_format(self, field_name, format_spec):
         """Parse and extract the color format from a format field."""
         colors = [None, [], None, []]
@@ -167,8 +193,10 @@ class ColorFormatter(string.Formatter):
         return a formatted string.
 
         """
+        # Flush any remaining stuff before resetting colors
         self.file.flush()
         self._reset_func(self.file)
+        self.first_color_spec = True
 
         used_args = set()
         _, _ = self._vformat(format_string, args, kwargs, used_args, 2)
@@ -191,7 +219,7 @@ class ColorFormatter(string.Formatter):
         if recursion_depth < 0:
             raise ValueError('Max string recursion exceeded')
 
-        tokens = self.parse(format_string)
+        tokens = super().parse(format_string)
 
         # Keep the results around is necessary to support nested format
         # specification like string.format
@@ -209,8 +237,11 @@ class ColorFormatter(string.Formatter):
 
             # Extract any color spec from the field name and the real field
             # name itself
-            # colors = [None, [], None, []]
-            # colors, field_name = self._extract_color_spec(field_name, None)
+            color_spec = [None, [], None, []]
+            color_spec, field_name =\
+                self._extract_color_spec(field_name, color_spec, None)
+
+            self._set_color(*color_spec)
 
             # print('field_name: ', field_name)
             # If there's a field, output it
@@ -252,10 +283,18 @@ class ColorFormatter(string.Formatter):
                 # print(f'2: "{format_spec}"')
                 # print(f'"{result}"')
 
-                # TODO: Set colors here instead to ensure that nested format
-                # fields work? E.g. colorise.fprint('{0:fg={color}}', text,
-                #                                   color=color)
-                # print(f'oi "{obj}", "{format_spec}"')
+                # Extract any color specification from the format specification
+                color_spec, format_spec =\
+                    self._extract_color_spec(format_spec, color_spec, '')
+
+                valid_color_spec = self._is_valid_color_spec(color_spec)
+
+                if valid_color_spec and self.autoreset:
+                    # Reset colors before outputting a formatted field if a
+                    # color specification was present
+                    self._reset_func(self.file)
+
+                self._set_color(*color_spec)
 
                 # Format the object and append to the result
                 formatted_field = self.format_field(obj, format_spec)
@@ -263,9 +302,15 @@ class ColorFormatter(string.Formatter):
                 result.append(formatted_field)
 
                 if recursion_depth == 2:
+                    # Only output the field if we are at the top of the
+                    # recursive call stack, otherwise we would output any
+                    # nested format specifications
                     self.file.write(formatted_field)
 
-                    if self.autoreset:
+                    if valid_color_spec and self.autoreset:
+                        # Reset colors after outputting a formatted field if a
+                        # color specification was present since colors should
+                        # only apply to the formatted field and nothing else
                         self._reset_func(self.file)
 
         return ''.join(result), auto_arg_index
