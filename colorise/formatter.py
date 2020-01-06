@@ -134,7 +134,7 @@ class ColorFormatter(string.Formatter):
 
         """
         used_args = set()
-        self._vformat(format_string, args, kwargs, used_args, 2)
+        self._vformat(format_string, args, kwargs, used_args)
         self.check_unused_args(used_args, args, kwargs)
 
     def _vformat(self, format_string, args, kwargs, used_args,
