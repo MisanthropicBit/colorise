@@ -35,9 +35,11 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 - :new:`[new]` Support for 88/256 colortable indices, and RGB, `HSV/HLS
   <https://en.wikipedia.org/wiki/HSL_and_HSV>`__ and hexadecimal color formats.
 - :new:`[new]` Support for virtual terminal processing on Windows.
-- :new:`[new]` Changed parser to use Python 3's str.format syntax, e.g. ``<fg=red>`` becomes
-  ``{fg=red}``. Removed ColorManager classes since no state needs to be stored,
-  replaced by a ColorFormatter class.
+- :new:`[new]` Changed parser to use Python 3's `str.format
+  <https://docs.python.org/3.7/library/stdtypes.html#str.format>`__ syntax,
+  e.g. ``<fg=red>`` becomes ``{fg=red}``. Removed ColorManager classes since no
+  state needs to be stored. The :py:class:`colorise.formatter.ColorFormatter`
+  class parses formats.
 - :new:`[new]` Better detection of terminal color capabilities.
 - :new:`[new]` If an unsupported color format is specified which the terminal does not
   support it (e.g. an RGB color in a 16 color terminal), colorise will
