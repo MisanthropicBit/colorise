@@ -1,14 +1,16 @@
 <div style="text-align:center">
     <img src="https://raw.githubusercontent.com/MisanthropicBit/colorise/master/docs/images/colorise-logo.png" />
+    <div align="center"><h3>v1.0.1</h3></div>
     <div align="center">
-        <img src="https://img.shields.io/github/v/release/MisanthropicBit/colorise?include_prereleases"><br />
-        <br />
         <a href="https://travis-ci.org/MisanthropicBit/colorise">
             <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master" />
         </a>
         <img src="https://readthedocs.org/projects/colorise/badge/?version=latest" />
         <a href="/LICENSE">
             <img src="https://img.shields.io/github/license/MisanthropicBit/colorise.svg" />
+        </a>
+        <a href="https://github.com/MisanthropicBit/colorise/releases">
+            <img src="https://img.shields.io/github/v/release/MisanthropicBit/colorise?include_prereleases" />
         </a>
         <a href="https://pypi.org/project/colorise/">
             <img src="https://img.shields.io/pypi/v/colorise.svg" />
