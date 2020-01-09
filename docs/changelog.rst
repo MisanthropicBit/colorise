@@ -26,7 +26,7 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 1.0.1
 -----
 
-2020-01-07
+2020-01-09
 
 - :fix:`[fix]` Check for duplicate color format specifications. E.g.
 
