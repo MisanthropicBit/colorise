@@ -23,6 +23,25 @@ Changelog
 
 Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <major>.<minor>.<patch>).
 
+1.0.1
+-----
+
+2020-01-07
+
+- :fix:`[fix]` Check for duplicate color format specifications. E.g.
+
+  >>> colorise.fprint('{fg=red,fg=blue}Hello')
+
+  This is now an error and raises a ``ValueError``.
+- :docs:`[docs]` Update the github branch for generating links to source code,
+  that was pointing at an old deleted branch. Update links and code links in
+  changelog.
+- :fix:`[fix]` Fix a bug where the :py:class:`colorise.attributes.Attr.Intense`
+  attribute (alias for :py:class:`colorise.attributes.Attr.Bold`) would not be
+  recognised by :py:func:`colorise.fprint`.
+- :refactor:`[refactor]` Updated the code for the
+  :py:class:`colorise.formatter.ColorFormatter` class.
+
 1.0.0
 -----
 

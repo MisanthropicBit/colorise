@@ -14,7 +14,7 @@ from colorise.attributes import Attr
 _SYSTEM_OS = platform.system().lower()
 
 __author__ = 'Alexander Asp Bock'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __license__ = 'BSD 3-Clause'
 __all__ = [
     'can_redefine_colors',
