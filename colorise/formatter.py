@@ -293,10 +293,10 @@ class ColorFormatter(string.Formatter):
 
                 valid_color_spec = self._is_valid_color_spec(color_spec)
 
-                if valid_color_spec and self.autoreset:
-                    # Reset colors before outputting a formatted field if a
-                    # color specification was present
-                    self._reset_func(self.file)
+                # if valid_color_spec and self.autoreset:
+                #     # Reset colors before outputting a formatted field if a
+                #     # color specification was present
+                #     self._reset_func(self.file)
 
                 self._set_color(*color_spec)
 
