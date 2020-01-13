@@ -31,9 +31,9 @@ def test_attributes():
     colorise.cprint('Hello', fg='red',  bg='blue', attributes=[Attr.Bold])
 
     colorise.fprint('{bold}Hello')
-    colorise.fprint('{fg=red,bold}Hello')
-    colorise.fprint('{bg=blue,bold}Hello')
-    colorise.fprint('{fg=red,bg=blue,bold}Hello')
+    colorise.fprint('{fg=red;bold}Hello')
+    colorise.fprint('{bg=blue;bold}Hello')
+    colorise.fprint('{fg=red;bg=blue;bold}Hello')
 
 
 def test_invalid_attributes():
@@ -41,13 +41,13 @@ def test_invalid_attributes():
         colorise.fprint('{overlined}Hello')
 
     with pytest.raises(KeyError):
-        colorise.fprint('{fg=red,overlined}Hello')
+        colorise.fprint('{fg=red;overlined}Hello')
 
     with pytest.raises(KeyError):
-        colorise.fprint('{bg=blue,overlined}Hello')
+        colorise.fprint('{bg=blue;overlined}Hello')
 
     with pytest.raises(KeyError):
-        colorise.fprint('{fg=red,bg=blue,overlined}Hello')
+        colorise.fprint('{fg=red;bg=blue;overlined}Hello')
 
 
 @pytest.mark.skip_on_windows
@@ -67,7 +67,7 @@ def test_attribute_fprint_output(expected_results):
         sio = StringIO()
 
         with pytest.redirect_stdout(sio):
-            colorise.fprint('{{fg=red,{0}}}Hello'
+            colorise.fprint('{{fg=red;{0}}}Hello'
                             .format(attribute.name.lower()),
                             file=sys.stdout)
             assert sio.getvalue() == result
