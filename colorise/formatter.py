@@ -24,6 +24,9 @@ class ColorFormatter(string.Formatter):
 
     """
 
+    # Multiple format specifications are delimited by this character
+    _SPEC_DELIMITER = ';'
+
     def __init__(self, set_color_func, reset_func):
         """Initialise the color formatter.
 
@@ -142,7 +145,7 @@ class ColorFormatter(string.Formatter):
         if color_spec is None:
             return colors, default_value
 
-        for color in color_spec.split(';'):
+        for color in color_spec.split(self._SPEC_DELIMITER):
             stripped_color = color.strip()
 
             if re.match('[fb]g=', stripped_color):
@@ -164,7 +167,10 @@ class ColorFormatter(string.Formatter):
                 # real_spec = color
 
         # print(f'Result: {result, ";".join(real_spec)}')
-        return result, ';'.join(real_spec) if real_spec else default_value
+        final_spec = self._SPEC_DELIMITER.join(real_spec)\
+            if real_spec else default_value
+
+        return result, final_spec
 
     def _is_valid_color_spec(self, color_spec):
         """Return True if the color specification is valid."""
