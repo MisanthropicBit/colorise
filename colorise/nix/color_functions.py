@@ -74,7 +74,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout,
     codes = []
 
     if attributes:
-        codes.append(to_ansi(*attributes_to_codes(attributes)))
+        codes.extend(attributes_to_codes(attributes))
 
     if Attr.Reset not in attributes:
         color_count = num_colors_func()
@@ -86,7 +86,7 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout,
                 codes.append(prefix.format(color))
 
     if codes:
-        file.write(''.join(codes))
+        file.write(to_ansi(*codes))
 
 
 def redefine_colors(color_map, file=sys.stdout):

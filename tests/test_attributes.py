@@ -15,12 +15,12 @@ import sys
 def expected_results():
     return zip(Attr, [
             '\x1b[0m\x1b[0mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[1m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[2m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[3m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[4m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[5m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[7m\x1b[31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[1;31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[2;31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[3;31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[4;31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[5;31mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[7;31mHello\x1b[0m' + os.linesep,
         ])
 
 
