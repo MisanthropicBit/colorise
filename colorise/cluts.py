@@ -15,7 +15,7 @@ If you have corrections or suggestions, please submit an issue.
 import re
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
-_DELIMITER = ';'
+_DELIMITER = ','
 _RGB_RE = re.compile(r'^(rgb)?\((\d{1,3}' +
                      _DELIMITER +
                      r'\s*\d{1,3}' +
