@@ -118,13 +118,17 @@ class ColorFormatter(string.Formatter):
     def _set_color(self, fg, fg_attrs, bg, bg_attrs):
         """Set the current color."""
         if self.enabled and (fg or fg_attrs or bg or bg_attrs):
-            # Automatically reset colors and attributes if enabled and
-            # if it is not the first format we encounter
-            if self.autoreset and not self.first_color_spec:
+            attrs = fg_attrs + bg_attrs
+
+            # Automatically reset colors and attributes if autoreset is set,
+            # it is not the first color format we encounter and the attributes
+            # are not just resetting colors
+            if self.autoreset and not self.first_color_spec\
+                    and attrs != [Attr.Reset]:
                 self._reset_func(self.file)
 
             # Set colors and attributes
-            self._set_color_func(fg, bg, fg_attrs + bg_attrs, self.file)
+            self._set_color_func(fg, bg, attrs, self.file)
 
             self.first_color_spec = False
 
