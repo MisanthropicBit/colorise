@@ -43,6 +43,7 @@ class ColorFormatter(string.Formatter):
         self._set_color_func = set_color_func
         self._reset_func = reset_func
         self._attribute_names = Attr.names_with_aliases()
+        self._prev_colors = [None, [], None, []]
 
     @property
     def autoreset(self):
@@ -79,6 +80,22 @@ class ColorFormatter(string.Formatter):
     @enabled.setter
     def enabled(self, value):
         self._enabled = value
+
+    @property
+    def prev_colors(self):
+        """Return the previously set colors."""
+        return self._prev_colors
+
+    @prev_colors.setter
+    def prev_colors(self, color_spec):
+        if self.autoreset:
+            # If autoreset is set, overwrite any previous colors
+            self._prev_colors = color_spec
+        else:
+            # Otherwise, overwrite only with those specs set in the argument
+            for i, spec in enumerate(color_spec):
+                if spec:
+                    self._prev_colors[i] = spec
 
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
@@ -207,6 +224,7 @@ class ColorFormatter(string.Formatter):
         self.file.flush()
         self._reset_func(self.file)
         self.first_color_spec = True
+        self._prev_colors = [None, [], None, []]
 
         used_args = set()
         _, _ = self._vformat(format_string, args, kwargs, used_args, 2)
@@ -251,7 +269,10 @@ class ColorFormatter(string.Formatter):
             color_spec, field_name =\
                 self._extract_color_spec(field_name, color_spec, None)
 
-            self._set_color(*color_spec)
+            if self._is_valid_color_spec(color_spec):
+                self.prev_colors = color_spec
+
+            self._set_color(*self.prev_colors)
 
             # print('field_name: ', field_name)
             # If there's a field, output it
@@ -317,7 +338,11 @@ class ColorFormatter(string.Formatter):
                     # nested format specifications
                     self.file.write(formatted_field)
 
-                    if valid_color_spec and self.autoreset:
+                    if self._is_valid_color_spec(self.prev_colors):
+                        # Previous colors have been set, restore them instead
+                        # of autoresetting
+                        self._set_color(*self.prev_colors)
+                    elif valid_color_spec and self.autoreset:
                         # Reset colors after outputting a formatted field if a
                         # color specification was present since colors should
                         # only apply to the formatted field and nothing else
