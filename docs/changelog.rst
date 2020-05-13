@@ -23,8 +23,8 @@ Changelog
 
 Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <major>.<minor>.<patch>).
 
-1.0.1
------
+`1.0.1 <https://github.com/MisanthropicBit/colorise/releases/tag/v1.0.1>`__
+---------------------------------------------------------------------------
 
 2020-01-09
 
@@ -42,8 +42,8 @@ Version numbers follow `Semantic Versioning <https://semver.org/>`__ (i.e. <majo
 - :refactor:`[refactor]` Updated the code for the
   :py:class:`colorise.formatter.ColorFormatter` class.
 
-1.0.0
------
+`1.0.0 <https://github.com/MisanthropicBit/colorise/releases/tag/v1.0.0>`__
+---------------------------------------------------------------------------
 
 2019-12-17
 
