@@ -14,6 +14,11 @@ from colorise.terminal import terminal_name
 
 def num_colors():
     """Attempt to get the number of colors supported by the terminal."""
+    colorterm = os.environ.get('COLORTERM')
+
+    if colorterm in ('truecolor', '24bit'):
+        return 2**24
+
     # iTerm supports true-color from version 3 onward, earlier versions
     # supported 256 colors
     if terminal_name() == 'iTerm.app':
