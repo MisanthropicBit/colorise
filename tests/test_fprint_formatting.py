@@ -48,7 +48,10 @@ def assert_colored_output(func, expected, fmt, *args, **kwargs):
 
     with pytest.redirect_stdout(sio):
         func(fmt, *args, **kwargs, file=sys.stdout)
-        assert sio.getvalue() == '\x1b[0m' + expected + '\x1b[0m' + os.linesep
+
+        assert sio.getvalue() == expected + os.linesep
+
+        # assert sio.getvalue() == '\x1b[0m' + expected + '\x1b[0m' + os.linesep
 
 
 def test_fprint_python_formatting_examples_positions_no_color():
@@ -575,7 +578,7 @@ def test_fprint_python_formatting_examples_hex_color():
 
     assert_colored_output(
         colorise.fprint,
-        '\x1b[1m\x1b[31mC0\x1b[34mA8\x1b[33m00\x1b[32m01',
+        '\x1b[1m\x1b[31mC0\x1b[34mA8\x1b[33m00\x1b[32m01\x1b[0m',
         '{bold}{:fg=red;02X}{:fg=blue;02X}{:fg=yellow;02X}{:02X;fg=green}',
         *octets,
         autoreset=False

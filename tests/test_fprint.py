@@ -15,25 +15,25 @@ def test_valid_fprint():
     colorise.fprint('Hello {fg=201}world')
     colorise.fprint('Hello {fg=#a696ff}world')
     colorise.fprint('Hello {fg=0xa696ff}world')
-    colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0)}world')
-    colorise.fprint('Hello {fg=hsv(249;41;100)}world')
-    colorise.fprint('Hello {fg=rgb(167;151;255)}world')
+    colorise.fprint('Hello {fg=hls(0.6923,0.7960,1.0)}world')
+    colorise.fprint('Hello {fg=hsv(249,41,100)}world')
+    colorise.fprint('Hello {fg=rgb(167,151,255)}world')
 
     colorise.fprint('Hello {bg=red}world')
     colorise.fprint('Hello {bg=201}world')
     colorise.fprint('Hello {bg=#a696ff}world')
     colorise.fprint('Hello {bg=0xa696ff}world')
-    colorise.fprint('Hello {bg=hls(0.6923;0.7960;1.0)}world')
-    colorise.fprint('Hello {bg=hsv(249;41;100)}world')
-    colorise.fprint('Hello {bg=rgb(167;151;255)}world')
+    colorise.fprint('Hello {bg=hls(0.6923,0.7960,1.0)}world')
+    colorise.fprint('Hello {bg=hsv(249,41,100)}world')
+    colorise.fprint('Hello {bg=rgb(167,151,255)}world')
 
-    colorise.fprint('Hello {fg=red ,bg=red}world')
-    colorise.fprint('Hello { fg=201,bg=201}world')
-    colorise.fprint('Hello {fg=0xa696ff,bg=0xa696ff}world')
-    colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0),'
-                    'bg=hls(0.6923;0.7960;1.0)}world')
-    colorise.fprint('Hello {fg=hsv(249;41;100),bg=hsv(249;41;100)}world')
-    colorise.fprint('Hello {fg=rgb(167;151;255),bg=rgb(167;151;255)}world')
+    colorise.fprint('Hello {fg=red ;bg=red}world')
+    colorise.fprint('Hello { fg=201;bg=201}world')
+    colorise.fprint('Hello {fg=0xa696ff;bg=0xa696ff}world')
+    colorise.fprint('Hello {fg=hls(0.6923,0.7960,1.0);'
+                    'bg=hls(0.6923,0.7960,1.0)}world')
+    colorise.fprint('Hello {fg=hsv(249,41,100);bg=hsv(249,41,100)}world')
+    colorise.fprint('Hello {fg=rgb(167,151,255);bg=rgb(167,151,255)}world')
 
     with pytest.raises(ValueError):
         colorise.fprint('Hello {bg=#a696ff,bg=#a696ff }world')
@@ -84,9 +84,9 @@ def test_valid_truecolor_fprint_output():
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ('fg=0xa696ff',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ('fg=hsv(249;41;100)',
+        ('fg=hsv(249,41,100)',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ('fg=rgb(167;151;255)',
+        ('fg=rgb(167,151,255)',
          '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
     ]
 
@@ -104,7 +104,7 @@ def test_fprint_disabled():
 
     with pytest.redirect_stdout(sio):
         colorise.fprint('{fg=red}Hello', file=sys.stdout, enabled=False)
-        assert sio.getvalue() == '\x1b[0mHello' + os.linesep
+        assert sio.getvalue() == 'Hello' + os.linesep
 
 
 @pytest.mark.skip_on_windows
@@ -125,7 +125,7 @@ def test_fprint_autoreset():
     with pytest.redirect_stdout(sio):
         colorise.fprint(text, file=sys.stdout, autoreset=False)
         assert sio.getvalue() ==\
-            '\x1b[0m\x1b[31mHello \x1b[44mworld!\x1b[0m' + os.linesep
+            '\x1b[31mHello \x1b[44mworld!\x1b[0m' + os.linesep
 
     sio = StringIO()
 

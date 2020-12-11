@@ -15,26 +15,26 @@ def test_valid_cprint():
     colorise.cprint('Hello', fg=201)
     colorise.cprint('Hello', fg='#a696ff')
     colorise.cprint('Hello', fg='0xa696ff')
-    colorise.cprint('Hello', fg='hls(0.6919;0.7940;1.0)')
-    colorise.cprint('Hello', fg='hsv(249;41;100)')
-    colorise.cprint('Hello', fg='rgb(167;151;255)')
+    colorise.cprint('Hello', fg='hls(0.6919,0.7940,1.0)')
+    colorise.cprint('Hello', fg='hsv(249,41,100)')
+    colorise.cprint('Hello', fg='rgb(167,151,255)')
 
     colorise.cprint('Hello', bg='red')
     colorise.cprint('Hello', bg=201)
     colorise.cprint('Hello', bg='#a696ff')
     colorise.cprint('Hello', bg='0xa696ff')
-    colorise.cprint('Hello', bg='hls(0.6919;0.7940;1.0)')
-    colorise.cprint('Hello', bg='hsv(249;41;100)')
-    colorise.cprint('Hello', bg='rgb(167;151;255)')
+    colorise.cprint('Hello', bg='hls(0.6919,0.7940,1.0)')
+    colorise.cprint('Hello', bg='hsv(249,41,100)')
+    colorise.cprint('Hello', bg='rgb(167,151,255)')
 
     colorise.cprint('Hello', fg='red', bg='red')
     colorise.cprint('Hello', fg=201, bg=201)
     colorise.cprint('Hello', fg='#a696ff', bg='#a696ff')
     colorise.cprint('Hello', fg='0xa696ff', bg='0xa696ff')
-    colorise.cprint('Hello', fg='hls(0.6919;0.7940;1.0)',
-                    bg='hls(0.6919;0.7940;1.0)')
-    colorise.cprint('Hello', fg='hsv(249;41;100)', bg='hsv(249;41;100)')
-    colorise.cprint('Hello', fg='rgb(167;151;255)', bg='rgb(167;151;255)')
+    colorise.cprint('Hello', fg='hls(0.6919,0.7940,1.0)',
+                    bg='hls(0.6919,0.7940,1.0)')
+    colorise.cprint('Hello', fg='hsv(249,41,100)', bg='hsv(249,41,100)')
+    colorise.cprint('Hello', fg='rgb(167,151,255)', bg='rgb(167,151,255)')
 
 
 def test_invalid_cprint():
@@ -60,7 +60,7 @@ def test_valid_named_cprint_output():
         [None, 'blue', 'blue'],
         [
             '\x1b[0m\x1b[31mHello\x1b[0m' + os.linesep,
-            '\x1b[0m\x1b[31m\x1b[44mHello\x1b[0m' + os.linesep,
+            '\x1b[0m\x1b[31;44mHello\x1b[0m' + os.linesep,
             '\x1b[0m\x1b[44mHello\x1b[0m' + os.linesep
         ]
     )
@@ -88,11 +88,11 @@ def test_valid_truecolor_cprint_output():
     tests = [
         ({'fg': '0xa696ff'},
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'hls(0.6919;0.7940;1.0)'},
+        ({'fg': 'hls(0.6919,0.7940,1.0)'},
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'hsv(249;41;100)'},
+        ({'fg': 'hsv(249,41,100)'},
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'rgb(167;151;255)'},
+        ({'fg': 'rgb(167,151,255)'},
          '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
     ]
 

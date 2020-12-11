@@ -9,11 +9,11 @@ This class extends the string.Formatter class.
 
 import re
 import string
+import colorise
 from colorise.attributes import Attr
 
 
 class ColorFormatter(string.Formatter):
-
     """Class for formatting strings containing color syntax.
 
     As opposed to an ordinary derived string.Formatter, this one does not
@@ -97,6 +97,11 @@ class ColorFormatter(string.Formatter):
                 if spec:
                     self._prev_colors[i] = spec
 
+    def reset_colors(self):
+        """."""
+        # print('RESET')
+        self._reset_func(self.file)
+
     def parse(self, format_string):
         """Parse a format string and generate tokens."""
         first_format = True
@@ -121,7 +126,7 @@ class ColorFormatter(string.Formatter):
                     # Automatically reset colors and attributes if enabled and
                     # if it is not the first format we encounter
                     if self.autoreset and not first_format:
-                        self._reset_func(self.file)
+                        self.reset_colors()
 
                     # Set colors and attributes
                     self._set_color_func(fg, bg, fg_attrs + bg_attrs,
@@ -145,7 +150,8 @@ class ColorFormatter(string.Formatter):
             # are not just resetting colors
             if self.autoreset and not self.first_color_spec\
                     and attrs != [Attr.Reset]:
-                self._reset_func(self.file)
+                # print('In _set_color condition')
+                self.reset_colors()
 
             # Set colors and attributes
             self._set_color_func(fg, bg, attrs, self.file)
@@ -169,8 +175,10 @@ class ColorFormatter(string.Formatter):
                 index = 0 if stripped_color[0] == 'f' else 2
 
                 if result[index]:
-                    raise ValueError('Duplicate {0}ground color format'
-                                     .format('back' if index > 0 else 'fore'))
+                    raise ValueError(
+                        'Duplicate {0}ground color format'
+                        .format('back' if index > 0 else 'fore')
+                    )
 
                 result[index] = stripped_color[3:]
                 is_fg = index == 0
@@ -214,44 +222,60 @@ class ColorFormatter(string.Formatter):
         return colors, real_field_name, real_format_spec
 
     def vformat(self, format_string, args, kwargs):
-        """Hijack the internals of string.Formatter.vformat.
+        """Hijack the internals of string.Formatter.vformat."""
+        # NOTE: Copied (almost) verbatim from the Python 3.7 source code but
+        # does not return a formatted string.
 
-        Copied (almost) verbatim from the Python 3.7 source code but does not
-        return a formatted string.
+        is_windows = colorise._SYSTEM_OS.startswith('win')
 
-        """
-        # Flush any remaining stuff before resetting colors
-        self.file.flush()
-        self._reset_func(self.file)
+        if self.enabled:
+            # Flush any remaining stuff before resetting colors on Windows since
+            # color attributes are not not part of the buffered output
+            if is_windows:
+                self.file.flush()
+
+            if self.autoreset:
+                self.reset_colors()
+
         self.first_color_spec = True
         self._prev_colors = [None, [], None, []]
 
         used_args = set()
         _, _ = self._vformat(format_string, args, kwargs, used_args, 2)
+
+        if self.enabled:
+            # Ensure we end formatting by flusing any remaining output and
+            # resetting colors. Do this before an error potentially occurs in
+            # check_unused_args
+            if is_windows:
+                self.file.flush()
+
+            self.reset_colors()
+
         self.check_unused_args(used_args, args, kwargs)
+
+    # def _output_replacement_field(self, ):
 
     def _vformat(self, format_string, args, kwargs, used_args, recursion_depth,
                  auto_arg_index=0):
-        """Hijack the internals of string.Formatter._vformat.
+        """Hijack the internals of string.Formatter._vformat."""
+        # Copied (almost) verbatim from the Python 3.7 source code but does not
+        # return a formatted string. The only major changes is that the result
+        # list normally returned by _vformat is gone and has been replaced with
+        # direct writes to a stream. Furthermore, nested formats have been
+        # removed.
 
-        Copied (almost) verbatim from the Python 3.7 source code but does not
-        return a formatted string. The only major changes is that the result
-        list normally returned by _vformat is gone and has been replaced with
-        direct writes to a stream. Furthermore, nested formats have been
-        removed.
+        # This is extremely brittle if the source ever changes and thus not
+        # always guaranteed to work. A better work-around is needed.
 
-        This is extremely brittle if the source ever changes and thus not
-        always guaranteed to work. A better work-around is needed.
-
-        """
         if recursion_depth < 0:
             raise ValueError('Max string recursion exceeded')
 
-        tokens = super().parse(format_string)
-
-        # Keep the results around is necessary to support nested format
-        # specification like string.format
+        # Keeping the results around is necessary to support nested format
+        # specification like str.format
         result = []
+
+        tokens = super().parse(format_string)
 
         for literal_text, field_name, format_spec, conversion in tokens:
             # print(3, [literal_text, field_name, format_spec, conversion])
@@ -260,19 +284,25 @@ class ColorFormatter(string.Formatter):
                 result.append(literal_text)
 
                 if recursion_depth == 2:
+                    # Only print literal text at the top-level call
                     self.file.write(literal_text)
-                    self.file.flush()
+
+                    if colorise._SYSTEM_OS.startswith('win'):
+                        self.file.flush()
 
             # Extract any color spec from the field name and the real field
             # name itself
             color_spec = [None, [], None, []]
-            color_spec, field_name =\
-                self._extract_color_spec(field_name, color_spec, None)
+            color_spec, field_name = self._extract_color_spec(
+                field_name,
+                color_spec,
+                None,
+            )
 
             if self._is_valid_color_spec(color_spec):
                 self.prev_colors = color_spec
 
-            self._set_color(*self.prev_colors)
+            self._set_color(*color_spec)
 
             # print('field_name: ', field_name)
             # If there's a field, output it
@@ -307,23 +337,32 @@ class ColorFormatter(string.Formatter):
                 obj = self.convert_field(obj, conversion)
 
                 # print(f'1: "{format_spec}"')
+                # Format any fields in the format spec
                 format_spec, auto_arg_index = self._vformat(
-                    format_spec, args, kwargs,
-                    used_args, recursion_depth-1,
-                    auto_arg_index=auto_arg_index)
+                    format_spec,
+                    args,
+                    kwargs,
+                    used_args,
+                    recursion_depth-1,
+                    auto_arg_index=auto_arg_index
+                )
+
                 # print(f'2: "{format_spec}"')
                 # print(f'"{result}"')
 
                 # Extract any color specification from the format specification
-                color_spec, format_spec =\
-                    self._extract_color_spec(format_spec, color_spec, '')
+                color_spec, format_spec = self._extract_color_spec(
+                    format_spec,
+                    color_spec,
+                    ''
+                )
 
                 valid_color_spec = self._is_valid_color_spec(color_spec)
 
                 # if valid_color_spec and self.autoreset:
                 #     # Reset colors before outputting a formatted field if a
                 #     # color specification was present
-                #     self._reset_func(self.file)
+                #     self.reset_colors()
 
                 self._set_color(*color_spec)
 
@@ -341,11 +380,13 @@ class ColorFormatter(string.Formatter):
                     if self._is_valid_color_spec(self.prev_colors):
                         # Previous colors have been set, restore them instead
                         # of autoresetting
-                        self._set_color(*self.prev_colors)
+                        if Attr.Reset in color_spec[1] or Attr.Reset in color_spec[3]:
+                            self._set_color(*self.prev_colors)
                     elif valid_color_spec and self.autoreset:
                         # Reset colors after outputting a formatted field if a
                         # color specification was present since colors should
                         # only apply to the formatted field and nothing else
-                        self._reset_func(self.file)
+                        # print('jdrgoijdgr')
+                        self.reset_colors()
 
         return ''.join(result), auto_arg_index

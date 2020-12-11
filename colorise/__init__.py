@@ -181,9 +181,9 @@ def fprint(fmt, *args, autoreset=True, end=os.linesep, file=sys.stdout,
     _COLOR_FORMATTER.enabled = enabled
     _COLOR_FORMATTER.format(fmt, *args, **kwargs)
 
-    if enabled:
-        file.flush()  # Flush before resetting colors
-        reset_color(file)
+    # if enabled:
+    #     file.flush()  # Flush before resetting colors
+    #     reset_color(file)
 
     # Make sure to print the end keyword after resetting so the next line is
     # not affected by a newline or similar

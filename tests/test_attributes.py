@@ -65,9 +65,8 @@ def test_attribute_cprint_output(expected_results):
 def test_attribute_fprint_output(expected_results):
     for attribute, result in expected_results:
         sio = StringIO()
+        fmt = '{{fg=red;{0}}}Hello'.format(attribute.name.lower())
 
         with pytest.redirect_stdout(sio):
-            colorise.fprint('{{fg=red;{0}}}Hello'
-                            .format(attribute.name.lower()),
-                            file=sys.stdout)
+            colorise.fprint(fmt, file=sys.stdout)
             assert sio.getvalue() == result

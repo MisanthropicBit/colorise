@@ -18,17 +18,17 @@ def test_highlight():
     colorise.highlight(text, indices, fg=201)
     colorise.highlight(text, indices, fg='#a696ff')
     colorise.highlight(text, indices, fg='0xa696ff')
-    colorise.highlight(text, indices, fg='hls(0.6919;0.7940;1.0)')
-    colorise.highlight(text, indices, fg='hsv(249;41;100)')
-    colorise.highlight(text, indices, fg='rgb(167;151;255)')
+    colorise.highlight(text, indices, fg='hls(0.6919,0.7940,1.0)')
+    colorise.highlight(text, indices, fg='hsv(249,41,100)')
+    colorise.highlight(text, indices, fg='rgb(167,151,255)')
 
     colorise.highlight(text, indices, bg='red')
     colorise.highlight(text, indices, bg=201)
     colorise.highlight(text, indices, bg='#a696ff')
     colorise.highlight(text, indices, bg='0xa696ff')
-    colorise.highlight(text, indices, bg='hls(0.6919;0.7940;1.0)')
-    colorise.highlight(text, indices, bg='hsv(249;41;100)')
-    colorise.highlight(text, indices, bg='rgb(167;151;255)')
+    colorise.highlight(text, indices, bg='hls(0.6919,0.7940,1.0)')
+    colorise.highlight(text, indices, bg='hsv(249,41,100)')
+    colorise.highlight(text, indices, bg='rgb(167,151,255)')
 
 
 def test_invalid_highlight():
@@ -93,9 +93,9 @@ def test_highlight_truecolor_output():
     indices = [0, 2, 4]
     kwargs = [
         {'fg': '0xa696ff'},
-        {'fg': 'hls(0.6919;0.7940;1.0)'},
-        {'fg': 'hsv(249;41;100)'},
-        {'fg': 'rgb(166;150;255)'},
+        {'fg': 'hls(0.6919,0.7940,1.0)'},
+        {'fg': 'hsv(249,41,100)'},
+        {'fg': 'rgb(166,150,255)'},
     ]
     result = '\x1b[0m\x1b[38;2;166;150;255mH\x1b[0me\x1b[38;2;166;150;255m'\
              'l\x1b[0ml\x1b[38;2;166;150;255mo\x1b[0m' + os.linesep
