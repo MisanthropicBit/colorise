@@ -36,6 +36,20 @@ def test_attributes():
     colorise.fprint('{fg=red,bg=blue,bold}Hello')
 
 
+def test_attribute_names():
+    names = frozenset([
+        'reset',
+        'bold',
+        'faint',
+        'italic',
+        'underline',
+        'blink',
+        'reverse'
+    ])
+
+    assert Attr.names() == names
+
+
 def test_attribute_aliases():
     colorise.cprint('Hello',                       attributes=[Attr.Intense])
     colorise.cprint('Hello', fg='red',             attributes=[Attr.Intense])
