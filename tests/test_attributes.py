@@ -77,23 +77,22 @@ def test_invalid_attributes():
 
 
 @pytest.mark.skip_on_windows
-def test_attribute_cprint_output(expected_results):
-    for attribute, result in expected_results:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.cprint('Hello', fg='red', attributes=[attribute],
-                            file=sys.stdout)
-            assert sio.getvalue() == result
+def test_attribute_cprint_output(test_stdout, expected_results):
+    for attribute, expected in expected_results:
+        test_stdout(
+            colorise.cprint,
+            expected,
+            'Hello',
+            fg='red',
+            attributes=[attribute],
+        )
 
 
 @pytest.mark.skip_on_windows
-def test_attribute_fprint_output(expected_results):
-    for attribute, result in expected_results:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.fprint('{{fg=red,{0}}}Hello'
-                            .format(attribute.name.lower()),
-                            file=sys.stdout)
-            assert sio.getvalue() == result
+def test_attribute_fprint_output(test_stdout, expected_results):
+    for attribute, expected in expected_results:
+        test_stdout(
+            colorise.fprint,
+            expected,
+            '{{fg=red,{0}}}Hello'.format(attribute.name.lower())
+        )
