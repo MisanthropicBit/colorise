@@ -142,7 +142,7 @@ def color_from_name(name, color_count, bg, attributes):
 
 
 def color_from_index(idx, color_count, bg, attributes):
-    """Return the color value and color count for a given color index."""
+    """Return the color prefix and color value for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
 
