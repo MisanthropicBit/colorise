@@ -4,7 +4,6 @@
 """Test the cprint function."""
 
 import colorise
-from io import StringIO
 import pytest
 import os
 import sys
@@ -54,7 +53,7 @@ def test_invalid_cprint():
 
 
 @pytest.mark.skip_on_windows
-def test_valid_named_cprint_output():
+def test_valid_named_cprint_output(test_stdout):
     tests = zip(
         ['red', 'red', None],
         [None, 'blue', 'blue'],
@@ -65,59 +64,56 @@ def test_valid_named_cprint_output():
         ]
     )
 
-    for fg, bg, result in tests:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.cprint('Hello', fg=fg, bg=bg, file=sys.stdout)
-            assert sio.getvalue() == result
+    for fg, bg, expected in tests:
+        test_stdout(colorise.cprint, expected, 'Hello', fg=fg, bg=bg)
 
 
 @pytest.mark.require_colors(256)
-def test_valid_256_index_cprint_output():
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.cprint('Hello', fg=201, file=sys.stdout)
-        assert sio.getvalue() == '\x1b[0m\x1b[38;5;201mHello\x1b[0m'\
-            + os.linesep
+def test_valid_256_index_cprint_output(test_stdout):
+    expected = '\x1b[0m\x1b[38;5;201mHello\x1b[0m' + os.linesep
+    test_stdout(colorise.cprint, expected, 'Hello', fg=201)
 
 
 @pytest.mark.require_colors(256**3)
-def test_valid_truecolor_cprint_output():
+def test_valid_truecolor_cprint_output(test_stdout):
     tests = [
-        ({'fg': '0xa696ff'},
-         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'hls(0.6919;0.7940;1.0)'},
-         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'hsv(249;41;100)'},
-         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ({'fg': 'rgb(167;151;255)'},
-         '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),
+        (
+            {'fg': '0xa696ff'},
+            '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep
+        ),
+        (
+            {'fg': 'hls(0.6919;0.7940;1.0)'},
+            '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep
+        ),
+        (
+            {'fg': 'hsv(249;41;100)'},
+            '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep
+        ),
+        (
+            {'fg': 'rgb(167;151;255)'},
+            '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep
+        ),
     ]
 
-    for kwargs, expected_result in tests:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.cprint('Hello', file=sys.stdout, **kwargs)
-            assert sio.getvalue() == expected_result
+    for kwargs, expected in tests:
+        test_stdout(colorise.cprint, expected, 'Hello', **kwargs)
 
 
 @pytest.mark.skip_on_windows
-def test_cprint_disabled():
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.cprint('Hello', fg='red', file=sys.stdout, enabled=False)
-        assert sio.getvalue() == '\x1b[0mHello' + os.linesep
+def test_cprint_disabled(test_stdout):
+    test_stdout(
+        colorise.cprint,
+        '\x1b[0mHello' + os.linesep,
+        'Hello',
+        fg='red',
+        enabled=False
+    )
 
 
 @pytest.mark.skip_on_windows
-def test_cprint_proper_reset():
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
+def test_cprint_proper_reset(redirect_stdout):
+    with redirect_stdout() as stdout:
         colorise.set_color(fg='red')
         colorise.cprint('Hello', bg='blue', file=sys.stdout)
-        assert sio.getvalue() == '\x1b[0m\x1b[44mHello\x1b[0m' + os.linesep
+
+        assert stdout.value == '\x1b[0m\x1b[44mHello\x1b[0m' + os.linesep
