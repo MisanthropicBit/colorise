@@ -36,29 +36,39 @@ def test_valid_fprint():
 
 
 def test_invalid_fprint():
-    kwargs = [
-        'unknown',
-        '300',
-        '#a69ff',
-        '0xa69ff',
-        'hls(0.6923,0.7960;1.0=',
-        'hsv(249;41;-100)',
-        'rgb(167;xxx;255)',
+    invalid_colors = [
+        ('unknown', r"^Unknown color name 'unknown'$"),
+        (256, r"^Color index must be in range 0-255 inclusive$"),
+        (300, r"^Color index must be in range 0-255 inclusive$"),
+        ('#a69ff', r"^Unknown or invalid color format '#a69ff'$"),
+        ('0xa69ff', r"^Unknown or invalid color format '0xa69ff'$"),
+        (
+            'hls(0.6923,0.7960;1.0=',
+            r"^Unknown color format or attribute '0.7960;1.0='$",
+        ),
+        (
+            'hsv(249;41;-100)',
+            r"^Unknown or invalid color format 'hsv\(249;41;-100\)'$",
+        ),
+        (
+            'rgb(167;xxx;255)',
+            r"^Unknown or invalid color format 'rgb\(167;xxx;255\)'$",
+        ),
     ]
 
-    for kwarg in kwargs:
-        with pytest.raises(ValueError):
-            colorise.fprint('{fg=' + kwarg + '}Hello')
+    for color, error_message in invalid_colors:
+        with pytest.raises(ValueError, match=error_message):
+            colorise.fprint('{fg=' + str(color) + '}Hello')
 
-        with pytest.raises(ValueError):
-            colorise.fprint('{bg=' + kwarg + '}Hello')
+        with pytest.raises(ValueError, match=error_message):
+            colorise.fprint('{bg=' + str(color) + '}Hello')
 
 
 def test_duplicate_color_spec():
-    with pytest.raises(ValueError, match='foreground'):
+    with pytest.raises(ValueError, match='Duplicate foreground'):
         colorise.fprint('Hello {fg=red,fg=red}world')
 
-    with pytest.raises(ValueError, match='background'):
+    with pytest.raises(ValueError, match='Duplicate background'):
         colorise.fprint('Hello {bg=red,bg=red}world')
 
 

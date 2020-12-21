@@ -11,5 +11,7 @@ import pytest
 def test_redefine_colors_error():
     assert not colorise.can_redefine_colors()
 
-    with pytest.raises(colorise.error.NotSupportedError):
+    error_message = '^Cannot redefine colors on nix systems$'
+
+    with pytest.raises(colorise.error.NotSupportedError, match=error_message):
         colorise.redefine_colors({})

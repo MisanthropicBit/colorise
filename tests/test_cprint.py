@@ -37,18 +37,28 @@ def test_valid_cprint():
 
 
 def test_invalid_cprint():
-    kwargs = [
-        {'fg': 'unknown'},
-        {'fg': 256},
-        {'bg': '#a69ff'},
-        {'bg': '0xa69ff'},
-        {'fg': 'hls(0.6919,0.7940;1.0='},
-        {'bg': 'hsv(249;41;-100)'},
-        {'fg': 'rgb(167;xxx;255)'},
+    invalid_colors = [
+        ({'fg': 'unknown'}, r"^Unknown color name 'unknown'$"),
+        ({'fg': 256}, r"^Color index must be in range 0-255 inclusive$"),
+        ({'bg': 300}, r"^Color index must be in range 0-255 inclusive$"),
+        ({'bg': '#a69ff'}, r"^Unknown or invalid color format '#a69ff'$"),
+        ({'bg': '0xa69ff'}, r"^Unknown or invalid color format '0xa69ff'$"),
+        (
+            {'fg': 'hls(0.6923,0.7960;1.0='},
+            r"^Unknown or invalid color format 'hls\(0.6923,0.7960;1.0='$",
+        ),
+        (
+            {'bg': 'hsv(249;41;-100)'},
+            r"^Unknown or invalid color format 'hsv\(249;41;-100\)'$",
+        ),
+        (
+            {'fg': 'rgb(167;xxx;255)'},
+            r"^Unknown or invalid color format 'rgb\(167;xxx;255\)'$",
+        ),
     ]
 
-    for kwarg in kwargs:
-        with pytest.raises(ValueError):
+    for kwarg, error_message in invalid_colors:
+        with pytest.raises(ValueError, match=error_message):
             colorise.cprint('Hello', **kwarg)
 
 
