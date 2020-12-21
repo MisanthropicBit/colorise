@@ -99,6 +99,7 @@ def color_names():
         'lightyellow',
         'lightblue',
         'lightpurple',
+        'lightmagenta',
         'lightcyan',
         'white',
     ]
