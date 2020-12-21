@@ -63,17 +63,18 @@ def test_attribute_aliases():
 
 
 def test_invalid_attributes():
-    with pytest.raises(ValueError):
-        colorise.fprint('{overlined}Hello')
+    attr_error_message =  "Unknown color format or attribute 'overlined'"
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=red,overlined}Hello')
+    invalid_attributes = [
+        '{overlined}Hello',
+        '{fg=red,overlined}Hello',
+        '{bg=blue,overlined}Hello',
+        '{fg=red,bg=blue,overlined}Hello',
+    ]
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{bg=blue,overlined}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=red,bg=blue,overlined}Hello')
+    for text in invalid_attributes:
+        with pytest.raises(ValueError, match=attr_error_message):
+            colorise.fprint(text)
 
 
 @pytest.mark.skip_on_windows

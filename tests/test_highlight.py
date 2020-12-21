@@ -33,18 +33,28 @@ def test_highlight():
 def test_invalid_highlight():
     text = 'Hello'
     indices = [0, 2, 4]
-    colors = [
-        'unknown',
-        256,
-        '#a69ff',
-        '0xa69ff',
-        'hls(0.6919,0.7940;1.0=',
-        'hsv(249;41;-100)',
-        'rgb(167;xxx;255)'
+    invalid_colors = [
+        ('unknown', r"^Unknown color name 'unknown'$"),
+        (256, r"^Color index must be in range 0-255 inclusive$"),
+        (300, r"^Color index must be in range 0-255 inclusive$"),
+        ('#a69ff', r"^Unknown or invalid color format '#a69ff'$"),
+        ('0xa69ff', r"^Unknown or invalid color format '0xa69ff'$"),
+        (
+            'hls(0.6923,0.7960;1.0=',
+            r"^Unknown or invalid color format 'hls\(0.6923,0.7960;1.0='$",
+        ),
+        (
+            'hsv(249;41;-100)',
+            r"^Unknown or invalid color format 'hsv\(249;41;-100\)'$",
+        ),
+        (
+            'rgb(167;xxx;255)',
+            r"^Unknown or invalid color format 'rgb\(167;xxx;255\)'$",
+        ),
     ]
 
-    for color in colors:
-        with pytest.raises(ValueError):
+    for color, error_message in invalid_colors:
+        with pytest.raises(ValueError, match=error_message):
             colorise.highlight(text, indices, fg=color)
 
 
