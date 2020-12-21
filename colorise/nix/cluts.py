@@ -62,6 +62,7 @@ _NIX_SYSTEM_COLOR_NAMES = {
 _NIX_SYSTEM_COLOR_NAMES['grey'] = 90
 _NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 37
 _NIX_SYSTEM_COLOR_NAMES['magenta'] = 35
+_NIX_SYSTEM_COLOR_NAMES['lightmagenta'] = 95
 
 # xterm 88-color look-up table (based on 88colres.h)
 _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
