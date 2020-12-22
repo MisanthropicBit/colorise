@@ -78,7 +78,7 @@ def print_attributes():
     print('Attributes:')
 
     for attr in Attr:
-        if attr == attr.Reset:
+        if attr == Attr.Reset:
             continue
 
         colorise.cprint(attr.name, attributes=[attr], end=' ')

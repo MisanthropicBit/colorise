@@ -75,6 +75,6 @@ def get_color(value, color_count, cluts, bg=False, attributes=[]):
     elif colorspace == 'rgb':
         rgb = [int(c.strip()) for c in match.group(2).split(_DELIMITER)]
     else:
-        raise ValueError("Unknown color format '{0}'".format(value))
+        raise ValueError("Unknown or invalid color format '{0}'".format(value))
 
     return cluts.get_rgb_color(color_count, bg, rgb, attributes)

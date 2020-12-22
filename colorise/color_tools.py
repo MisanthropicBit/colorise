@@ -27,14 +27,6 @@ def color_difference(rgb1, rgb2):
     return sum(abs(i - j) for i, j in zip(rgb1, rgb2))
 
 
-def color_distance(rgb1, rgb2):
-    """Compute the Euclidian distance between two colors."""
-    r1, g1, b1 = rgb1
-    r2, g2, b2 = rgb2
-
-    return math.sqrt((r2 - r1)**2 + (g2 - g1)**2 + (b2 - b1)**2)
-
-
 def closest_color(rgb, clut):
     """Return the CLUT index of the closest RGB color to a given RGB tuple."""
     # Generate a list of tuples of CLUT indices and the color difference value

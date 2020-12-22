@@ -36,6 +36,20 @@ def test_attributes():
     colorise.fprint('{fg=red,bg=blue,bold}Hello')
 
 
+def test_attribute_names():
+    names = frozenset([
+        'reset',
+        'bold',
+        'faint',
+        'italic',
+        'underline',
+        'blink',
+        'reverse'
+    ])
+
+    assert Attr.names() == names
+
+
 def test_attribute_aliases():
     colorise.cprint('Hello',                       attributes=[Attr.Intense])
     colorise.cprint('Hello', fg='red',             attributes=[Attr.Intense])
@@ -49,37 +63,37 @@ def test_attribute_aliases():
 
 
 def test_invalid_attributes():
-    with pytest.raises(ValueError):
-        colorise.fprint('{overlined}Hello')
+    attr_error_message =  "Unknown color format or attribute 'overlined'"
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=red,overlined}Hello')
+    invalid_attributes = [
+        '{overlined}Hello',
+        '{fg=red,overlined}Hello',
+        '{bg=blue,overlined}Hello',
+        '{fg=red,bg=blue,overlined}Hello',
+    ]
 
-    with pytest.raises(ValueError):
-        colorise.fprint('{bg=blue,overlined}Hello')
-
-    with pytest.raises(ValueError):
-        colorise.fprint('{fg=red,bg=blue,overlined}Hello')
-
-
-@pytest.mark.skip_on_windows
-def test_attribute_cprint_output(expected_results):
-    for attribute, result in expected_results:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.cprint('Hello', fg='red', attributes=[attribute],
-                            file=sys.stdout)
-            assert sio.getvalue() == result
+    for text in invalid_attributes:
+        with pytest.raises(ValueError, match=attr_error_message):
+            colorise.fprint(text)
 
 
 @pytest.mark.skip_on_windows
-def test_attribute_fprint_output(expected_results):
-    for attribute, result in expected_results:
-        sio = StringIO()
+def test_attribute_cprint_output(test_stdout, expected_results):
+    for attribute, expected in expected_results:
+        test_stdout(
+            colorise.cprint,
+            expected,
+            'Hello',
+            fg='red',
+            attributes=[attribute],
+        )
 
-        with pytest.redirect_stdout(sio):
-            colorise.fprint('{{fg=red,{0}}}Hello'
-                            .format(attribute.name.lower()),
-                            file=sys.stdout)
-            assert sio.getvalue() == result
+
+@pytest.mark.skip_on_windows
+def test_attribute_fprint_output(test_stdout, expected_results):
+    for attribute, expected in expected_results:
+        test_stdout(
+            colorise.fprint,
+            expected,
+            '{{fg=red,{0}}}Hello'.format(attribute.name.lower())
+        )

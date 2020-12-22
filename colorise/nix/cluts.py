@@ -62,6 +62,7 @@ _NIX_SYSTEM_COLOR_NAMES = {
 _NIX_SYSTEM_COLOR_NAMES['grey'] = 90
 _NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 37
 _NIX_SYSTEM_COLOR_NAMES['magenta'] = 35
+_NIX_SYSTEM_COLOR_NAMES['lightmagenta'] = 95
 
 # xterm 88-color look-up table (based on 88colres.h)
 _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
@@ -142,7 +143,7 @@ def color_from_name(name, color_count, bg, attributes):
 
 
 def color_from_index(idx, color_count, bg, attributes):
-    """Return the color value and color count for a given color index."""
+    """Return the color prefix and color value for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
 

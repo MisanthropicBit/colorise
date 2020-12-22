@@ -11,5 +11,8 @@ python:
 install:
     - python setup.py install
 
+before_script:
+    - python color_test.py
+
 script:
     - pytest -rs tests
