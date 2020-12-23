@@ -9,6 +9,7 @@ on:
 
 jobs:
   test:
+    if: github.event_name == 'push' && !contains(toJSON(github.event.commits.*.message), '[skip ci]')
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
