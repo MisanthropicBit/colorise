@@ -1,19 +1,34 @@
+# Ignore certain filetypes
+.DS_Store
 *.py[cod]
 *.c
 *.sw[op]
 *.task[s]
+*.todo
+*.egg-info/
+
+# Ignore cache files and directories
 __pycache__
+.pytest_cache/
+.mypy_cache/
+.cache
+.tox/
+.coverage
+
+# Ignore build files
 MANIFEST
 _build/
 dist/
-colorise/backup/
-.DS_Store
-.cache
-.pytest_cache/
-.tox/
-misc/
-*.egg-info/
-venv*/
-.mypy_cache/
+build/
+htmlcov/
+
+# Ignore local pyenv files
 .python-version
+
+# Misc
+colorise/backup/
+misc/
 colorise_logo.py
+
+# Ignore virtual environments
+venv*/
