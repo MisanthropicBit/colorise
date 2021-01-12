@@ -130,10 +130,10 @@ def test_highlight_disabled(test_stdout):
 
 
 @pytest.mark.skip_on_windows
-def test_highlight_proper_reset(redirect_stdout):
+def test_highlight_proper_reset(redirect):
     expected = '\x1b[0mH\x1b[44mel\x1b[0ml\x1b[44mo\x1b[0m' + os.linesep
 
-    with redirect_stdout() as stdout:
+    with redirect('stdout') as stdout:
         colorise.set_color(fg='red')
         colorise.highlight('Hello', [1, 2, 4], bg='blue', file=sys.stdout)
 
