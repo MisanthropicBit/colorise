@@ -64,7 +64,7 @@ _WINDOWS_LOGICAL_NAMES = {
     'blue':    _FOREGROUND_BLUE,
     'cyan':    _FOREGROUND_GREEN | _FOREGROUND_BLUE,
     'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE |
-               _FOREGROUND_INTENSITY,
+    _FOREGROUND_INTENSITY,
 }
 
 for name in ['red', 'green', 'blue', 'yellow', 'purple', 'magenta', 'cyan']:

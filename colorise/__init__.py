@@ -9,7 +9,7 @@ import os
 import platform
 import sys
 import colorise.formatter
-from colorise.attributes import Attr
+from colorise.attributes import Attr  # noqa
 
 _SYSTEM_OS = platform.system().lower()
 
