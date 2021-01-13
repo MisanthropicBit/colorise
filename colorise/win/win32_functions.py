@@ -5,37 +5,9 @@
 
 import ctypes
 from ctypes import windll, wintypes, WinError
-from enum import Enum
 import os
 import sys
 from colorise.win.winhandle import WinHandle
-
-
-class Handle(Enum):
-    """Various Windows handle types."""
-
-    STDOUT = -11
-    STDERR = -12
-    INVALID = wintypes.HANDLE(-1).value
-
-    @classmethod
-    def validate(cls, handle):
-        """Check if a handle is valid to colorise."""
-        return handle in (STDOUT, STDERR)
-
-    @classmethod
-    def from_sys_handle(cls, handle):
-        """Return the handle identifier for a python handle."""
-        if handle is sys.stdout:
-            return STDOUT
-        elif handle is sys.stderr:
-            return STDERR
-        else:
-            return INVALID
-
-
-# Invalid handle type for error checking
-INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
 
 # Handle IDs for stdout and stderr
 _STDOUT_HANDLE_ID = -11
@@ -118,7 +90,7 @@ def create_std_handle(handle_id):
     """Create a Windows standard handle from an identifier."""
     win_handle = WinHandle(windll.kernel32.GetStdHandle(handle_id))
 
-    if win_handle.handle == INVALID_HANDLE_VALUE:
+    if win_handle.handle == WinHandle.INVALID:
         raise WinError()
 
     csbi = CONSOLE_SCREEN_BUFFER_INFO()
@@ -147,7 +119,7 @@ def create_std_handle(handle_id):
 
 def get_win_handle(target):
     """Return the Windows handle corresponding to a Python handle."""
-    if Handles.validate(target):
+    if WinHandle.validate(target):
         # We create a new handle each time since the old handle may have been
         # invalidated by a redirection
         return create_std_handle(target)
@@ -163,7 +135,7 @@ def get_windows_clut():
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
     if windll.kernel32.GetConsoleScreenBufferInfoEx(
-                get_win_handle(Handles.STDOUT).handle,
+                get_win_handle(WinHandle.STDOUT).handle,
                 ctypes.byref(csbiex)
             ) == 0:
         raise WinError()
@@ -182,7 +154,7 @@ def get_windows_clut():
 
 def enable_virtual_terminal_processing(handle):
     """Enable Windows processing of ANSI escape sequences."""
-    if not handle or handle == INVALID_HANDLE_VALUE:
+    if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
     console_mode = wintypes.DWORD(0)
@@ -213,7 +185,7 @@ def enable_virtual_terminal_processing(handle):
 
 def restore_console_mode(handle, restore_mode):
     """Restore the console mode for a handle to its original mode."""
-    if not handle or handle == INVALID_HANDLE_VALUE:
+    if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
     if not windll.kernel32.SetConsoleMode(handle.handle, restore_mode):
@@ -223,8 +195,8 @@ def restore_console_mode(handle, restore_mode):
 def restore_console_modes():
     """Restore console modes for stdout and stderr to their original mode."""
     if can_interpret_ansi():
-        stdout = get_win_handle(Handles.STDOUT)
-        stderr = get_win_handle(Handles.STDERR)
+        stdout = get_win_handle(WinHandle.STDOUT)
+        stderr = get_win_handle(WinHandle.STDERR)
         restore_console_mode(stdout, stdout.console_mode)
         restore_console_mode(stderr, stderr.console_mode)
 
@@ -234,15 +206,18 @@ def can_interpret_ansi():
     if os.environ.get('ConEmuANSI', '') == 'ON':
         return True
 
-    result = enable_virtual_terminal_processing(get_win_handle(Handles.STDOUT))
-    enable_virtual_terminal_processing(get_win_handle(Handles.STDERR))
+    result = enable_virtual_terminal_processing(
+        get_win_handle(WinHandle.STDOUT)
+    )
+
+    enable_virtual_terminal_processing(get_win_handle(WinHandle.STDERR))
 
     return result
 
 
 def set_console_text_attribute(handle, flags):
     """Set the console's text attributes."""
-    if not handle or handle == INVALID_HANDLE_VALUE:
+    if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
     if windll.kernel32.SetConsoleTextAttribute(handle.handle,
@@ -280,7 +255,7 @@ def redefine_colors(color_map, file=sys.stdout):
     # We must set the size of the structure before using it
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
-    win_handle = get_win_handle(Handles.from_sys_handle(file))
+    win_handle = get_win_handle(WinHandle.from_sys_handle(file))
 
     # Get console color info
     if windll.kernel32.GetConsoleScreenBufferInfoEx(

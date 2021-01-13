@@ -3,9 +3,16 @@
 
 """Class for Windows handles."""
 
+import sys
+from ctypes import wintypes
+
 
 class WinHandle:
     """Represents a Windows stream handle."""
+
+    STDOUT = -11
+    STDERR = -12
+    INVALID = wintypes.HANDLE(-1).value
 
     def __init__(self, handle):
         """Initialise the Windows handle."""
@@ -15,6 +22,21 @@ class WinHandle:
         self._bg = -1
         self._default_fg = -1
         self._default_bg = -1
+
+    @classmethod
+    def validate(cls, handle):
+        """Check if a handle is valid to colorise."""
+        return handle in (cls.STDOUT, cls.STDERR)
+
+    @classmethod
+    def from_sys_handle(cls, syshandle):
+        """Return the handle identifier for a python handle."""
+        if syshandle is sys.stdout:
+            return cls.STDOUT
+        elif syshandle is sys.stderr:
+            return cls.STDERR
+        else:
+            return cls.INVALID
 
     @property
     def handle(self):
