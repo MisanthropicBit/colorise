@@ -47,6 +47,11 @@ def num_colors():
 
 def reset_color(file=sys.stdout):
     """Reset all colors and attributes."""
+    if not file.isatty():
+        # Do not set colors when output target is not a tty since win calls
+        # that expect it to be a valid console handle will fail
+        return
+
     if num_colors() > 16 and can_interpret_ansi():
         colorise.nix.color_functions.reset_color(file)
     else:
@@ -65,6 +70,11 @@ def or_bit_flags(*bit_flags):
 
 def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     """Set color and attributes in the terminal."""
+    if not file.isatty():
+        # Do not set colors when output target is not a tty since win calls
+        # that expect it to be a valid console handle will fail
+        return
+
     if num_colors() > 16 and can_interpret_ansi():
         colorise.nix.color_functions.set_color(
             fg, bg, attributes, file, num_colors_func=num_colors,
