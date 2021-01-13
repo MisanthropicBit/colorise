@@ -30,7 +30,7 @@ def num_colors():
         return 256
 
     release = platform.win32_ver()[0]
-    build = sys.getwindowsversion()[2]
+    build = sys.getwindowsversion().build
 
     # Windows 10 build 14931 has support for 24-bit colors
     if release == '10' and build >= 14931:

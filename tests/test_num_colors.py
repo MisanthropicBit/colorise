@@ -4,7 +4,10 @@
 """Test the num_colors function with mocked environments."""
 
 import colorise
+import collections
+import platform
 import pytest
+import sys
 
 
 @pytest.fixture
@@ -44,3 +47,49 @@ def test_itermapp_truecolor(mock_base_itermapp, monkeypatch):
     monkeypatch.setenv('TERM_PROGRAM_VERSION', '3.3.12')
 
     assert colorise.num_colors() == 2**24
+
+
+@pytest.mark.skip_on_nix
+def test_conemuansi(monkeypatch):
+    monkeypatch.setenv('ConEmuANSI', 'ON')
+
+    assert colorise.num_colors() == 256
+
+    monkeypatch.setenv('ConEmuANSI', 'OFF')
+
+    assert colorise.num_colors() != 256
+
+
+@pytest.mark.skip_on_nix
+def test_windows10_24bit(monkeypatch):
+    def mocked_win32_ver():
+        return ('10', '', '', '')
+
+    getwindowsversion_tuple = collections.namedtuple(
+        'getwindowsversion_tuple',
+        ['build'],
+    )
+
+    def mocked_24bit_getwindowsversion():
+        return getwindowsversion_tuple(14931)
+
+    def mocked_not_24bit_getwindowsversion():
+        return getwindowsversion_tuple(14930)
+
+    monkeypatch.setattr(platform, 'win32_ver', mocked_win32_ver)
+    monkeypatch.setattr(
+        sys,
+        'getwindowsversion',
+        mocked_24bit_getwindowsversion
+    )
+
+    assert colorise.num_colors() == 256**3
+
+    monkeypatch.setattr(platform, 'win32_ver', mocked_win32_ver)
+    monkeypatch.setattr(
+        sys,
+        'getwindowsversion',
+        mocked_not_24bit_getwindowsversion
+    )
+
+    assert colorise.num_colors() != 256**3
