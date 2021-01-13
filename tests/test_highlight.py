@@ -79,6 +79,7 @@ def test_highlight_named_output(test_stdout):
     )
 
 
+@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
 def test_highlight_256_index_output(test_stdout):
     test_stdout(
@@ -100,6 +101,7 @@ def test_highlight_256_index_output(test_stdout):
     )
 
 
+@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
 def test_highlight_truecolor_output(test_stdout):
     text = 'Hello'
