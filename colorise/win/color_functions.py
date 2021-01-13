@@ -11,6 +11,7 @@ from colorise.win.win32_functions import\
     get_win_handle,\
     set_console_text_attribute,\
     redefine_colors as _redefine_colors
+from colorise.win.winhandle import WinHandle
 import functools
 import operator
 import os
@@ -44,36 +45,34 @@ def num_colors():
     return 16
 
 
-if num_colors() > 16 and can_interpret_ansi():
-    # Extended terminal capabilities for interpreting ANSI escape codes,
-    # delegate to nix color functions
-
-    def reset_color(file=sys.stdout):
-        """Reset all colors and attributes."""
+def reset_color(file=sys.stdout):
+    """Reset all colors and attributes."""
+    if num_colors() > 16 and can_interpret_ansi():
         colorise.nix.color_functions.reset_color(file)
+    else:
+        handle = get_win_handle(WinHandle.from_sys_handle(file))
 
-    def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
-        """Set color and attributes in the terminal."""
-        colorise.nix.color_functions.set_color(fg, bg, attributes, file,
-                                               num_colors_func=num_colors)
-else:
-    # Ordinary terminal capabilities, use Windows API
+        set_console_text_attribute(
+            handle,
+            handle.default_fg | handle.default_bg,
+        )
 
-    def reset_color(file=sys.stdout):
-        """Reset all colors and attributes."""
-        handle = get_win_handle(file)
-        set_console_text_attribute(handle,
-                                   handle.default_fg | handle.default_bg)
 
-    def or_bit_flags(*bit_flags):
-        """Bitwise OR together a list of bitflags into a single flag."""
-        return functools.reduce(operator.or_, bit_flags)
+def or_bit_flags(*bit_flags):
+    """Bitwise OR together a list of bitflags into a single flag."""
+    return functools.reduce(operator.or_, bit_flags)
 
-    def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
-        """Set color and attributes in the terminal."""
+
+def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
+    """Set color and attributes in the terminal."""
+    if num_colors() > 16 and can_interpret_ansi():
+        colorise.nix.color_functions.set_color(
+            fg, bg, attributes, file, num_colors_func=num_colors,
+        )
+    else:
         if fg or bg or attributes:
             if Attr.Reset not in attributes:
-                handle = get_win_handle(file)
+                handle = get_win_handle(WinHandle.from_sys_handle(file))
                 color_count = num_colors()
                 codes = []
 
