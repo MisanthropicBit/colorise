@@ -24,29 +24,26 @@ _WIN_ATTRIBUTES = {
         Attr.Reverse:   0x4000,
     }
 
-if can_redefine_colors():
-    _WINDOWS_CLUT = get_windows_clut()
-else:
-    # Windows 16-color (logical) look-up table
-    _WINDOWS_CLUT = {
-        0:  (0x00, 0x00, 0x00),  # Black
-        1:  (0x00, 0x00, 0x80),  # Red
-        2:  (0x00, 0x80, 0x00),  # Green
-        3:  (0x00, 0x80, 0x80),  # Yellow
-        4:  (0x80, 0x00, 0x00),  # Magenta
-        5:  (0x80, 0x00, 0x80),  # Blue
-        6:  (0x80, 0x80, 0x00),  # Cyan
-        7:  (0xff, 0xff, 0xff),  # White
-        8:  (0x80, 0x80, 0x80),  # Gray/intensity
-        # The remaining colors are sometimes referred to as the 'light' colors
-        9:  (0x00, 0x00, 0xff),  # Light blue
-        10: (0x00, 0xff, 0x00),  # Light green
-        11: (0x00, 0xff, 0xff),  # Light cyan
-        12: (0xff, 0x00, 0x00),  # Light red
-        13: (0xff, 0x00, 0xff),  # Light purple
-        14: (0xff, 0xff, 0x00),  # Light yellow
-        15: (0xff, 0xff, 0xff)   # Light white
-    }
+# Windows 16-color (logical) look-up table
+_WINDOWS_CLUT = {
+    0:  (0x00, 0x00, 0x00),  # Black
+    1:  (0x00, 0x00, 0x80),  # Red
+    2:  (0x00, 0x80, 0x00),  # Green
+    3:  (0x00, 0x80, 0x80),  # Yellow
+    4:  (0x80, 0x00, 0x00),  # Magenta
+    5:  (0x80, 0x00, 0x80),  # Blue
+    6:  (0x80, 0x80, 0x00),  # Cyan
+    7:  (0xff, 0xff, 0xff),  # White
+    8:  (0x80, 0x80, 0x80),  # Gray/intensity
+    # The remaining colors are sometimes referred to as the 'light' colors
+    9:  (0x00, 0x00, 0xff),  # Light blue
+    10: (0x00, 0xff, 0x00),  # Light green
+    11: (0x00, 0xff, 0xff),  # Light cyan
+    12: (0xff, 0x00, 0x00),  # Light red
+    13: (0xff, 0x00, 0xff),  # Light purple
+    14: (0xff, 0xff, 0x00),  # Light yellow
+    15: (0xff, 0xff, 0xff)   # Light white
+}
 
 _FOREGROUND_RED = 0x0004
 _FOREGROUND_GREEN = 0x0002
@@ -82,6 +79,9 @@ _WINDOWS_LOGICAL_NAMES['lightgray'] = _WINDOWS_LOGICAL_NAMES['lightgrey']
 
 def get_clut(color_count):
     """Return the appropriate color look-up table."""
+    if can_redefine_colors():
+        return get_windows_clut()
+
     return _WINDOWS_CLUT
 
 
