@@ -72,7 +72,17 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     """Set color and attributes in the terminal."""
     if not file.isatty():
         # Do not set colors when output target is not a tty since win calls
-        # that expect it to be a valid console handle will fail
+        # that expect it to be a valid console handle will fail. We still call
+        # get_color because we want to inform users about incorrect color
+        # formats
+        color_count = num_colors()
+
+        if fg:
+            get_color(fg, color_count, colorise.win.cluts, False, attributes)
+
+        if bg:
+            get_color(bg, color_count, colorise.win.cluts, True, attributes)
+
         return
 
     if num_colors() > 16 and can_interpret_ansi():
