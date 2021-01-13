@@ -81,8 +81,8 @@ def test_valid_named_fprint_output(test_stdout):
     )
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
+@pytest.mark.skip_on_windows
 def test_valid_256_index_fprint_output(test_stdout):
     test_stdout(
         colorise.fprint,
@@ -91,8 +91,8 @@ def test_valid_256_index_fprint_output(test_stdout):
     )
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
+@pytest.mark.skip_on_windows
 def test_valid_truecolor_fprint_output(test_stdout):
     tests = [
         ('fg=0xa696ff',

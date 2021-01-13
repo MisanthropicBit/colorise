@@ -79,8 +79,8 @@ def test_highlight_named_output(test_stdout):
     )
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256)
+@pytest.mark.skip_on_windows
 def test_highlight_256_index_output(test_stdout):
     test_stdout(
         colorise.highlight,
@@ -101,8 +101,8 @@ def test_highlight_256_index_output(test_stdout):
     )
 
 
-@pytest.mark.skip_on_windows
 @pytest.mark.require_colors(256**3)
+@pytest.mark.skip_on_windows
 def test_highlight_truecolor_output(test_stdout):
     text = 'Hello'
     indices = [0, 2, 4]
