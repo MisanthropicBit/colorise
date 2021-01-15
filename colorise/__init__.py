@@ -247,6 +247,21 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
     file.write(end)
 
 
+def safe_atexit_reset_colors():
+    """Safely reset colors."""
+    # This is necessary when running the tests since pytest will redirect
+    # stdout and stderr then restore them to the original values after the test
+    # session. This closes stdout and stderr causing writes to the pytest
+    # redirected streams to fail.
+    #
+    # By calling this function using the atexit module, stdout and stderr are
+    # evaluated after having been restored by pytest
+    if not sys.stdout.closed:
+        reset_color(sys.stdout)
+
+    if not sys.stderr.closed:
+        reset_color(sys.stderr)
+
+
 # Ensure colors and attributes return to normal when colorise is quit
-if sys.stdout.isatty():
-    atexit.register(reset_color)
+atexit.register(safe_atexit_reset_colors)
