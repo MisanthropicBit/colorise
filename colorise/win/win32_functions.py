@@ -4,10 +4,17 @@
 """Windows API functions."""
 
 import ctypes
-from ctypes import windll, wintypes, WinError
+from ctypes import wintypes, WinError
 import os
 import sys
 from colorise.win.winhandle import WinHandle
+
+# Create a separate WinDLL instance since the one from ctypes.windll.kernel32
+# can be manipulated by other code that also imports it
+#
+# See
+# https://stackoverflow.com/questions/34040123/ctypes-cannot-import-windll#comment55835311_34040124
+kernel32 = ctypes.WinDLL('kernel32', use_errno=True, use_last_error=True)
 
 # Handle IDs for stdout and stderr
 _STDOUT_HANDLE_ID = -11
@@ -48,32 +55,32 @@ else:
     LPDWORD = wintypes.LPDWORD
 
 # Set argument and return types for Windows API calls
-windll.kernel32.GetConsoleScreenBufferInfo.argtypes =\
+kernel32.GetConsoleScreenBufferInfo.argtypes =\
     [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFO)]
-windll.kernel32.GetConsoleScreenBufferInfo.restype = wintypes.BOOL
-windll.kernel32.GetStdHandle.argtypes = [wintypes.DWORD]
-windll.kernel32.GetStdHandle.restype = wintypes.HANDLE
-windll.kernel32.GetConsoleMode.argtypes = [wintypes.HANDLE, LPDWORD]
-windll.kernel32.GetConsoleMode.restype = wintypes.BOOL
-windll.kernel32.SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
-windll.kernel32.SetConsoleMode.restype = wintypes.BOOL
-windll.kernel32.GetLastError.argtypes = []
-windll.kernel32.GetLastError.restype = wintypes.DWORD
-windll.kernel32.SetLastError.argtypes = [wintypes.DWORD]
-windll.kernel32.SetLastError.restype = None  # void
-windll.kernel32.FormatMessageW.argtypes = [wintypes.DWORD,
+kernel32.GetConsoleScreenBufferInfo.restype = wintypes.BOOL
+kernel32.GetStdHandle.argtypes = [wintypes.DWORD]
+kernel32.GetStdHandle.restype = wintypes.HANDLE
+kernel32.GetConsoleMode.argtypes = [wintypes.HANDLE, LPDWORD]
+kernel32.GetConsoleMode.restype = wintypes.BOOL
+kernel32.SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+kernel32.SetConsoleMode.restype = wintypes.BOOL
+kernel32.GetLastError.argtypes = []
+kernel32.GetLastError.restype = wintypes.DWORD
+kernel32.SetLastError.argtypes = [wintypes.DWORD]
+kernel32.SetLastError.restype = None  # void
+kernel32.FormatMessageW.argtypes = [wintypes.DWORD,
                                            wintypes.LPCVOID,
                                            wintypes.DWORD,
                                            wintypes.DWORD,
                                            wintypes.LPWSTR,
                                            wintypes.DWORD,
                                            wintypes.LPVOID]
-windll.kernel32.FormatMessageW.restype = wintypes.DWORD
-windll.kernel32.LocalFree.argtypes = [wintypes.HLOCAL]
-windll.kernel32.LocalFree.restype = wintypes.HLOCAL
-windll.kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
+kernel32.FormatMessageW.restype = wintypes.DWORD
+kernel32.LocalFree.argtypes = [wintypes.HLOCAL]
+kernel32.LocalFree.restype = wintypes.HLOCAL
+kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
                                                     wintypes.WORD]
-windll.kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
+kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
 
 
 def isatty(handle):
@@ -90,10 +97,7 @@ def isatty(handle):
 
     # We use GetConsoleMode here but it could be any function that expects a
     # valid console handle
-    retval = windll.kernel32.GetConsoleMode(
-        handle.value,
-        ctypes.byref(console_mode)
-    )
+    retval = kernel32.GetConsoleMode(handle.value,ctypes.byref(console_mode))
 
     if retval == 0:
         errno = ctypes.get_last_error()
@@ -109,26 +113,26 @@ def isatty(handle):
 
 def can_redefine_colors():
     """Return whether the terminal allows redefinition of colors."""
-    return windll.kernel32.SetConsoleScreenBufferInfoEx is not None
+    return kernel32.SetConsoleScreenBufferInfoEx is not None
 
 
 if can_redefine_colors():
     # We can query RGB values of console colors on Windows
-    windll.kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
+    kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
         [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFOEX)]
-    windll.kernel32.GetConsoleScreenBufferInfoEx.restype = wintypes.BOOL
+    kernel32.GetConsoleScreenBufferInfoEx.restype = wintypes.BOOL
 
 
 def create_std_handle(handle_id):
     """Create a Windows standard handle from an identifier."""
-    handle = windll.kernel32.GetStdHandle(handle_id)
+    handle = kernel32.GetStdHandle(handle_id)
 
     if handle == WinHandle.INVALID:
         raise WinError()
 
     csbi = CONSOLE_SCREEN_BUFFER_INFO()
 
-    retval = windll.kernel32.GetConsoleScreenBufferInfo(
+    retval = kernel32.GetConsoleScreenBufferInfo(
         handle,
         ctypes.byref(csbi),
     )
@@ -139,7 +143,7 @@ def create_std_handle(handle_id):
 
         if errno == ERROR_INVALID_HANDLE:
             # Return a special non-console handle
-            win_handle = WinHandle.get_nonconsole_handle()
+            win_handle = WinHandle.get_nonconsole_handle(handle_id)
         else:
             raise WinError()
     else:
@@ -179,7 +183,7 @@ def get_windows_clut():
     csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
-    if windll.kernel32.GetConsoleScreenBufferInfoEx(
+    if kernel32.GetConsoleScreenBufferInfoEx(
                 get_win_handle(WinHandle.STDOUT).value,
                 ctypes.byref(csbiex)
             ) == 0:
@@ -207,8 +211,7 @@ def enable_virtual_terminal_processing(handle):
 
     console_mode = wintypes.DWORD(0)
 
-    if windll.kernel32.GetConsoleMode(handle.value,
-                                      ctypes.byref(console_mode)) == 0:
+    if kernel32.GetConsoleMode(handle.value, ctypes.byref(console_mode)) == 0:
         raise WinError()
 
     handle.console_mode = console_mode
@@ -219,12 +222,12 @@ def enable_virtual_terminal_processing(handle):
 
     # First attempt to set console mode to interpret ANSI escape codes and
     # disable immediately jumping to the next console line
-    if windll.kernel32.SetConsoleMode(handle.value, target_mode) == 0:
+    if kernel32.SetConsoleMode(handle.value, target_mode) == 0:
         # If that fails, try just setting the mode for ANSI escape codes
         target_mode = wintypes.DWORD(console_mode.value |
                                      ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 
-        if windll.kernel32.SetConsoleMode(handle.value, target_mode) == 0:
+        if kernel32.SetConsoleMode(handle.value, target_mode) == 0:
             return None
 
     # Return the original console mode so we can restore it later
@@ -236,7 +239,7 @@ def restore_console_mode(handle, restore_mode):
     if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
-    if not windll.kernel32.SetConsoleMode(handle.value, restore_mode):
+    if not kernel32.SetConsoleMode(handle.value, restore_mode):
         raise WinError()
 
 
@@ -277,8 +280,8 @@ def set_console_text_attribute(handle, flags):
     if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
-    if windll.kernel32.SetConsoleTextAttribute(handle.value,
-                                               wintypes.WORD(flags)) == 0:
+    if kernel32.SetConsoleTextAttribute(handle.value,
+                                        wintypes.WORD(flags)) == 0:
         raise WinError()
 
 
@@ -315,7 +318,7 @@ def redefine_colors(color_map, file=sys.stdout):
     win_handle = get_win_handle(WinHandle.from_sys_handle(file))
 
     # Get console color info
-    if windll.kernel32.GetConsoleScreenBufferInfoEx(
+    if kernel32.GetConsoleScreenBufferInfoEx(
                 win_handle.value,
                 ctypes.byref(csbiex)
             ) == 0:
@@ -326,6 +329,5 @@ def redefine_colors(color_map, file=sys.stdout):
         csbiex.ColorTable[idx] = encode_rgb_tuple(color_map[idx])
 
     # Set the new colors
-    if windll.kernel32.SetConsoleScreenBufferInfoEx(
-            win_handle.value, csbiex) == 0:
+    if kernel32.SetConsoleScreenBufferInfoEx(win_handle.value, csbiex) == 0:
         raise WinError()
