@@ -142,7 +142,7 @@ def color_from_name(name, color_count, bg, attributes):
     return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name] + 10 * int(bg)
 
 
-def color_from_index(idx, color_count, bg, attributes):
+def color_from_index(idx, color_count, bg, attributes, file):
     """Return the color prefix and color value for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')

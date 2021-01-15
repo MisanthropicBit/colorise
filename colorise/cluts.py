@@ -72,7 +72,13 @@ def get_color(
         return cluts.color_from_name(value, color_count, bg, attributes)
     elif colorspace == 'index':
         # Color is a 8, 16, 88 or 256 color index
-        return cluts.color_from_index(int(value), color_count, bg, attributes)
+        return cluts.color_from_index(
+            int(value),
+            color_count,
+            bg,
+            attributes,
+            file
+        )
     elif colorspace == 'hex':
         value = match.group(2)
         rgb = [int(value[i:i+2], 16) for i in range(0, 6, 2)]

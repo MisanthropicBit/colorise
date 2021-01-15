@@ -103,12 +103,17 @@ def color_from_name(name, color_count, bg, attributes):
     return to_codes(bg, _WINDOWS_LOGICAL_NAMES[name], attributes)
 
 
-def color_from_index(idx, color_count, bg, attributes):
+def color_from_index(idx, color_count, bg, attributes, file):
     """Return the color value and color count for a given color index."""
-    if can_interpret_ansi():
+    if can_interpret_ansi(file):
         # We can interpret ANSI escape sequences, delegate to nix function
-        return colorise.nix.cluts.color_from_index(idx, color_count, bg,
-                                                   attributes)
+        return colorise.nix.cluts.color_from_index(
+            idx,
+            color_count,
+            bg,
+            attributes,
+            file,
+        )
 
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
