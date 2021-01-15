@@ -17,6 +17,8 @@ _STDERR_HANDLE_ID = -12
 DISABLE_NEWLINE_AUTO_RETURN = 0x0008
 ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
 
+ERROR_INVALID_HANDLE = 6
+
 
 # Struct defined in wincon.h
 class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
@@ -74,6 +76,37 @@ windll.kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
 windll.kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
 
 
+def isatty(handle):
+    """Check if a handle is a valid console handle.
+
+    For example, if a handle is redirected to a file, it is not a valid console
+    handle and all win32 console API calls will fail.
+
+    """
+    if not handle or not handle.valid:
+        return False
+
+    console_mode = wintypes.DWORD(0)
+
+    # We use GetConsoleMode here but it could be any function that expects a
+    # valid console handle
+    retval = windll.kernel32.GetConsoleMode(
+        handle.value,
+        ctypes.byref(console_mode)
+    )
+
+    if retval == 0:
+        errno = ctypes.get_last_error()
+
+        if errno == ERROR_INVALID_HANDLE:
+            return False
+        else:
+            # Another error happened
+            raise WinError()
+    else:
+        return True
+
+
 def can_redefine_colors():
     """Return whether the terminal allows redefinition of colors."""
     return windll.kernel32.SetConsoleScreenBufferInfoEx is not None
@@ -88,22 +121,34 @@ if can_redefine_colors():
 
 def create_std_handle(handle_id):
     """Create a Windows standard handle from an identifier."""
-    win_handle = WinHandle(windll.kernel32.GetStdHandle(handle_id))
+    handle = windll.kernel32.GetStdHandle(handle_id)
 
-    if win_handle.handle == WinHandle.INVALID:
+    if handle == WinHandle.INVALID:
         raise WinError()
 
     csbi = CONSOLE_SCREEN_BUFFER_INFO()
 
-    if windll.kernel32.GetConsoleScreenBufferInfo(
-                win_handle.handle,
-                ctypes.byref(csbi)) == 0:
-        raise WinError()
+    retval = windll.kernel32.GetConsoleScreenBufferInfo(
+        handle,
+        ctypes.byref(csbi),
+    )
+    win_handle = None
 
-    # Set defaults color values
-    # TODO: Do these need to be reread when colors are redefined?
-    win_handle.default_fg = csbi.wAttributes & 0xf
-    win_handle.default_bg = (csbi.wAttributes >> 4) & 0xf
+    if retval == 0:
+        errno = ctypes.get_last_error()
+
+        if errno == ERROR_INVALID_HANDLE:
+            # Return a special non-console handle
+            win_handle = WinHandle.get_nonconsole_handle()
+        else:
+            raise WinError()
+    else:
+        win_handle = WinHandle(handle)
+
+        # Set defaults color values
+        # TODO: Do these need to be reread when colors are redefined?
+        win_handle.default_fg = csbi.wAttributes & 0xf
+        win_handle.default_bg = (csbi.wAttributes >> 4) & 0xf
 
     # Set the color for the handle
     win_handle.fg = win_handle.default_fg
@@ -135,7 +180,7 @@ def get_windows_clut():
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
     if windll.kernel32.GetConsoleScreenBufferInfoEx(
-                get_win_handle(WinHandle.STDOUT).handle,
+                get_win_handle(WinHandle.STDOUT).value,
                 ctypes.byref(csbiex)
             ) == 0:
         raise WinError()
@@ -154,12 +199,15 @@ def get_windows_clut():
 
 def enable_virtual_terminal_processing(handle):
     """Enable Windows processing of ANSI escape sequences."""
-    if not handle or handle == WinHandle.INVALID:
+    if not handle or not handle.valid:
         raise ValueError('Invalid handle')
+
+    if not isatty(handle):
+        return False
 
     console_mode = wintypes.DWORD(0)
 
-    if windll.kernel32.GetConsoleMode(handle.handle,
+    if windll.kernel32.GetConsoleMode(handle.value,
                                       ctypes.byref(console_mode)) == 0:
         raise WinError()
 
@@ -171,12 +219,12 @@ def enable_virtual_terminal_processing(handle):
 
     # First attempt to set console mode to interpret ANSI escape codes and
     # disable immediately jumping to the next console line
-    if windll.kernel32.SetConsoleMode(handle.handle, target_mode) == 0:
+    if windll.kernel32.SetConsoleMode(handle.value, target_mode) == 0:
         # If that fails, try just setting the mode for ANSI escape codes
         target_mode = wintypes.DWORD(console_mode.value |
                                      ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 
-        if windll.kernel32.SetConsoleMode(handle.handle, target_mode) == 0:
+        if windll.kernel32.SetConsoleMode(handle.value, target_mode) == 0:
             return None
 
     # Return the original console mode so we can restore it later
@@ -188,7 +236,7 @@ def restore_console_mode(handle, restore_mode):
     if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
-    if not windll.kernel32.SetConsoleMode(handle.handle, restore_mode):
+    if not windll.kernel32.SetConsoleMode(handle.value, restore_mode):
         raise WinError()
 
 
@@ -203,6 +251,15 @@ def restore_console_modes():
 
 def can_interpret_ansi():
     """Return True if the Windows console can interpret ANSI escape codes."""
+    # NOTE: Not sure if sys.stdout and sys.stderr are synced with the handles
+    # returned by GetStdHandle so we use existing windows functions to tell if
+    # the handles are valid console handles
+    stdout_result = isatty(get_win_handle(WinHandle.STDOUT))
+    stderr_result = isatty(get_win_handle(WinHandle.STDERR))
+
+    if not stdout_result or not stderr_result:
+        return False
+
     if os.environ.get('ConEmuANSI', '') == 'ON':
         return True
 
@@ -220,7 +277,7 @@ def set_console_text_attribute(handle, flags):
     if not handle or handle == WinHandle.INVALID:
         raise ValueError('Invalid handle')
 
-    if windll.kernel32.SetConsoleTextAttribute(handle.handle,
+    if windll.kernel32.SetConsoleTextAttribute(handle.value,
                                                wintypes.WORD(flags)) == 0:
         raise WinError()
 
@@ -259,7 +316,7 @@ def redefine_colors(color_map, file=sys.stdout):
 
     # Get console color info
     if windll.kernel32.GetConsoleScreenBufferInfoEx(
-                win_handle.handle,
+                win_handle.value,
                 ctypes.byref(csbiex)
             ) == 0:
         raise WinError()
@@ -270,5 +327,5 @@ def redefine_colors(color_map, file=sys.stdout):
 
     # Set the new colors
     if windll.kernel32.SetConsoleScreenBufferInfoEx(
-            win_handle.handle, csbiex) == 0:
+            win_handle.value, csbiex) == 0:
         raise WinError()

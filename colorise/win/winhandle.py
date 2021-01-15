@@ -17,11 +17,12 @@ class WinHandle:
     def __init__(self, handle):
         """Initialise the Windows handle."""
         self._handle = handle
-        self._console_mode = 0
         self._fg = -1
         self._bg = -1
         self._default_fg = -1
         self._default_bg = -1
+        self._console_mode = 0
+        self._is_console_handle = False
 
     @classmethod
     def validate(cls, handle):
@@ -38,10 +39,37 @@ class WinHandle:
         else:
             return cls.INVALID
 
+    @classmethod
+    def get_nonconsole_handle(cls, handle):
+        """Get a handle that works for non-console output streams."""
+        nonconsole_handle = cls(handle)
+
+        nonconsole_handle.fg = 0
+        nonconsole_handle.bg = 0
+        nonconsole_handle.default_fg = 0
+        nonconsole_handle.default_bg = 0
+        nonconsole_handle.is_console_handle = 0
+
+        return nonconsole_handle
+
     @property
-    def handle(self):
-        """Return the internal Windows handle."""
+    def valid(self):
+        """True if the handle is valid, False otherwise."""
+        return self._handle != WinHandle.INVALID
+
+    @property
+    def value(self):
+        """Return the internal Windows handle value."""
         return self._handle
+
+    @property
+    def is_console_handle(self):
+        """If the handle is a valid console handle."""
+        return self._is_console_handle
+
+    @is_console_handle.setter
+    def is_console_handle(self, value):
+        self._is_console_handle = value
 
     @property
     def fg(self):
