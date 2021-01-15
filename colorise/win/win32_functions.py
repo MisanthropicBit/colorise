@@ -246,34 +246,30 @@ def restore_console_mode(handle, restore_mode):
 
 def restore_console_modes():
     """Restore console modes for stdout and stderr to their original mode."""
-    if can_interpret_ansi():
+    if can_interpret_ansi(sys.stdout):
         stdout = get_win_handle(WinHandle.STDOUT)
-        stderr = get_win_handle(WinHandle.STDERR)
         restore_console_mode(stdout, stdout.console_mode)
+
+    if can_interpret_ansi(sys.stderr):
+        stderr = get_win_handle(WinHandle.STDERR)
         restore_console_mode(stderr, stderr.console_mode)
 
 
-def can_interpret_ansi():
+def can_interpret_ansi(file):
     """Return True if the Windows console can interpret ANSI escape codes."""
     # NOTE: Not sure if sys.stdout and sys.stderr are synced with the handles
     # returned by GetStdHandle so we use existing windows functions to tell if
     # the handles are valid console handles
-    stdout_result = isatty(get_win_handle(WinHandle.STDOUT))
-    stderr_result = isatty(get_win_handle(WinHandle.STDERR))
+    handle = get_win_handle(WinHandle.from_sys_handle(file))
+    handle_isatty = isatty(handle)
 
-    if not stdout_result or not stderr_result:
+    if not handle_isatty:
         return False
 
     if os.environ.get('ConEmuANSI', '') == 'ON':
         return True
 
-    result = enable_virtual_terminal_processing(
-        get_win_handle(WinHandle.STDOUT)
-    )
-
-    enable_virtual_terminal_processing(get_win_handle(WinHandle.STDERR))
-
-    return result
+    return enable_virtual_terminal_processing(handle)
 
 
 def set_console_text_attribute(handle, flags):

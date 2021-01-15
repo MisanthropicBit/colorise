@@ -36,7 +36,11 @@ def num_colors():
     if release == '10' and build >= 14931:
         return 2**24
 
-    if can_interpret_ansi():
+    # We check both output streams here because we want to determine color
+    # capabilities in general so this should return 2**24 if stdout is
+    # redirected but stderr is not. If both are redirected, the output stream
+    # does not interpreat ANSI escape sequences
+    if can_interpret_ansi(sys.stdout) or can_interpret_ansi(sys.stderr):
         return 2**24
 
     # Supported colors in Windows are pre-determined. Though you can update the
@@ -47,7 +51,7 @@ def num_colors():
 
 def reset_color(file=sys.stdout):
     """Reset all colors and attributes."""
-    if num_colors() > 16 and can_interpret_ansi():
+    if num_colors() > 16 and can_interpret_ansi(file):
         colorise.nix.color_functions.reset_color(file)
     else:
         handle = get_win_handle(WinHandle.from_sys_handle(file))
@@ -68,7 +72,7 @@ def or_bit_flags(*bit_flags):
 
 def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
     """Set color and attributes in the terminal."""
-    if num_colors() > 16 and can_interpret_ansi():
+    if num_colors() > 16 and can_interpret_ansi(file):
         colorise.nix.color_functions.set_color(
             fg, bg, attributes, file, num_colors_func=num_colors,
         )
