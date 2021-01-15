@@ -81,23 +81,23 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
             if Attr.Reset not in attributes:
                 handle = get_win_handle(WinHandle.from_sys_handle(file))
                 color_count = num_colors()
-                colors = [
-                    (fg, 'default_fg'),
-                    (bg, 'default_bg'),
-                ]
                 codes = []
 
-                for idx, (color, handle_attr) in enumerate(colors):
+                for idx, color in enumerate([fg, bg]):
+                    isbg = idx == 1
+
                     if color:
                         codes.extend(get_color(
                             color,
                             color_count,
                             colorise.win.cluts,
-                            idx == 1,  # is background color
+                            isbg,
                             attributes,
                         ))
                     else:
-                        codes.append(getattr(handle, handle_attr))
+                        codes.append(
+                            handle.default_bg if isbg else handle.default_fg,
+                        )
 
                 if handle.is_console_handle:
                     # Combine attributes and color codes into a single bitflag
