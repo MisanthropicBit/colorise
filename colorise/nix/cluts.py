@@ -127,7 +127,7 @@ def get_clut(color_count):
     }[color_count]
 
 
-def can_redefine_colors():
+def can_redefine_colors(file):
     """Return whether the terminal allows redefinition of colors."""
     return False
 

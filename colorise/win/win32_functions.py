@@ -119,7 +119,9 @@ def isatty(handle):
 
 def can_redefine_colors(file):
     """Return whether the terminal allows redefinition of colors."""
-    return kernel32.SetConsoleScreenBufferInfoEx is not None and isatty(file)
+    handle = get_win_handle(WinHandle.from_sys_handle(file))
+
+    return kernel32.SetConsoleScreenBufferInfoEx is not None and isatty(handle)
 
 
 def create_std_handle(handle_id):
@@ -301,7 +303,7 @@ def redefine_colors(color_map, file=sys.stdout):
     written to the console.
 
     """
-    if not can_redefine_colors():
+    if not can_redefine_colors(file):
         raise RuntimeError('Cannot redefine colors on this system')
 
     if not all(0 <= c < 16 for c in color_map):

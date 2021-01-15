@@ -5,11 +5,13 @@
 
 import colorise
 import pytest
+import sys
 
 
 @pytest.mark.skip_on_windows
 def test_redefine_colors_error():
-    assert not colorise.can_redefine_colors()
+    assert not colorise.can_redefine_colors(sys.stdout)
+    assert not colorise.can_redefine_colors(sys.stderr)
 
     error_message = '^Cannot redefine colors on nix systems$'
 

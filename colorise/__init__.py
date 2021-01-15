@@ -58,13 +58,13 @@ def num_colors():
     return _num_colors()
 
 
-def can_redefine_colors():
+def can_redefine_colors(file):
     """Return True if the terminal supports redefinition of colors.
 
     Only returns True for Windows 7/Vista and beyond as of now.
 
     """
-    return _can_redefine_colors()
+    return _can_redefine_colors(file)
 
 
 def redefine_colors(color_map, file=sys.stdout):
