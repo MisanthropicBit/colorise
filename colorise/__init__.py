@@ -256,6 +256,8 @@ def safe_atexit_reset_colors():
     #
     # By calling this function using the atexit module, stdout and stderr are
     # evaluated after having been restored by pytest
+    #
+    # See https://github.com/pytest-dev/pytest/issues/5502
     if not sys.stdout.closed:
         reset_color(sys.stdout)
 
