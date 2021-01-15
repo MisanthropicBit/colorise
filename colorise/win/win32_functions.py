@@ -82,6 +82,12 @@ kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
                                                     wintypes.WORD]
 kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
 
+if kernel32.SetConsoleScreenBufferInfoEx is not None:
+    # We can query RGB values of console colors on Windows
+    kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
+        [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFOEX)]
+    kernel32.GetConsoleScreenBufferInfoEx.restype = wintypes.BOOL
+
 
 def isatty(handle):
     """Check if a handle is a valid console handle.
@@ -97,7 +103,7 @@ def isatty(handle):
 
     # We use GetConsoleMode here but it could be any function that expects a
     # valid console handle
-    retval = kernel32.GetConsoleMode(handle.value,ctypes.byref(console_mode))
+    retval = kernel32.GetConsoleMode(handle.value, ctypes.byref(console_mode))
 
     if retval == 0:
         errno = ctypes.get_last_error()
@@ -111,16 +117,9 @@ def isatty(handle):
         return True
 
 
-def can_redefine_colors():
+def can_redefine_colors(file):
     """Return whether the terminal allows redefinition of colors."""
-    return kernel32.SetConsoleScreenBufferInfoEx is not None
-
-
-if can_redefine_colors():
-    # We can query RGB values of console colors on Windows
-    kernel32.GetConsoleScreenBufferInfoEx.argtypes =\
-        [wintypes.HANDLE, ctypes.POINTER(CONSOLE_SCREEN_BUFFER_INFOEX)]
-    kernel32.GetConsoleScreenBufferInfoEx.restype = wintypes.BOOL
+    return kernel32.SetConsoleScreenBufferInfoEx is not None and isatty(file)
 
 
 def create_std_handle(handle_id):

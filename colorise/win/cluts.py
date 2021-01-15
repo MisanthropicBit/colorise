@@ -77,9 +77,9 @@ _WINDOWS_LOGICAL_NAMES['lightgrey'] = _FOREGROUND_RED | _FOREGROUND_GREEN |\
 _WINDOWS_LOGICAL_NAMES['lightgray'] = _WINDOWS_LOGICAL_NAMES['lightgrey']
 
 
-def get_clut(color_count):
+def get_clut(color_count, file):
     """Return the appropriate color look-up table."""
-    if can_redefine_colors():
+    if can_redefine_colors(file):
         return get_windows_clut()
 
     return _WINDOWS_CLUT
@@ -134,15 +134,20 @@ def color_from_index(idx, color_count, bg, attributes):
     return to_codes(bg, color, attributes)
 
 
-def get_rgb_color(color_count, bg, rgb, attributes):
+def get_rgb_color(color_count, bg, rgb, attributes, file):
     """Get the color for an RGB triple or approximate it if necessary."""
     if color_count == 2**24:
         # We have true-color capabilities, delegate to nix function
         # approximate to closest color given current capabilities
-        return colorise.nix.cluts.get_rgb_color(color_count, bg, rgb,
-                                                attributes)
+        return colorise.nix.cluts.get_rgb_color(
+            color_count,
+            bg,
+            rgb,
+            attributes,
+            file,
+        )
 
     # No true-color capabilities, approximate the rgb color
-    idx = closest_color(rgb, get_clut(color_count))
+    idx = closest_color(rgb, get_clut(color_count, file))
 
     return to_codes(bg, idx, attributes)

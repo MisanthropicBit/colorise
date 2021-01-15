@@ -172,7 +172,7 @@ def color_from_index(idx, color_count, bg, attributes):
             return _COLOR_PREFIX_16, key + 10 * int(bg)
 
 
-def get_rgb_color(color_count, bg, rgb, attributes):
+def get_rgb_color(color_count, bg, rgb, attributes, file):
     """Get the color for an RGB triple or approximate it if necessary."""
     prefix = get_prefix(color_count, bg)
 

@@ -13,6 +13,7 @@ If you have corrections or suggestions, please submit an issue.
 """
 
 import re
+import sys
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
 _DELIMITER = ';'
@@ -55,7 +56,14 @@ def match_color_formats(value):
     return None, None
 
 
-def get_color(value, color_count, cluts, bg=False, attributes=[]):
+def get_color(
+    value,
+    color_count,
+    cluts,
+    bg=False,
+    attributes=[],
+    file=sys.stdout,
+):
     """Return the color given by a color format."""
     match, colorspace = match_color_formats(value)
 
@@ -77,4 +85,4 @@ def get_color(value, color_count, cluts, bg=False, attributes=[]):
     else:
         raise ValueError("Unknown or invalid color format '{0}'".format(value))
 
-    return cluts.get_rgb_color(color_count, bg, rgb, attributes)
+    return cluts.get_rgb_color(color_count, bg, rgb, attributes, sys.stdout)
