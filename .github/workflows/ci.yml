@@ -28,4 +28,4 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
       - name: Run tests
-        run: tox -e py
+        run: tox -e scripts,py
