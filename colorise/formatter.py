@@ -9,6 +9,7 @@ This class extends the string.Formatter class.
 
 import re
 import string
+
 from colorise.attributes import Attr
 
 

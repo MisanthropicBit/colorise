@@ -14,6 +14,7 @@ If you have corrections or suggestions, please submit an issue.
 
 import re
 import sys
+
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
 _DELIMITER = ';'

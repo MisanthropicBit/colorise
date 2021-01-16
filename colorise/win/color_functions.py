@@ -3,20 +3,22 @@
 
 """Windows color functions."""
 
-from colorise.attributes import Attr
-from colorise.cluts import get_color
-import colorise.nix.color_functions
-from colorise.win.cluts import can_interpret_ansi
-from colorise.win.win32_functions import\
-    get_win_handle,\
-    set_console_text_attribute,\
-    redefine_colors as _redefine_colors
-from colorise.win.winhandle import WinHandle
 import functools
 import operator
 import os
 import platform
 import sys
+
+import colorise.nix.color_functions
+from colorise.attributes import Attr
+from colorise.cluts import get_color
+from colorise.win.cluts import can_interpret_ansi
+from colorise.win.win32_functions import (
+    get_win_handle,
+    redefine_colors as _redefine_colors,
+    set_console_text_attribute,
+)
+from colorise.win.winhandle import WinHandle
 
 
 def num_colors():

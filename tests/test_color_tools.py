@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from colorise.color_tools import color_difference, closest_color
-from colorise.nix.cluts import\
-    _NIX_SYSTEM_COLORS,\
-    _XTERM_CLUT_88,\
-    _XTERM_CLUT_256
+
+from colorise.color_tools import closest_color, color_difference
+from colorise.nix.cluts import _NIX_SYSTEM_COLORS, _XTERM_CLUT_88, _XTERM_CLUT_256
 
 
 @pytest.fixture

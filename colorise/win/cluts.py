@@ -3,13 +3,14 @@
 
 """Windows color look-up tables and functions."""
 
+import colorise.nix.cluts
 from colorise.attributes import Attr
 from colorise.color_tools import closest_color
-from colorise.win.win32_functions import\
-    can_interpret_ansi,\
-    can_redefine_colors,\
-    get_windows_clut
-import colorise.nix.cluts
+from colorise.win.win32_functions import (
+    can_interpret_ansi,
+    can_redefine_colors,
+    get_windows_clut,
+)
 
 # Character attributes as defined in wincon.h
 # We cannot get these through ctypes since they are #defines

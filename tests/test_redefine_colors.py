@@ -3,9 +3,11 @@
 
 """Test redefinition of colors."""
 
-import colorise
-import pytest
 import sys
+
+import pytest
+
+import colorise
 
 
 @pytest.mark.skip_on_windows

@@ -4,9 +4,9 @@
 """Nix color look-up tables (CLUTs) and functions."""
 
 import collections
+
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
-
 
 _COLOR_ESCAPE_CODE = '\x1b['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'

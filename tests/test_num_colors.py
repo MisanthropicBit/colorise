@@ -3,11 +3,13 @@
 
 """Test the num_colors function with mocked environments."""
 
-import colorise
 import collections
 import platform
-import pytest
 import sys
+
+import pytest
+
+import colorise
 
 
 @pytest.fixture

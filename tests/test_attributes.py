@@ -3,10 +3,12 @@
 
 """Test attributes."""
 
+import os
+
+import pytest
+
 import colorise
 from colorise.attributes import Attr
-import pytest
-import os
 
 
 @pytest.fixture

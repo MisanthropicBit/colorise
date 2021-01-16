@@ -4,9 +4,10 @@
 """Windows API functions."""
 
 import ctypes
-from ctypes import wintypes, WinError
 import os
 import sys
+from ctypes import WinError, wintypes
+
 from colorise.win.winhandle import WinHandle
 
 # Create a separate WinDLL instance since the one from ctypes.windll.kernel32

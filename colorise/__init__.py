@@ -8,6 +8,7 @@ import itertools
 import os
 import platform
 import sys
+
 import colorise.formatter
 from colorise.attributes import Attr  # noqa: F401
 
@@ -30,27 +31,27 @@ __all__ = [
 
 # Determine which platform-specific color manager to import
 if _SYSTEM_OS.startswith('win'):
-    from colorise.win.color_functions import\
-        reset_color as _reset_color,\
-        set_color as _set_color,\
-        redefine_colors as _redefine_colors,\
-        num_colors as _num_colors
-
-    from colorise.win.win32_functions import\
-        can_redefine_colors as _can_redefine_colors,\
-        restore_console_modes
+    from colorise.win.color_functions import (
+        num_colors as _num_colors,
+        redefine_colors as _redefine_colors,
+        reset_color as _reset_color,
+        set_color as _set_color,
+    )
+    from colorise.win.win32_functions import (
+        can_redefine_colors as _can_redefine_colors,
+        restore_console_modes,
+    )
 
     # Ensure that the console mode set before colorise was loaded is restored
     atexit.register(restore_console_modes)
 else:
-    from colorise.nix.color_functions import\
-        reset_color as _reset_color,\
-        set_color as _set_color,\
-        redefine_colors as _redefine_colors,\
-        num_colors as _num_colors
-
-    from colorise.nix.cluts import\
-        can_redefine_colors as _can_redefine_colors
+    from colorise.nix.cluts import can_redefine_colors as _can_redefine_colors
+    from colorise.nix.color_functions import (
+        num_colors as _num_colors,
+        redefine_colors as _redefine_colors,
+        reset_color as _reset_color,
+        set_color as _set_color,
+    )
 
 
 def num_colors():

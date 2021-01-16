@@ -3,12 +3,14 @@
 
 """Pytest configuration file."""
 
-import colorise
 import contextlib
 import io
 import platform
-import pytest
 import sys
+
+import pytest
+
+import colorise
 
 
 @pytest.fixture

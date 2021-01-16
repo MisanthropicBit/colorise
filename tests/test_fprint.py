@@ -3,10 +3,12 @@
 
 """Test the fprint function."""
 
-import colorise
-import pytest
 import os
 import sys
+
+import pytest
+
+import colorise
 
 
 def test_valid_fprint():

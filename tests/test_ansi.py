@@ -3,8 +3,9 @@
 
 """Test the cprint function."""
 
-from colorise.nix.color_functions import to_ansi
 import pytest
+
+from colorise.nix.color_functions import to_ansi
 
 
 @pytest.mark.skip_on_windows

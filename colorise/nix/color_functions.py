@@ -5,6 +5,7 @@
 
 import os
 import sys
+
 import colorise.error
 import colorise.nix.cluts
 from colorise.attributes import Attr
