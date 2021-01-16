@@ -70,7 +70,7 @@ def or_bit_flags(*bit_flags):
     return functools.reduce(operator.or_, bit_flags)
 
 
-def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
+def set_color(fg=None, bg=None, attributes=None, file=sys.stdout):
     """Set color and attributes in the terminal."""
     if num_colors() > 16 and can_interpret_ansi(file):
         colorise.nix.color_functions.set_color(

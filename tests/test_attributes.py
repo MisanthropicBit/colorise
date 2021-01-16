@@ -5,10 +5,8 @@
 
 import colorise
 from colorise.attributes import Attr
-from io import StringIO
 import pytest
 import os
-import sys
 
 
 @pytest.fixture
@@ -63,7 +61,7 @@ def test_attribute_aliases():
 
 
 def test_invalid_attributes():
-    attr_error_message =  "Unknown color format or attribute 'overlined'"
+    attr_error_message = "Unknown color format or attribute 'overlined'"
 
     invalid_attributes = [
         '{overlined}Hello',

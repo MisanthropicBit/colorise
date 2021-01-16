@@ -13,7 +13,6 @@ from colorise.attributes import Attr
 
 
 class ColorFormatter(string.Formatter):
-
     """Class for formatting strings containing color syntax.
 
     As opposed to an ordinary derived string.Formatter, this one does not
@@ -51,7 +50,7 @@ class ColorFormatter(string.Formatter):
 
     @property
     def file(self):
-        """The target output handle of the formatter."""
+        """Target output handle of the formatter."""
         return self._file
 
     @file.setter

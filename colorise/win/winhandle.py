@@ -54,7 +54,7 @@ class WinHandle:
 
     @property
     def valid(self):
-        """True if the handle is valid, False otherwise."""
+        """Return True if the handle is valid, False otherwise."""
         return self._handle != WinHandle.INVALID
 
     @property
@@ -116,6 +116,6 @@ class WinHandle:
     def console_mode(self, value):
         self._console_mode = value
 
-    def __str__(self):
+    def __str__(self):  # noqa: D105
         return "{0}({1}, {2})".format(self.__class__.__name__,
                                       self.fg, self.bg)

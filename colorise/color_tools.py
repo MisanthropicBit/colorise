@@ -16,10 +16,13 @@ def hls_to_rgb(hue, lightness, saturation):
 
 def hsv_to_rgb(hue, saturation, value):
     """Convert HSV (hue, saturation, value) values to RGB."""
-    return tuple(int(c * 255.)
-                 for c in colorsys.hsv_to_rgb(hue/360.,
-                                              saturation/100.,
-                                              value/100.))
+    return tuple(
+        int(c * 255.) for c in colorsys.hsv_to_rgb(
+            hue / 360.,
+            saturation / 100.,
+            value / 100.
+        )
+    )
 
 
 def color_difference(rgb1, rgb2):

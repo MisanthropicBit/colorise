@@ -14,29 +14,29 @@ import colorise.nix.cluts
 # Character attributes as defined in wincon.h
 # We cannot get these through ctypes since they are #defines
 _WIN_ATTRIBUTES = {
-        Attr.Reset:     0x0000,
-        Attr.Bold:      0x0008,
-        Attr.Intense:   0x0008,  # Alias
-        Attr.Faint:     0x0000,
-        Attr.Italic:    0x0000,
-        Attr.Underline: 0x8000,
-        Attr.Blink:     0x0000,
-        Attr.Reverse:   0x4000,
-    }
+    Attr.Reset: 0x0000,
+    Attr.Bold: 0x0008,
+    Attr.Intense: 0x0008,  # Alias
+    Attr.Faint: 0x0000,
+    Attr.Italic: 0x0000,
+    Attr.Underline: 0x8000,
+    Attr.Blink: 0x0000,
+    Attr.Reverse: 0x4000,
+}
 
 # Windows 16-color (logical) look-up table
 _WINDOWS_CLUT = {
-    0:  (0x00, 0x00, 0x00),  # Black
-    1:  (0x00, 0x00, 0x80),  # Red
-    2:  (0x00, 0x80, 0x00),  # Green
-    3:  (0x00, 0x80, 0x80),  # Yellow
-    4:  (0x80, 0x00, 0x00),  # Magenta
-    5:  (0x80, 0x00, 0x80),  # Blue
-    6:  (0x80, 0x80, 0x00),  # Cyan
-    7:  (0xff, 0xff, 0xff),  # White
-    8:  (0x80, 0x80, 0x80),  # Gray/intensity
+    0: (0x00, 0x00, 0x00),  # Black
+    1: (0x00, 0x00, 0x80),  # Red
+    2: (0x00, 0x80, 0x00),  # Green
+    3: (0x00, 0x80, 0x80),  # Yellow
+    4: (0x80, 0x00, 0x00),  # Magenta
+    5: (0x80, 0x00, 0x80),  # Blue
+    6: (0x80, 0x80, 0x00),  # Cyan
+    7: (0xff, 0xff, 0xff),  # White
+    8: (0x80, 0x80, 0x80),  # Gray/intensity
     # The remaining colors are sometimes referred to as the 'light' colors
-    9:  (0x00, 0x00, 0xff),  # Light blue
+    9: (0x00, 0x00, 0xff),  # Light blue
     10: (0x00, 0xff, 0x00),  # Light green
     11: (0x00, 0xff, 0xff),  # Light cyan
     12: (0xff, 0x00, 0x00),  # Light red
@@ -52,16 +52,16 @@ _FOREGROUND_INTENSITY = _WIN_ATTRIBUTES[Attr.Bold]
 
 # List of logical colors names on Windows (as defined by colorise)
 _WINDOWS_LOGICAL_NAMES = {
-    'black':   0,
-    'red':     _FOREGROUND_RED,
-    'green':   _FOREGROUND_GREEN,
-    'yellow':  _FOREGROUND_RED | _FOREGROUND_GREEN,
+    'black': 0,
+    'red': _FOREGROUND_RED,
+    'green': _FOREGROUND_GREEN,
+    'yellow': _FOREGROUND_RED | _FOREGROUND_GREEN,
     'magenta': _FOREGROUND_RED | _FOREGROUND_BLUE,
-    'purple':  _FOREGROUND_RED | _FOREGROUND_BLUE,
-    'blue':    _FOREGROUND_BLUE,
-    'cyan':    _FOREGROUND_GREEN | _FOREGROUND_BLUE,
-    'white':   _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE |
-               _FOREGROUND_INTENSITY,
+    'purple': _FOREGROUND_RED | _FOREGROUND_BLUE,
+    'blue': _FOREGROUND_BLUE,
+    'cyan': _FOREGROUND_GREEN | _FOREGROUND_BLUE,
+    'white': _FOREGROUND_RED | _FOREGROUND_GREEN | _FOREGROUND_BLUE
+    | _FOREGROUND_INTENSITY,
 }
 
 for name in ['red', 'green', 'blue', 'yellow', 'purple', 'magenta', 'cyan']:

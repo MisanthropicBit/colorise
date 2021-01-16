@@ -63,7 +63,7 @@ def test_highlight_named_output(test_stdout):
     test_stdout(
         colorise.highlight,
         '\x1b[0m\x1b[31mH\x1b[0me\x1b[31ml\x1b[0ml\x1b[31mo\x1b[0m!'
-            + os.linesep,
+        + os.linesep,
         'Hello!',
         [0, 2, 4],
         fg='red',
@@ -72,7 +72,7 @@ def test_highlight_named_output(test_stdout):
     test_stdout(
         colorise.highlight,
         '\x1b[0m\x1b[41mH\x1b[0me\x1b[41ml\x1b[0ml\x1b[41mo\x1b[0m!'
-            + os.linesep,
+        + os.linesep,
         'Hello!',
         [0, 2, 4],
         bg='red',
@@ -85,7 +85,7 @@ def test_highlight_256_index_output(test_stdout):
     test_stdout(
         colorise.highlight,
         '\x1b[0m\x1b[38;5;201mH\x1b[0me\x1b[38;5;201m'
-            'l\x1b[0ml\x1b[38;5;201mo\x1b[0m' + os.linesep,
+        'l\x1b[0ml\x1b[38;5;201mo\x1b[0m' + os.linesep,
         'Hello',
         [0, 2, 4],
         fg=201,
@@ -94,7 +94,7 @@ def test_highlight_256_index_output(test_stdout):
     test_stdout(
         colorise.highlight,
         '\x1b[0m\x1b[48;5;201mH\x1b[0me\x1b[48;5;201m'
-             'l\x1b[0ml\x1b[48;5;201mo\x1b[0m' + os.linesep,
+        'l\x1b[0ml\x1b[48;5;201mo\x1b[0m' + os.linesep,
         'Hello',
         [0, 2, 4],
         bg=201,

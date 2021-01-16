@@ -17,28 +17,34 @@ import sys
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
 _DELIMITER = ';'
-_RGB_RE = re.compile(r'^(rgb)?\((\d{1,3}' +
-                     _DELIMITER +
-                     r'\s*\d{1,3}' +
-                     _DELIMITER +
-                     r'\s*\d{1,3})\)$')
+_RGB_RE = re.compile(
+    r'^(rgb)?\((\d{1,3}'
+    + _DELIMITER
+    + r'\s*\d{1,3}'
+    + _DELIMITER
+    + r'\s*\d{1,3})\)$'
+)
 _HEX_RE = re.compile(r'^(0x|#)?(([0-9a-fA-F]{2}){3})$')
-_HSV_RE = re.compile(r'^(hsv)\((\d+' +
-                     _DELIMITER +
-                     r'\s*\d+' +
-                     _DELIMITER +
-                     r'\s*\d+)\)$')
-_HLS_RE = re.compile(r'^(hls)\((\d+(\.\d+)?' +
-                     _DELIMITER +
-                     r'\s*\d+(\.\d+)?' +
-                     _DELIMITER +
-                     r'\s*\d+(\.\d+)?)\)$')
+_HSV_RE = re.compile(
+    r'^(hsv)\((\d+'
+    + _DELIMITER
+    + r'\s*\d+'
+    + _DELIMITER
+    + r'\s*\d+)\)$'
+)
+_HLS_RE = re.compile(
+    r'^(hls)\((\d+(\.\d+)?'
+    + _DELIMITER
+    + r'\s*\d+(\.\d+)?'
+    + _DELIMITER
+    + r'\s*\d+(\.\d+)?)\)$'
+)
 
 # Supported formats of colorise. The order matters!
 _FORMATS = [
     (_RGB_RE.match, 'rgb'),
-    (str.isdigit,   'index'),
-    (str.isalpha,   'name'),
+    (str.isdigit, 'index'),
+    (str.isalpha, 'name'),
     (_HEX_RE.match, 'hex'),
     (_HLS_RE.match, 'hls'),
     (_HSV_RE.match, 'hsv')
@@ -61,10 +67,13 @@ def get_color(
     color_count,
     cluts,
     bg=False,
-    attributes=[],
+    attributes=None,
     file=sys.stdout,
 ):
     """Return the color given by a color format."""
+    if attributes is None:
+        attributes = []
+
     match, colorspace = match_color_formats(value)
 
     if colorspace == 'name':
@@ -81,7 +90,7 @@ def get_color(
         )
     elif colorspace == 'hex':
         value = match.group(2)
-        rgb = [int(value[i:i+2], 16) for i in range(0, 6, 2)]
+        rgb = [int(value[i:i + 2], 16) for i in range(0, 6, 2)]
     elif colorspace == 'hsv':
         rgb = hsv_to_rgb(*[float(c) for c in match.group(2).split(_DELIMITER)])
     elif colorspace == 'hls':

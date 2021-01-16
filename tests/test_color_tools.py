@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import colorise
 from colorise.color_tools import color_difference, closest_color
 from colorise.nix.cluts import\
     _NIX_SYSTEM_COLORS,\

@@ -9,7 +9,7 @@ import os
 import platform
 import sys
 import colorise.formatter
-from colorise.attributes import Attr
+from colorise.attributes import Attr  # noqa: F401
 
 _SYSTEM_OS = platform.system().lower()
 
@@ -105,12 +105,15 @@ def color_names():
     ]
 
 
-def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
+def set_color(fg=None, bg=None, attributes=None, file=sys.stdout):
     """Set the current colors.
 
     If no arguments are given, sets default colors.
 
     """
+    if attributes is None:
+        attributes = []
+
     _set_color(fg, bg, attributes, file)
 
 
@@ -119,8 +122,15 @@ def reset_color(file=sys.stdout):
     _reset_color(file)
 
 
-def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
-           file=sys.stdout, enabled=True):
+def cprint(
+    string,
+    fg=None,
+    bg=None,
+    attributes=None,
+    end=os.linesep,
+    file=sys.stdout,
+    enabled=True,
+):
     """Print a string to a target stream with colors and attributes.
 
     The fg and bg keywords specify foreground- and background colors while
@@ -130,6 +140,9 @@ def cprint(string, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attributes are reset before the function returns.
 
     """
+    if attributes is None:
+        attributes = []
+
     # Flush any remaining stuff before resetting colors
     file.flush()
     reset_color(file)
@@ -190,8 +203,16 @@ def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
     file.write(end)
 
 
-def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
-              file=sys.stdout, enabled=True):
+def highlight(
+    string,
+    indices,
+    fg=None,
+    bg=None,
+    attributes=None,
+    end=os.linesep,
+    file=sys.stdout,
+    enabled=True,
+):
     """Highlight characters using indices and print to a target stream.
 
     The indices argument is a list of indices (not necessarily sorted) for
@@ -205,6 +226,9 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
     Colors and attribtues are reset before the function returns.
 
     """
+    if attributes is None:
+        attributes = []
+
     if not string or not indices or not (fg or bg or attributes)\
             or not enabled:
         file.write(string + end)
@@ -214,7 +238,10 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
 
     # Group consecutive indices, e.g. [0, 2, 3, 5, 6] -> [(0), (2, 3), (5, 6)]
     # NOTE: The lambda syntax is necessary to support both Python 2 and 3
-    groups = itertools.groupby(enumerate(sorted(indices)), lambda x: x[0]-x[1])
+    groups = itertools.groupby(
+        enumerate(sorted(indices)),
+        lambda x: x[0] - x[1],
+    )
 
     # Flush any remaining stuff before resetting colors
     file.flush()
@@ -223,7 +250,7 @@ def highlight(string, indices, fg=None, bg=None, attributes=[], end=os.linesep,
     for _, group in groups:
         # Get the starting and ending indices of the group
         group = list(group)
-        start_idx, end_idx = group[0][1], group[-1][1]+1
+        start_idx, end_idx = group[0][1], group[-1][1] + 1
 
         # Write anything up until the start index of the current group
         file.write(string[idx:start_idx])

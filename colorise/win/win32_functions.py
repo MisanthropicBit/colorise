@@ -28,25 +28,29 @@ ERROR_INVALID_HANDLE = 6
 
 
 # Struct defined in wincon.h
-class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
-    _fields_ = [('dwSize',              wintypes._COORD),
-                ('dwCursorPosition',    wintypes._COORD),
-                ('wAttributes',         ctypes.c_ushort),
-                ('srWindow',            wintypes._SMALL_RECT),
-                ('dwMaximumWindowSize', wintypes._COORD)]
+class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):  # noqa: D101
+    _fields_ = [
+        ('dwSize', wintypes._COORD),
+        ('dwCursorPosition', wintypes._COORD),
+        ('wAttributes', ctypes.c_ushort),
+        ('srWindow', wintypes._SMALL_RECT),
+        ('dwMaximumWindowSize', wintypes._COORD),
+    ]
 
 
 # Struct defined in wincon.h
-class CONSOLE_SCREEN_BUFFER_INFOEX(ctypes.Structure):
-    _fields_ = [('cbSize',               wintypes.ULONG),
-                ('dwSize',               wintypes._COORD),
-                ('dwCursorPosition',     wintypes._COORD),
-                ('wAttributes',          ctypes.c_ushort),
-                ('srWindow',             wintypes._SMALL_RECT),
-                ('dwMaximumWindowSize',  wintypes._COORD),
-                ('wPopupAttributes',     wintypes.WORD),
-                ('bFullscreenSupported', wintypes.BOOL),
-                ('ColorTable',           wintypes.COLORREF * 16)]
+class CONSOLE_SCREEN_BUFFER_INFOEX(ctypes.Structure):  # noqa: D101
+    _fields_ = [
+        ('cbSize', wintypes.ULONG),
+        ('dwSize', wintypes._COORD),
+        ('dwCursorPosition', wintypes._COORD),
+        ('wAttributes', ctypes.c_ushort),
+        ('srWindow', wintypes._SMALL_RECT),
+        ('dwMaximumWindowSize', wintypes._COORD),
+        ('wPopupAttributes', wintypes.WORD),
+        ('bFullscreenSupported', wintypes.BOOL),
+        ('ColorTable', wintypes.COLORREF * 16),
+    ]
 
 
 if not hasattr(wintypes, 'LPDWORD'):
@@ -68,18 +72,19 @@ kernel32.GetLastError.argtypes = []
 kernel32.GetLastError.restype = wintypes.DWORD
 kernel32.SetLastError.argtypes = [wintypes.DWORD]
 kernel32.SetLastError.restype = None  # void
-kernel32.FormatMessageW.argtypes = [wintypes.DWORD,
-                                           wintypes.LPCVOID,
-                                           wintypes.DWORD,
-                                           wintypes.DWORD,
-                                           wintypes.LPWSTR,
-                                           wintypes.DWORD,
-                                           wintypes.LPVOID]
+kernel32.FormatMessageW.argtypes = [
+    wintypes.DWORD,
+    wintypes.LPCVOID,
+    wintypes.DWORD,
+    wintypes.DWORD,
+    wintypes.LPWSTR,
+    wintypes.DWORD,
+    wintypes.LPVOID
+]
 kernel32.FormatMessageW.restype = wintypes.DWORD
 kernel32.LocalFree.argtypes = [wintypes.HLOCAL]
 kernel32.LocalFree.restype = wintypes.HLOCAL
-kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE,
-                                                    wintypes.WORD]
+kernel32.SetConsoleTextAttribute.argtypes = [wintypes.HANDLE, wintypes.WORD]
 kernel32.SetConsoleTextAttribute.restype = wintypes.BOOL
 
 if kernel32.SetConsoleScreenBufferInfoEx is not None:
@@ -183,21 +188,23 @@ def get_windows_clut():
     # color table. On older platforms, use the default color table
     csbiex = CONSOLE_SCREEN_BUFFER_INFOEX()
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
+    retval = kernel32.GetConsoleScreenBufferInfoEx(
+        get_win_handle(WinHandle.STDOUT).value,
+        ctypes.byref(csbiex),
+    )
 
-    if kernel32.GetConsoleScreenBufferInfoEx(
-                get_win_handle(WinHandle.STDOUT).value,
-                ctypes.byref(csbiex)
-            ) == 0:
+    if retval == 0:
         raise WinError()
 
     clut = {}
 
     # Update according to the currently set colors
     for i in range(16):
-        clut[i] =\
-            (csbiex.ColorTable[i] & 0xff,
-             (csbiex.ColorTable[i] >> 8) & 0xff,
-             (csbiex.ColorTable[i] >> 16) & 0xff)
+        clut[i] = (
+            csbiex.ColorTable[i] & 0xff,
+            (csbiex.ColorTable[i] >> 8) & 0xff,
+            (csbiex.ColorTable[i] >> 16) & 0xff,
+        )
 
     return clut
 
@@ -217,16 +224,19 @@ def enable_virtual_terminal_processing(handle):
 
     handle.console_mode = console_mode
 
-    target_mode = wintypes.DWORD(console_mode.value |
-                                 ENABLE_VIRTUAL_TERMINAL_PROCESSING |
-                                 DISABLE_NEWLINE_AUTO_RETURN)
+    target_mode = wintypes.DWORD(
+        console_mode.value
+        | ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        | DISABLE_NEWLINE_AUTO_RETURN
+    )
 
     # First attempt to set console mode to interpret ANSI escape codes and
     # disable immediately jumping to the next console line
     if kernel32.SetConsoleMode(handle.value, target_mode) == 0:
         # If that fails, try just setting the mode for ANSI escape codes
-        target_mode = wintypes.DWORD(console_mode.value |
-                                     ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+        target_mode = wintypes.DWORD(
+            console_mode.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        )
 
         if kernel32.SetConsoleMode(handle.value, target_mode) == 0:
             return None
@@ -313,12 +323,13 @@ def redefine_colors(color_map, file=sys.stdout):
     csbiex.cbSize = ctypes.sizeof(CONSOLE_SCREEN_BUFFER_INFOEX)
 
     win_handle = get_win_handle(WinHandle.from_sys_handle(file))
+    retval = kernel32.GetConsoleScreenBufferInfoEx(
+        win_handle.value,
+        ctypes.byref(csbiex)
+    )
 
     # Get console color info
-    if kernel32.GetConsoleScreenBufferInfoEx(
-                win_handle.value,
-                ctypes.byref(csbiex)
-            ) == 0:
+    if retval == 0:
         raise WinError()
 
     # Redefine colortable
