@@ -9,9 +9,9 @@
 .. image:: https://img.shields.io/pypi/v/colorise.svg
    :target: https://pypi.python.org/pypi/colorise/
 
-.. image:: https://travis-ci.org/MisanthropicBit/colorise.svg?branch=rgb_256_exts
+.. image:: https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/github-actions
    :alt: Build status
-   :target: https://travis-ci.org/MisanthropicBit/colorise
+   :target: https://github.com/MisanthropicBit/colorise/actions
 
 .. image:: https://readthedocs.org/projects/colorise/badge/?version=latest
    :target: https://colorise.readthedocs.io/en/latest/?badge=latest
