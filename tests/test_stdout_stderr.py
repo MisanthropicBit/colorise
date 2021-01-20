@@ -11,6 +11,7 @@ import pytest
 import colorise
 
 
+@pytest.mark.skip_on_windows
 def test_stdout_stderr(redirect):
     with redirect('stdout') as stdout:
         colorise.cprint('Hello', fg='red', file=sys.stderr)
