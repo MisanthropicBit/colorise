@@ -125,8 +125,8 @@ def test_cprint_disabled(test_stdout):
 
 
 @pytest.mark.skip_on_windows
-def test_cprint_proper_reset(redirect_stdout):
-    with redirect_stdout() as stdout:
+def test_cprint_proper_reset(redirect):
+    with redirect('stdout') as stdout:
         colorise.set_color(fg='red')
         colorise.cprint('Hello', bg='blue', file=sys.stdout)
 

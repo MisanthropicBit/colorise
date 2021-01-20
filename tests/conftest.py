@@ -25,8 +25,8 @@ def test_stdout(capsys):
     return _capture_output
 
 
-class RedirectedStdout():
-    """Wrapper class around implementation of redirected stdout.
+class RedirectedOutput():
+    """Wrapper class around implementation of redirected output.
 
     This hides the implementation so it can be modified without having to
     change all tests.
@@ -42,16 +42,20 @@ class RedirectedStdout():
 
 
 @pytest.fixture
-def redirect_stdout():
-    """Return a context manager that captures stdout."""
+def redirect():
+    """Return a context manager that captures stdout or stderr."""
     @contextlib.contextmanager
-    def _redirected_stdout():
+    def _redirected(output_name):
         sio = io.StringIO()
+        redirection = {
+            'stdout': contextlib.redirect_stdout,
+            'stderr': contextlib.redirect_stderr,
+        }[output_name.lower()]
 
-        with contextlib.redirect_stdout(sio):
-            yield RedirectedStdout(sio)
+        with redirection(sio):
+            yield RedirectedOutput(sio)
 
-    return _redirected_stdout
+    return _redirected
 
 
 def pytest_configure(config):  # noqa

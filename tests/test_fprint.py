@@ -122,8 +122,8 @@ def test_fprint_disabled(test_stdout):
 
 
 @pytest.mark.skip_on_windows
-def test_fprint_proper_reset(redirect_stdout):
-    with redirect_stdout() as stdout:
+def test_fprint_proper_reset(redirect):
+    with redirect('stdout') as stdout:
         colorise.set_color(fg='red')
         colorise.fprint('Hel{bg=blue}lo', file=sys.stdout)
         assert stdout.value == '\x1b[0mHel\x1b[44mlo\x1b[0m' + os.linesep
