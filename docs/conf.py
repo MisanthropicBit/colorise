@@ -87,3 +87,6 @@ def linkcode_resolve(domain, info):
         module_path = os.path.join(module_path, '__init__')
 
     return os.path.join(base_url, module_path + '.py')
+
+
+autodoc_mock_imports = ['colorise.win']

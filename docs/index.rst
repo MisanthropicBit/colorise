@@ -37,6 +37,7 @@
    screenshots
    faq
    changelog
+   modules
    tested_systems
 
 colorise is a Python module for printing colored text in terminals.
