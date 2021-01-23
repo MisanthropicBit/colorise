@@ -4,9 +4,9 @@
 """Nix color look-up tables (CLUTs) and functions."""
 
 import collections
+
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
-
 
 _COLOR_ESCAPE_CODE = '\x1b['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
@@ -17,14 +17,14 @@ _COLOR_PREFIX_BG_256 = _COLOR_PREFIX_BG_88
 _COLOR_PREFIX_FG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '38;2;{0}m'
 _COLOR_PREFIX_BG_TRUE_COLOR = _COLOR_ESCAPE_CODE + '48;2;{0}m'
 
+# Mapping from color count to foreground and background prefixes
 _PREFIX_MAP = {
-        #       Foreground prefix            Background prefix
-        8:     (_COLOR_PREFIX_16,            _COLOR_PREFIX_16),
-        16:    (_COLOR_PREFIX_16,            _COLOR_PREFIX_16),
-        88:    (_COLOR_PREFIX_FG_88,         _COLOR_PREFIX_BG_88),
-        256:   (_COLOR_PREFIX_FG_256,        _COLOR_PREFIX_BG_256),
-        2**24: (_COLOR_PREFIX_FG_TRUE_COLOR, _COLOR_PREFIX_BG_TRUE_COLOR)
-    }
+    8: (_COLOR_PREFIX_16, _COLOR_PREFIX_16),
+    16: (_COLOR_PREFIX_16, _COLOR_PREFIX_16),
+    88: (_COLOR_PREFIX_FG_88, _COLOR_PREFIX_BG_88),
+    256: (_COLOR_PREFIX_FG_256, _COLOR_PREFIX_BG_256),
+    2**24: (_COLOR_PREFIX_FG_TRUE_COLOR, _COLOR_PREFIX_BG_TRUE_COLOR),
+}
 
 # System base colors that are assumed to be present for 8 color terminals
 _NIX_SYSTEM_COLORS = {
@@ -40,28 +40,29 @@ _NIX_SYSTEM_COLORS = {
 
 # System color names as given by colorise
 _NIX_SYSTEM_COLOR_NAMES = {
-    'black':       30,
-    'red':         31,
-    'green':       32,
-    'yellow':      33,
-    'blue':        34,
-    'purple':      35,
-    'cyan':        36,
-    'lightgray':   37,
-    'gray':        90,
-    'lightred':    91,
-    'lightgreen':  92,
+    'black': 30,
+    'red': 31,
+    'green': 32,
+    'yellow': 33,
+    'blue': 34,
+    'purple': 35,
+    'cyan': 36,
+    'lightgray': 37,
+    'gray': 90,
+    'lightred': 91,
+    'lightgreen': 92,
     'lightyellow': 93,
-    'lightblue':   94,
+    'lightblue': 94,
     'lightpurple': 95,
-    'lightcyan':   96,
-    'white':       97,
+    'lightcyan': 96,
+    'white': 97,
 }
 
 # Alias for British english gray and alias for purple
 _NIX_SYSTEM_COLOR_NAMES['grey'] = 90
 _NIX_SYSTEM_COLOR_NAMES['lightgrey'] = 37
 _NIX_SYSTEM_COLOR_NAMES['magenta'] = 35
+_NIX_SYSTEM_COLOR_NAMES['lightmagenta'] = 95
 
 # xterm 88-color look-up table (based on 88colres.h)
 _XTERM_CLUT_88_STEPS = [0x00, 0x8b, 0xcd, 0xff]
@@ -71,18 +72,21 @@ _XTERM_CLUT_88 = collections.OrderedDict(_NIX_SYSTEM_COLORS)
 _XTERM_CLUT_88.update(
     zip(
         range(16, 88),
-        [(r, g, b)
-         for r in _XTERM_CLUT_88_STEPS
-         for g in _XTERM_CLUT_88_STEPS
-         for b in _XTERM_CLUT_88_STEPS]
+        [
+            (r, g, b)
+            for r in _XTERM_CLUT_88_STEPS
+            for g in _XTERM_CLUT_88_STEPS
+            for b in _XTERM_CLUT_88_STEPS
+        ],
     )
 )
 
 _XTERM_CLUT_88.update(
     zip(
         range(80, 89),
-        [(g, g, g) for g in _XTERM_CLUT_88_GRAYSCALE])
+        [(g, g, g) for g in _XTERM_CLUT_88_GRAYSCALE],
     )
+)
 
 # xterm 256-color look-up table
 _XTERM_CLUT_256_STEPS = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
@@ -92,17 +96,19 @@ _XTERM_CLUT_256 = collections.OrderedDict(_NIX_SYSTEM_COLORS)
 _XTERM_CLUT_256.update(
     zip(
         range(16, 232),
-        [(r, g, b)
-         for r in _XTERM_CLUT_256_STEPS
-         for g in _XTERM_CLUT_256_STEPS
-         for b in _XTERM_CLUT_256_STEPS]
+        [
+            (r, g, b)
+            for r in _XTERM_CLUT_256_STEPS
+            for g in _XTERM_CLUT_256_STEPS
+            for b in _XTERM_CLUT_256_STEPS
+        ],
     )
 )
 
 _XTERM_CLUT_256.update(
     zip(
         range(232, 256),
-        [(g, g, g) for g in _XTERM_CLUT_256_GRAYSCALE]
+        [(g, g, g) for g in _XTERM_CLUT_256_GRAYSCALE],
     )
 )
 
@@ -119,14 +125,14 @@ def get_clut(color_count):
         return _XTERM_CLUT_256
 
     return {
-        8:   _NIX_SYSTEM_COLORS,
-        16:  _NIX_SYSTEM_COLORS,
-        88:  _XTERM_CLUT_88,
+        8: _NIX_SYSTEM_COLORS,
+        16: _NIX_SYSTEM_COLORS,
+        88: _XTERM_CLUT_88,
         256: _XTERM_CLUT_256,
     }[color_count]
 
 
-def can_redefine_colors():
+def can_redefine_colors(file):
     """Return whether the terminal allows redefinition of colors."""
     return False
 
@@ -141,8 +147,8 @@ def color_from_name(name, color_count, bg, attributes):
     return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name] + 10 * int(bg)
 
 
-def color_from_index(idx, color_count, bg, attributes):
-    """Return the color value and color count for a given color index."""
+def color_from_index(idx, color_count, bg, attributes, file):
+    """Return the color prefix and color value for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
 
@@ -171,7 +177,7 @@ def color_from_index(idx, color_count, bg, attributes):
             return _COLOR_PREFIX_16, key + 10 * int(bg)
 
 
-def get_rgb_color(color_count, bg, rgb, attributes):
+def get_rgb_color(color_count, bg, rgb, attributes, file):
     """Get the color for an RGB triple or approximate it if necessary."""
     prefix = get_prefix(color_count, bg)
 

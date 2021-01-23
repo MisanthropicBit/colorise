@@ -3,19 +3,22 @@
 
 """Windows color functions."""
 
-from colorise.attributes import Attr
-from colorise.cluts import get_color
-import colorise.nix.color_functions
-from colorise.win.cluts import can_interpret_ansi
-from colorise.win.win32_functions import\
-    get_win_handle,\
-    set_console_text_attribute,\
-    redefine_colors as _redefine_colors
 import functools
 import operator
 import os
 import platform
 import sys
+
+import colorise.nix.color_functions
+from colorise.attributes import Attr
+from colorise.cluts import get_color
+from colorise.win.cluts import can_interpret_ansi
+from colorise.win.win32_functions import (
+    get_win_handle,
+    redefine_colors as _redefine_colors,
+    set_console_text_attribute,
+)
+from colorise.win.winhandle import WinHandle
 
 
 def num_colors():
@@ -29,13 +32,17 @@ def num_colors():
         return 256
 
     release = platform.win32_ver()[0]
-    build = sys.getwindowsversion()[2]
+    build = sys.getwindowsversion().build
 
     # Windows 10 build 14931 has support for 24-bit colors
     if release == '10' and build >= 14931:
         return 2**24
 
-    if can_interpret_ansi():
+    # We check both output streams here because we want to determine color
+    # capabilities in general so this should return 2**24 if stdout is
+    # redirected but stderr is not. If both are redirected, the output stream
+    # does not interpreat ANSI escape sequences
+    if can_interpret_ansi(sys.stdout) or can_interpret_ansi(sys.stderr):
         return 2**24
 
     # Supported colors in Windows are pre-determined. Though you can update the
@@ -44,49 +51,66 @@ def num_colors():
     return 16
 
 
-if num_colors() > 16 and can_interpret_ansi():
-    # Extended terminal capabilities for interpreting ANSI escape codes,
-    # delegate to nix color functions
-
-    def reset_color(file=sys.stdout):
-        """Reset all colors and attributes."""
+def reset_color(file=sys.stdout):
+    """Reset all colors and attributes."""
+    if num_colors() > 16 and can_interpret_ansi(file):
         colorise.nix.color_functions.reset_color(file)
+    else:
+        handle = get_win_handle(WinHandle.from_sys_handle(file))
 
-    def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
-        """Set color and attributes in the terminal."""
-        colorise.nix.color_functions.set_color(fg, bg, attributes, file,
-                                               num_colors_func=num_colors)
-else:
-    # Ordinary terminal capabilities, use Windows API
+        if handle.is_console_handle:
+            # Do not call the console api when output target is not a tty since
+            # calls that expect it to be a valid console handle will fail
+            set_console_text_attribute(
+                handle,
+                handle.default_fg | handle.default_bg,
+            )
 
-    def reset_color(file=sys.stdout):
-        """Reset all colors and attributes."""
-        handle = get_win_handle(file)
-        set_console_text_attribute(handle,
-                                   handle.default_fg | handle.default_bg)
 
-    def or_bit_flags(*bit_flags):
-        """Bitwise OR together a list of bitflags into a single flag."""
-        return functools.reduce(operator.or_, bit_flags)
+def or_bit_flags(*bit_flags):
+    """Bitwise OR together a list of bitflags into a single flag."""
+    return functools.reduce(operator.or_, bit_flags)
 
-    def set_color(fg=None, bg=None, attributes=[], file=sys.stdout):
-        """Set color and attributes in the terminal."""
+
+def set_color(fg=None, bg=None, attributes=None, file=sys.stdout):
+    """Set color and attributes in the terminal."""
+    if num_colors() > 16 and can_interpret_ansi(file):
+        colorise.nix.color_functions.set_color(
+            fg, bg, attributes, file, num_colors_func=num_colors,
+        )
+    else:
         if fg or bg or attributes:
             if Attr.Reset not in attributes:
-                handle = get_win_handle(file)
+                handle = get_win_handle(WinHandle.from_sys_handle(file))
                 color_count = num_colors()
                 codes = []
 
-                codes.extend(get_color(fg, color_count, colorise.win.cluts,
-                                       False, attributes)
-                             if fg else [handle.default_fg])
-                codes.extend(get_color(bg, color_count, colorise.win.cluts,
-                                       True, attributes)
-                             if bg else [handle.default_bg])
+                for idx, color in enumerate([fg, bg]):
+                    isbg = idx == 1
 
-                # Combine attributes and color codes into a single bitflag
-                flags = or_bit_flags(*codes)
-                set_console_text_attribute(handle, flags)
+                    if color:
+                        codes.extend(get_color(
+                            color,
+                            color_count,
+                            colorise.win.cluts,
+                            isbg,
+                            attributes,
+                        ))
+                    else:
+                        codes.append(
+                            handle.default_bg if isbg else handle.default_fg,
+                        )
+
+                if handle.is_console_handle:
+                    # Combine attributes and color codes into a single bitflag
+                    # if the handle is a valid console handle (a tty) since
+                    # win32 calls that expect it to be a valid console handle
+                    # will fail otherwise. We still call get_color above
+                    # because we want to inform users about incorrect color
+                    # formats even if the output is a pipe or a call in a
+                    # subprocess
+                    flags = or_bit_flags(*codes)
+                    set_console_text_attribute(handle, flags)
             else:
                 reset_color(file)
 

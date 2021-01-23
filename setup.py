@@ -17,7 +17,7 @@ setup(
     author='Alexander Asp Bock',
     author_email='albo.developer@gmail.com',
     platforms='Platform independent',
-    python_requires='>=3.4',
+    python_requires='>=3.5',
     description=('Easily print colored text to the console'),
     license='BSD 3-Clause License',
     keywords='text, color, colorise, colorize, console, terminal',
@@ -36,10 +36,11 @@ setup(
         'Topic :: Utilities',
         'Topic :: Terminals',
         'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: PyPy'
     ]
 )

@@ -2,8 +2,8 @@
     <img src="https://raw.githubusercontent.com/MisanthropicBit/colorise/master/docs/images/colorise-logo.png" />
     <div align="center"><h3>v1.0.1</h3></div>
     <div align="center">
-        <a href="https://travis-ci.org/MisanthropicBit/colorise">
-            <img src="https://travis-ci.org/MisanthropicBit/colorise.svg?branch=master" />
+        <a href="https://github.com/MisanthropicBit/colorise/actions">
+            <img alt="Build status" src="https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/github-actions" />
         </a>
         <img src="https://readthedocs.org/projects/colorise/badge/?version=latest" />
         <a href="/LICENSE">

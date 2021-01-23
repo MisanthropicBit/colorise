@@ -16,23 +16,18 @@ def hls_to_rgb(hue, lightness, saturation):
 
 def hsv_to_rgb(hue, saturation, value):
     """Convert HSV (hue, saturation, value) values to RGB."""
-    return tuple(int(c * 255.)
-                 for c in colorsys.hsv_to_rgb(hue/360.,
-                                              saturation/100.,
-                                              value/100.))
+    return tuple(
+        int(c * 255.) for c in colorsys.hsv_to_rgb(
+            hue / 360.,
+            saturation / 100.,
+            value / 100.
+        )
+    )
 
 
 def color_difference(rgb1, rgb2):
     """Return the sums of component differences between two colors."""
     return sum(abs(i - j) for i, j in zip(rgb1, rgb2))
-
-
-def color_distance(rgb1, rgb2):
-    """Compute the Euclidian distance between two colors."""
-    r1, g1, b1 = rgb1
-    r2, g2, b2 = rgb2
-
-    return math.sqrt((r2 - r1)**2 + (g2 - g1)**2 + (b2 - b1)**2)
 
 
 def closest_color(rgb, clut):

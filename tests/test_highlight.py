@@ -3,11 +3,12 @@
 
 """Test the highlight function."""
 
-import colorise
-from io import StringIO
-import pytest
 import os
 import sys
+
+import pytest
+
+import colorise
 
 
 def test_highlight():
@@ -34,61 +35,77 @@ def test_highlight():
 def test_invalid_highlight():
     text = 'Hello'
     indices = [0, 2, 4]
-    colors = [
-        'unknown',
-        256,
-        '#a69ff',
-        '0xa69ff',
-        'hls(0.6919,0.7940;1.0=',
-        'hsv(249;41;-100)',
-        'rgb(167;xxx;255)'
+    invalid_colors = [
+        ('unknown', r"^Unknown color name 'unknown'$"),
+        (256, r"^Color index must be in range 0-255 inclusive$"),
+        (300, r"^Color index must be in range 0-255 inclusive$"),
+        ('#a69ff', r"^Unknown or invalid color format '#a69ff'$"),
+        ('0xa69ff', r"^Unknown or invalid color format '0xa69ff'$"),
+        (
+            'hls(0.6923,0.7960;1.0=',
+            r"^Unknown or invalid color format 'hls\(0.6923,0.7960;1.0='$",
+        ),
+        (
+            'hsv(249;41;-100)',
+            r"^Unknown or invalid color format 'hsv\(249;41;-100\)'$",
+        ),
+        (
+            'rgb(167;xxx;255)',
+            r"^Unknown or invalid color format 'rgb\(167;xxx;255\)'$",
+        ),
     ]
 
-    for color in colors:
-        with pytest.raises(ValueError):
+    for color, error_message in invalid_colors:
+        with pytest.raises(ValueError, match=error_message):
             colorise.highlight(text, indices, fg=color)
 
 
 @pytest.mark.skip_on_windows
-def test_highlight_named_output():
-    sio = StringIO()
-    result = '\x1b[0m\x1b[31mH\x1b[0me\x1b[31ml\x1b[0ml\x1b[31mo\x1b[0m'\
-        + os.linesep
+def test_highlight_named_output(test_stdout):
+    test_stdout(
+        colorise.highlight,
+        '\x1b[0m\x1b[31mH\x1b[0me\x1b[31ml\x1b[0ml\x1b[31mo\x1b[0m!'
+        + os.linesep,
+        'Hello!',
+        [0, 2, 4],
+        fg='red',
+    )
 
-    with pytest.redirect_stdout(sio):
-        colorise.highlight('Hello', [0, 2, 4], fg='red', file=sys.stdout)
-        assert sio.getvalue() == result
-
-    sio = StringIO()
-    result = '\x1b[0m\x1b[41mH\x1b[0me\x1b[41ml\x1b[0ml\x1b[41mo\x1b[0m'\
-        + os.linesep
-
-    with pytest.redirect_stdout(sio):
-        colorise.highlight('Hello', [0, 2, 4], bg='red', file=sys.stdout)
-        assert sio.getvalue() == result
+    test_stdout(
+        colorise.highlight,
+        '\x1b[0m\x1b[41mH\x1b[0me\x1b[41ml\x1b[0ml\x1b[41mo\x1b[0m!'
+        + os.linesep,
+        'Hello!',
+        [0, 2, 4],
+        bg='red',
+    )
 
 
 @pytest.mark.require_colors(256)
-def test_highlight_256_index_output():
-    sio = StringIO()
-    result = '\x1b[0m\x1b[38;5;201mH\x1b[0me\x1b[38;5;201m'\
-             'l\x1b[0ml\x1b[38;5;201mo\x1b[0m' + os.linesep
+@pytest.mark.skip_on_windows
+def test_highlight_256_index_output(test_stdout):
+    test_stdout(
+        colorise.highlight,
+        '\x1b[0m\x1b[38;5;201mH\x1b[0me\x1b[38;5;201m'
+        'l\x1b[0ml\x1b[38;5;201mo\x1b[0m' + os.linesep,
+        'Hello',
+        [0, 2, 4],
+        fg=201,
+    )
 
-    with pytest.redirect_stdout(sio):
-        colorise.highlight('Hello', [0, 2, 4], fg=201, file=sys.stdout)
-        assert sio.getvalue() == result
-
-    sio = StringIO()
-    result = '\x1b[0m\x1b[48;5;201mH\x1b[0me\x1b[48;5;201m'\
-             'l\x1b[0ml\x1b[48;5;201mo\x1b[0m' + os.linesep
-
-    with pytest.redirect_stdout(sio):
-        colorise.highlight('Hello', [0, 2, 4], bg=201, file=sys.stdout)
-        assert sio.getvalue() == result
+    test_stdout(
+        colorise.highlight,
+        '\x1b[0m\x1b[48;5;201mH\x1b[0me\x1b[48;5;201m'
+        'l\x1b[0ml\x1b[48;5;201mo\x1b[0m' + os.linesep,
+        'Hello',
+        [0, 2, 4],
+        bg=201,
+    )
 
 
 @pytest.mark.require_colors(256**3)
-def test_highlight_truecolor_output():
+@pytest.mark.skip_on_windows
+def test_highlight_truecolor_output(test_stdout):
     text = 'Hello'
     indices = [0, 2, 4]
     kwargs = [
@@ -97,33 +114,31 @@ def test_highlight_truecolor_output():
         {'fg': 'hsv(249;41;100)'},
         {'fg': 'rgb(166;150;255)'},
     ]
-    result = '\x1b[0m\x1b[38;2;166;150;255mH\x1b[0me\x1b[38;2;166;150;255m'\
-             'l\x1b[0ml\x1b[38;2;166;150;255mo\x1b[0m' + os.linesep
+    expected = '\x1b[0m\x1b[38;2;166;150;255mH\x1b[0me\x1b[38;2;166;150;255m'\
+        'l\x1b[0ml\x1b[38;2;166;150;255mo\x1b[0m' + os.linesep
 
     for kwarg in kwargs:
-        sio = StringIO()
-
-        with pytest.redirect_stdout(sio):
-            colorise.highlight(text, indices, file=sys.stdout, **kwarg)
-            assert sio.getvalue() == result
+        test_stdout(colorise.highlight, expected, text, indices, **kwarg)
 
 
 @pytest.mark.skip_on_windows
-def test_highlight_disabled():
-    sio = StringIO()
-
-    with pytest.redirect_stdout(sio):
-        colorise.highlight('Hello', [0, 2, 4], fg='red', file=sys.stdout,
-                           enabled=False)
-        assert sio.getvalue() == 'Hello' + os.linesep
+def test_highlight_disabled(test_stdout):
+    test_stdout(
+        colorise.highlight,
+        'Hello' + os.linesep,
+        'Hello',
+        [0, 2, 4],
+        fg='red',
+        enabled=False
+    )
 
 
 @pytest.mark.skip_on_windows
-def test_highlight_proper_reset():
-    sio = StringIO()
-    expected_result = '\x1b[0mH\x1b[44mel\x1b[0ml\x1b[44mo\x1b[0m' + os.linesep
+def test_highlight_proper_reset(redirect):
+    expected = '\x1b[0mH\x1b[44mel\x1b[0ml\x1b[44mo\x1b[0m' + os.linesep
 
-    with pytest.redirect_stdout(sio):
+    with redirect('stdout') as stdout:
         colorise.set_color(fg='red')
         colorise.highlight('Hello', [1, 2, 4], bg='blue', file=sys.stdout)
-        assert sio.getvalue() == expected_result
+
+        assert stdout.value == expected

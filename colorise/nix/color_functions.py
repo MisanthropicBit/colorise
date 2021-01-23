@@ -5,6 +5,7 @@
 
 import os
 import sys
+
 import colorise.error
 import colorise.nix.cluts
 from colorise.attributes import Attr
@@ -67,8 +68,13 @@ def reset_color(file=sys.stdout):
     file.write(to_ansi(Attr.Reset.value))
 
 
-def set_color(fg=None, bg=None, attributes=[], file=sys.stdout,
-              num_colors_func=num_colors):
+def set_color(
+    fg=None,
+    bg=None,
+    attributes=None,
+    file=sys.stdout,
+    num_colors_func=num_colors,
+):
     """Set color and attributes of the terminal.
 
     'fg' and 'bg' specify foreground- and background colors while 'attributes'
@@ -76,6 +82,9 @@ def set_color(fg=None, bg=None, attributes=[], file=sys.stdout,
     output stream.
 
     """
+    if attributes is None:
+        attributes = []
+
     codes = []
 
     if attributes:
