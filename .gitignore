@@ -18,6 +18,7 @@ __pycache__
 # Ignore build files
 MANIFEST
 _build/
+build/
 dist/
 build/
 htmlcov/
