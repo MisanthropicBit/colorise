@@ -25,7 +25,8 @@
 ---
 
 `colorise` provides easy cross-platform text coloring for terminals/consoles and
-has [been tested](/TESTED_ON.md) on different platforms/terminals.
+has [been tested](https://colorise.readthedocs.io/en/latest/tested_systems.html)
+on different platforms/terminals.
 
 ## Installation
 
