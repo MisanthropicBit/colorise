@@ -9,7 +9,7 @@
 .. image:: https://img.shields.io/pypi/v/colorise.svg
    :target: https://pypi.python.org/pypi/colorise/
 
-.. image:: https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/github-actions
+.. image:: https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/master
    :alt: Build status
    :target: https://github.com/MisanthropicBit/colorise/actions
 

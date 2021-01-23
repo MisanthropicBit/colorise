@@ -3,7 +3,7 @@
     <div align="center"><h3>v1.0.1</h3></div>
     <div align="center">
         <a href="https://github.com/MisanthropicBit/colorise/actions">
-            <img alt="Build status" src="https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/github-actions" />
+            <img alt="Build status" src="https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/master" />
         </a>
         <img src="https://readthedocs.org/projects/colorise/badge/?version=latest" />
         <a href="/LICENSE">
