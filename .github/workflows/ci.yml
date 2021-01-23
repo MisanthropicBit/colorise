@@ -32,6 +32,7 @@ jobs:
         run: tox -e scripts,py
 
   lint:
+    if: github.event_name == 'push' && !contains(toJSON(github.event.commits.*.message), '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -45,6 +46,7 @@ jobs:
       - run: tox -e lint
 
   docs:
+    if: github.event_name == 'push' && !contains(toJSON(github.event.commits.*.message), '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
