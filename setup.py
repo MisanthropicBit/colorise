@@ -21,6 +21,7 @@ setup(
     description=('Easily print colored text to the console'),
     license='BSD 3-Clause License',
     keywords='text, color, colorise, colorize, console, terminal',
+    packages=['colorise', 'colorise.win', 'colorise.nix'],
     url='https://github.com/MisanthropicBit/colorise',
     project_urls={
         'Issue Tracker': 'https://github.com/MisanthropicBit/colorise/issues',
