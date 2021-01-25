@@ -15,11 +15,12 @@ colortable of 256 colors available.
 
 **Q: I have custom colors set up in Windows, why are they not reflected in colorise?**
 
-You can set up custom console colors in Windows but in order to detect them you
-need at least [Windows Vista or Windows Server
-2008](https://docs.microsoft.com/en-us/windows/console/getconsolescreenbufferinfoex).
-If you are working on a Windows version before that, your custom colors will
-not be properly reflected.
+On `Windows Vista or Windows Server 2008
+<https://docs.microsoft.com/en-us/windows/console/getconsolescreenbufferinfoex>`__,
+colorise will read the current colortable and use that to lookup and
+approximate colors so your custom console colors should be reflected. If you
+are working on a Windows version before that, your custom colors will not be
+properly reflected as colorise will have to assume a default colortable.
 
 **Q: How come I can use more than 16 colors in Windows?**
 

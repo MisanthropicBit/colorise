@@ -232,8 +232,7 @@ index into color tables commonly supported by different platforms.
    (via linear distance) and use that. For example, Windows usually supports only
    16 colors but using ``colorise.cprint('Hello', fg='rgb(240;240;0)')`` on such a
    system will still give you a yellow color (assuming standard Windows console
-   colors). Also see the mario sprites in the `Screenshots
-   <screenshots.html>`__ section.
+   colors). Also see the sprites in the :doc:`screenshots` section.
 
 Redefining Colors
 -----------------

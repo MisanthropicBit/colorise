@@ -7,7 +7,7 @@
    :target: images/colorise-logo.png
 
 .. image:: https://img.shields.io/pypi/v/colorise.svg
-   :target: https://pypi.python.org/pypi/colorise/
+   :target: https://pypi.org/project/colorise/
 
 .. image:: https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/master
    :alt: Build status
@@ -27,7 +27,7 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/colorise.svg
    :alt: Python Versions
-   :target: https://pypi.python.org/pypi/colorise/
+   :target: https://pypi.org/project/colorise/
 
 .. toctree::
    :maxdepth: 2
