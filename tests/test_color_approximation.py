@@ -14,6 +14,7 @@ import colorise
 def test_rgb_approximation(test_stdout, monkeypatch):
     # Mock 8 system colors
     import curses
+    monkeypatch.setattr(curses, 'setupterm', lambda fd=None: fd)
     monkeypatch.setattr(curses, 'tigetnum', lambda _: 8)
     monkeypatch.setenv('COLORTERM', '')
     monkeypatch.setenv('TERM_PROGRAM', '')
