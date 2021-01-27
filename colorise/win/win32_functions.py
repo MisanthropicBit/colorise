@@ -166,11 +166,6 @@ def create_std_handle(handle_id):
     return win_handle
 
 
-# Create handles for stdout and stderr
-# _STDOUT_HANDLE = create_std_handle(_STDOUT_HANDLE_ID)
-# _STDERR_HANDLE = create_std_handle(_STDERR_HANDLE_ID)
-
-
 def get_win_handle(target):
     """Return the Windows handle corresponding to a Python handle."""
     if WinHandle.validate(target):
