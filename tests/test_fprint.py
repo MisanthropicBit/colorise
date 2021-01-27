@@ -101,7 +101,7 @@ def test_valid_truecolor_fprint_output(test_stdout):
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ('fg=0xa696ff',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ('fg=hsv(249;41;100)',
+        ('fg=hsv(249.2;41.0;100.078)',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ('fg=rgb(167;151;255)',
          '\x1b[0m\x1b[38;2;167;151;255mHello\x1b[0m' + os.linesep),

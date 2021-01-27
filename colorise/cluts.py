@@ -27,11 +27,11 @@ _RGB_RE = re.compile(
 )
 _HEX_RE = re.compile(r'^(0x|#)?(([0-9a-fA-F]{2}){3})$')
 _HSV_RE = re.compile(
-    r'^(hsv)\((\d+'
+    r'^(hsv)\((\d+(\.\d+)?'
     + _DELIMITER
-    + r'\s*\d+'
+    + r'\s*\d+(\.\d+)?'
     + _DELIMITER
-    + r'\s*\d+)\)$'
+    + r'\s*\d+(\.\d+)?)\)$'
 )
 _HLS_RE = re.compile(
     r'^(hls)\((\d+(\.\d+)?'
