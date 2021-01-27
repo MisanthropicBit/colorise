@@ -5,7 +5,9 @@
         <a href="https://github.com/MisanthropicBit/colorise/actions">
             <img alt="Build status" src="https://img.shields.io/github/workflow/status/MisanthropicBit/colorise/ci/master" />
         </a>
-        <img src="https://readthedocs.org/projects/colorise/badge/?version=latest" />
+        <a href='https://colorise.readthedocs.io/en/latest'>
+            <img src='https://readthedocs.org/projects/colorise/badge/?version=latest' alt='Documentation Status' />
+        </a>
         <a href="/LICENSE">
             <img src="https://img.shields.io/github/license/MisanthropicBit/colorise.svg" />
         </a>
