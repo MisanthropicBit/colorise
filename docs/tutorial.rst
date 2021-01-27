@@ -36,29 +36,27 @@ you can use the :py:func:`colorise.set_color` function.  For example,
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
    <span style="color:red;">Hello</span></pre>
       </div>
    </div>
 
-would set the current foreground color to red while
+sets the current foreground color to red while
 
 .. raw:: html
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
    <span style="color:red;background:green;">Hello</span></pre>
       </div>
    </div>
 
-would set the current foreground color to red and the background color to
+sets the current foreground color to red and the background color to
 green. Supported color names can be queried via :py:func:`colorise.color_names`.
 
 >>> colorise.color_names()
-['black', 'red', 'green', 'yellow', 'blue', 'purple', 'magenta', 'cyan', 'gray', 'grey', 'lightgrey', 'lightgray', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightpurple', 'lightcyan', 'white']
+['black', 'red', 'green', 'yellow', 'blue', 'purple', 'magenta', 'cyan', 'gray', 'grey', 'lightgrey', 'lightgray', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightpurple', 'lightmagenta', 'lightcyan', 'white']
 
 Use :py:func:`colorise.reset_color` to reset colors to their defaults.
 
@@ -66,10 +64,9 @@ Use :py:func:`colorise.reset_color` to reset colors to their defaults.
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>; <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
    <span style="color:red;">Hello</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">reset_color</span><span class="p">(</span><span class="p">)</span>
+   <span style="color:red;">&gt;&gt;&gt; </span><span style="color:red;">colorise</span><span class="o">.</span><span style="color:red;">reset_color</span><span style="color:red;font-weight:bold;">(</span><span style="color:red;font-weight:bold;">)</span>
    <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
    <span>Hello</span></pre>
       </div>
@@ -84,8 +81,8 @@ To print colored text, you can use the :py:func:`colorise.cprint` function.
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;This has blue text and a green background&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has blue text and a green background</span></pre>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;This has yellow text and a green background&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has yellow text and a green background</span></pre>
       </div>
    </div>
 
@@ -100,10 +97,10 @@ The :py:func:`colorise.fprint` function provides more control than
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=blue,bg=green}This has blue text and a green background&#39;</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has blue text and a green background</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=blue,bg=green}This has a green background and blue foreground but{fg=red} changes to red&#39;</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has a green background and blue foreground but</span><span style="color:red;"> changes to red</span></pre>
+         <pre><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=yellow,bg=green}This has yellow text and a green background&#39;</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has yellow text and a green background</span>
+   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=yellow,bg=green}This has a green background and yellow foreground but{fg=red} changes to red&#39;</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has a green background and yellow foreground but</span><span style="color:red;"> changes to red</span></pre>
       </div>
    </div>
 
@@ -115,10 +112,10 @@ encountered. It is ``True`` by default.
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=blue,bg=green}This has a green background and blue foreground but {fg=red}changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has a green background and blue foreground but <span style="color:red;">changes to red</span></span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=blue,bg=green}This has a green background and blue foreground but {fg=red}changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has a green background and blue foreground but</span><span style="color:red;background:none;"> changes to red</span></pre>
+         <pre><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=yellow,bg=green}This has a green background and yellow foreground but{fg=red} changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has a green background and yellow foreground but<span style="color:red;"> changes to red</span></span>
+   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=yellow,bg=green}This has a green background and yellow foreground but{fg=red} changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has a green background and yellow foreground but</span><span style="color:red;background:none;"> changes to red</span></pre>
       </div>
    </div>
 
@@ -131,10 +128,17 @@ red.
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=blue,bg=green}This has a green background and blue foreground but</span><span class="si">{reset}</span> <span class="s1">{fg=red}changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-   <span style="color:blue;background:green;">This has a green background and blue foreground but</span><span style="color:red;background:none;"> changes to red</span></pre>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=yellow,bg=green}This has a green background and yellow foreground but</span><span class="si">{reset}</span><span class="s1">{fg=red} changes to red&#39;</span><span class="p">,</span> <span class="n">autoreset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+   <span style="color:yellow;background:green;">This has a green background and yellow foreground but </span><span style="color:red;background:none;">changes to red</span></pre>
       </div>
    </div>
+
+.. note::
+
+   It is not currently possible to mix color formats and Python's string
+   formatting such as ``colorise.fprint('{fg=red}{0}', 'test')``. See `this
+   issue <https://github.com/MisanthropicBit/colorise/issues/5>`__ if you want
+   to know more or help.
 
 :py:func:`colorise.highlight`
 -----------------------------
@@ -174,7 +178,7 @@ As for :py:func:`colorise.fprint`, you can specify the attributes directly in th
 
    <div class="highlight-default notranslate">
       <div class="highlight">
-         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=red,bg=green,italic}Hello&#39;</span><span class="p">)</span>
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=red,bg=cyan,italic}Hello&#39;</span><span class="p">)</span>
    <span style="color:red;background:cyan;font-style:italic;">Hello</span>
    <span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;Hello </span><span class="si">{bold}</span><span class="s1">Hello&#39;</span><span class="p">)</span>
    <span>Hello</span> <span style="font-weight:bold;">Hello</span></pre>
@@ -218,28 +222,29 @@ index into color tables commonly supported by different platforms.
    <span style="color:#43fff3;background:#d60c74;">Via hex</span>
    <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=rgb(255;0;135)}Via RGB&#39;</span><span class="p">)</span>
    <span style="color:rgb(255,0,135);">Via hex</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Via HSV&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;hsv(250;84;82)&#39;</span><span class="p">)</span>
-   <span style="background:rgb(42,0,255);">Via HSV</span>
-   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{bg=hls(0.11;0.412;0.762)}Via HLS&#39;</span><span class="p">)</span>
-   <span style="background:rgb(185,96,25);">Via HLS</span></pre>
+   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Via HSV&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;hsv(0.7;41.1;82)&#39;</span><span class="p">)</span>
+   <span style="background:rgb(209,124,123);">Via HSV</span>
+   <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{bg=hls(0.21;0.48;0.98)}Via HLS&#39;</span><span class="p">)</span>
+   <span style="background:rgb(176,243,3);">Via HLS</span></pre>
       </div>
    </div>
 
 .. note::
 
-   Even if your terminal does not support 88/256 index color tables or true-color,
-   colorise will attempt to approximate the color by finding the closest one
-   (via linear distance) and use that. For example, Windows usually supports only
-   16 colors but using ``colorise.cprint('Hello', fg='rgb(240;240;0)')`` on such a
-   system will still give you a yellow color (assuming standard Windows console
-   colors). Also see the sprites in the :doc:`screenshots` section.
+   Even if your terminal does not support 88/256 index color tables or
+   true-color, colorise will attempt to approximate the color by finding the
+   closest one and use that. For example, Windows usually supports only
+   16 colors but using ``colorise.cprint('Hello', fg='rgb(240;240;0)')`` on
+   such a system will still give you a yellow color (assuming standard
+   Windows console colors). Also see the sprites in the :doc:`screenshots`
+   section.
 
 Redefining Colors
 -----------------
 
 Some platforms allow you to redefine the standard colors but currently you can
 only redefine colors on Windows. As an example, let us redefine 'green' (color
-index 2).
+index 2 in the :ref:`logical color table <logical-color-table>`).
 
 .. raw:: html
 
@@ -256,7 +261,8 @@ index 2).
 :py:func:`colorise.redefine_colors` takes a dictionary of colortable indices as
 keys and RGB tuples as values. Here, we redefine the entry in the colortable at
 the color index for green (2) to be magenta instead. This change persists until
-the color is redefined again or colorise is quit.
+the color is redefined again or colorise is quit and automatically restores the
+original color table.
 
 .. note::
 

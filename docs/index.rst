@@ -55,6 +55,9 @@ Features
 * Colors can be specified by name, index, hexadecimal, `HLS, HSV <https://en.wikipedia.org/wiki/HSL_and_HSV>`__ or RGB formats.
 * Custom color format akin to Python 3.0 `string formatting <https://docs.python.org/3.7/library/stdtypes.html#str.format>`_.
 * Automatically find the closest color based on the terminal's capabilities.
+* `Cross-platform
+  <https://colorise.readthedocs.io/en/latest/tested_systems.html>`__: Works on
+  Mac, Linux and Windows systems.
 
 .. image:: images/frontpage-example.png
 

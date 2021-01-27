@@ -64,6 +64,8 @@ html_theme_options = {
     'extra_nav_links': {
         'Issues':        'https://github.com/MisanthropicBit/colorise/issues',
         'Pull Requests': 'https://github.com/MisanthropicBit/colorise/pulls',
+        'GitHub':        'https://github.com/MisanthropicBit/colorise',
+        'PyPI':          'https://pypi.org/project/colorise/',
     },
 }
 

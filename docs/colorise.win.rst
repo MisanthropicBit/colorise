@@ -64,6 +64,13 @@ Windows API functions.
 .. py:module:: colorise.win.win32_functions
    :platform: Windows
 
+.. py:function:: isatty(handle)
+
+   Check if a handle is a valid console handle.
+
+   For example, if a handle is redirected to a file, it is not a valid console
+   handle and all win32 console API calls will fail.
+
 .. py:function:: can_redefine_colors()
 
    Return whether the terminal allows redefinition of colors.
@@ -92,7 +99,7 @@ Windows API functions.
 
    Restore console modes for stdout and stderr to their original mode.
 
-.. py:function:: can_interpret_ansi()
+.. py:function:: can_interpret_ansi(file)
 
    Return True if the Windows console can interpret ANSI escape codes.
 
@@ -117,7 +124,91 @@ Windows API functions.
 colorise.win.winhandle module
 ------------------------------------
 
-.. automodule:: colorise.win.winhandle
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Wrapper around Windows output handles.
+
+.. py:module:: colorise.win.winhandle
+   :platform: Windows
+
+.. py:class:: WinHandle
+
+   Represents a Windows stream handle.
+
+.. py:method:: __init__(handle)
+
+   Initialise the Windows handle.
+
+.. py:method:: validate(handle)
+
+   :classmethod:
+
+   Check if a handle is valid to colorise.
+
+.. py:method:: from_sys_handle(syshandle)
+
+   :classmethod:
+
+   Return the handle identifier for a python handle.
+
+.. py:method:: get_nonconsole_handle(handle)
+
+   :classmethod:
+
+   Get a handle that works for non-console output streams.
+
+.. py:method:: valid()
+
+   :property:
+
+   Return True if the handle is valid, False otherwise.
+
+.. py:method:: value()
+
+   :property:
+
+   Return the internal Windows handle value.
+
+.. py:method:: is_console_handle()
+
+   :property:
+
+   :getter: If the handle is a valid console handle.
+   :setter: Set if a handle is a valid console handle or not.
+
+.. py:method:: fg()
+
+    :property:
+
+    :getter: Return the current foreground color set for the handle.
+    :setter: Set the current foreground color.
+
+.. py:method:: bg()
+
+    :property:
+
+    :getter: Return the current background color set for the handle.
+    :setter: Set the current background color.
+
+.. py:method:: default_fg()
+
+    :property:
+
+    :getter: Return the default foreground color set for the handle.
+    :setter: Set the default foreground color.
+
+.. py:method:: default_bg()
+
+    :property:
+
+    :getter: Return the default background color set for the handle.
+    :setter: Set the default background color.
+
+.. py:method:: console_mode()
+
+   :property:
+
+   :getter: Return the current console mode for the handle.
+   :setter: Set the current console mode for the handle.
+
+.. py:method:: __str__()
+
+   Convert the handle to its string representation.

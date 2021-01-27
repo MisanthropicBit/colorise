@@ -1,4 +1,4 @@
-colorise
+Modules
 ========
 
 .. toctree::
