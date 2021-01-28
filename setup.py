@@ -1,11 +1,16 @@
 """colorise module setup script for distribution."""
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 
-def get_version(filename):
-    with open(filename) as fh:
+_PACKAGE_DIR = 'src'
+
+
+def get_version(filename, package_dir):  # noqa: D103
+    pwd = os.path.abspath(os.path.dirname(__file__))
+
+    with open(os.path.join(pwd, package_dir, filename)) as fh:
         for line in fh:
             if line.startswith('__version__'):
                 return line.split('=')[-1].strip()[1:-1]
@@ -13,7 +18,7 @@ def get_version(filename):
 
 setup(
     name='colorise',
-    version=get_version(os.path.join('colorise', '__init__.py')),
+    version=get_version(os.path.join('colorise', '__init__.py'), _PACKAGE_DIR),
     author='Alexander Asp Bock',
     author_email='albo.developer@gmail.com',
     platforms='Platform independent',
@@ -21,7 +26,8 @@ setup(
     description=('Easily print colored text to the console'),
     license='BSD 3-Clause License',
     keywords='text, color, colorise, colorize, console, terminal',
-    packages=['colorise', 'colorise.win', 'colorise.nix'],
+    package_dir={'': _PACKAGE_DIR},
+    packages=find_packages(where=_PACKAGE_DIR),
     url='https://github.com/MisanthropicBit/colorise',
     project_urls={
         'Issue Tracker': 'https://github.com/MisanthropicBit/colorise/issues',
