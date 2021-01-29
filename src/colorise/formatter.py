@@ -71,7 +71,9 @@ class ColorFormatter(string.Formatter):
         """Parse a format string and generate tokens."""
         # Flush any remaining stuff before resetting colors
         self.file.flush()
-        self._reset_func(self.file)
+
+        if self.enabled:
+            self._reset_func(self.file)
 
         first_format = True
         tokens = super().parse(format_string)
@@ -85,7 +87,7 @@ class ColorFormatter(string.Formatter):
 
                 # Automatically reset colors and attributes if enabled and if
                 # it is not the first format we encounter
-                if self.autoreset and not first_format:
+                if self.enabled and self.autoreset and not first_format:
                     self._reset_func(self.file)
 
                 # Set colors and attributes

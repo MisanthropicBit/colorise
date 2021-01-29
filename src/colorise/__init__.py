@@ -146,13 +146,13 @@ def cprint(
 
     # Flush any remaining stuff before resetting colors
     file.flush()
-    reset_color(file)
 
     if not enabled:
         file.write(string)
         file.write(end)
         file.flush()
     else:
+        reset_color(file)
         set_color(fg, bg, attributes, file)
         file.write(string)
         file.flush()  # Flush before resetting colors

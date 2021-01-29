@@ -117,10 +117,10 @@ def test_valid_truecolor_cprint_output(test_stdout):
 def test_cprint_disabled(test_stdout):
     test_stdout(
         colorise.cprint,
-        '\x1b[0mHello' + os.linesep,
+        'Hello' + os.linesep,
         'Hello',
         fg='red',
-        enabled=False
+        enabled=False,
     )
 
 

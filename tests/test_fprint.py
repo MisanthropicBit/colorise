@@ -115,8 +115,15 @@ def test_valid_truecolor_fprint_output(test_stdout):
 def test_fprint_disabled(test_stdout):
     test_stdout(
         colorise.fprint,
-        '\x1b[0mHello' + os.linesep,
+        'Hello' + os.linesep,
         '{fg=red}Hello',
+        enabled=False,
+    )
+
+    test_stdout(
+        colorise.fprint,
+        'Hello' + os.linesep,
+        '{fg=red}Hel{bg=blue}lo{fg=green}',
         enabled=False,
     )
 
