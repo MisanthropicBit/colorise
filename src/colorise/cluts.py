@@ -14,7 +14,9 @@ If you have corrections or suggestions, please submit an issue.
 
 import re
 import sys
+from typing import Match, Optional, TextIO, Tuple
 
+from colorise import AttributeList
 from colorise.color_tools import hls_to_rgb, hsv_to_rgb
 
 _DELIMITER = ';'
@@ -52,7 +54,7 @@ _FORMATS = [
 ]
 
 
-def match_color_formats(value):
+def match_color_formats(value) -> Tuple[Optional[Match[str]], Optional[str]]:
     """Return the color format of the first format to match the given value."""
     for matcher, name in _FORMATS:
         match = matcher(str(value))
@@ -64,12 +66,12 @@ def match_color_formats(value):
 
 
 def get_color(
-    value,
-    color_count,
+    value: str,
+    color_count: int,
     cluts,
-    bg=False,
-    attributes=None,
-    file=sys.stdout,
+    bg: bool=False,
+    attributes: AttributeList=None,
+    file: TextIO=sys.stdout,
 ):
     """Return the color given by a color format."""
     if attributes is None:

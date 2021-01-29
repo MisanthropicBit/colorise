@@ -5,15 +5,17 @@
 
 import os
 import sys
+from typing import Callable, List, TextIO
 
 import colorise.error
 import colorise.nix.cluts
+from colorise import AttributeList, ColorMap
 from colorise.attributes import Attr
 from colorise.cluts import get_color
 from colorise.terminal import terminal_name
 
 
-def num_colors():
+def num_colors() -> int:
     """Attempt to get the number of colors supported by the terminal."""
     colorterm = os.environ.get('COLORTERM')
 
@@ -49,7 +51,7 @@ def num_colors():
     return color_count
 
 
-def to_ansi(*codes):
+def to_ansi(*codes: int) -> str:
     """Convert a set of ANSI codes into a valid ANSI escape sequence."""
     if not codes:
         return ''
@@ -58,23 +60,23 @@ def to_ansi(*codes):
         '{0}m'.format(';'.join(str(c) for c in codes))
 
 
-def attributes_to_codes(attributes):
+def attributes_to_codes(attributes: AttributeList) -> List[int]:
     """Convert a set of attributes to ANSI escape codes."""
     return [int(attr.value) for attr in attributes]
 
 
-def reset_color(file=sys.stdout):
+def reset_color(file: TextIO=sys.stdout) -> None:
     """Reset all colors and attributes."""
     file.write(to_ansi(Attr.Reset.value))
 
 
 def set_color(
-    fg=None,
-    bg=None,
-    attributes=None,
-    file=sys.stdout,
-    num_colors_func=num_colors,
-):
+    fg: str=None,
+    bg: str=None,
+    attributes: AttributeList=None,
+    file: TextIO=sys.stdout,
+    num_colors_func: Callable[[], int]=num_colors,
+) -> None:
     """Set color and attributes of the terminal.
 
     'fg' and 'bg' specify foreground- and background colors while 'attributes'
@@ -103,7 +105,7 @@ def set_color(
         file.write(''.join(codes))
 
 
-def redefine_colors(color_map, file=sys.stdout):
+def redefine_colors(color_map: ColorMap, file: TextIO=sys.stdout) -> None:
     """Redefine the base console colors with a new mapping."""
     raise colorise.error.NotSupportedError('Cannot redefine colors on nix '
                                            'systems')

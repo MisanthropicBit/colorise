@@ -8,6 +8,7 @@ import itertools
 import os
 import platform
 import sys
+from typing import Dict, Iterable, List, Optional, TextIO, Tuple
 
 import colorise.formatter
 from colorise.attributes import Attr  # noqa: F401
@@ -54,12 +55,16 @@ else:
     )
 
 
-def num_colors():
+AttributeList = Iterable[Attr]
+ColorMap = Dict[int, Tuple[int, int, int]]
+
+
+def num_colors() -> int:
     """Return the number of colors supported by the terminal."""
     return _num_colors()
 
 
-def can_redefine_colors(file):
+def can_redefine_colors(file: TextIO) -> bool:
     """Return True if the terminal supports redefinition of colors.
 
     Only returns True for Windows 7/Vista and beyond as of now.
@@ -68,7 +73,7 @@ def can_redefine_colors(file):
     return _can_redefine_colors(file)
 
 
-def redefine_colors(color_map, file=sys.stdout):
+def redefine_colors(color_map: ColorMap, file: TextIO=sys.stdout) -> None:
     """Redefine colors using a color map of indices and RGB tuples.
 
     .. note::
@@ -80,7 +85,7 @@ def redefine_colors(color_map, file=sys.stdout):
     _redefine_colors(color_map, file)
 
 
-def color_names():
+def color_names() -> List[str]:
     """Return a list of supported color names."""
     return [
         'black',
@@ -106,7 +111,12 @@ def color_names():
     ]
 
 
-def set_color(fg=None, bg=None, attributes=None, file=sys.stdout):
+def set_color(
+    fg: str=None,
+    bg: str=None,
+    attributes: AttributeList=None,
+    file: TextIO=sys.stdout,
+) -> None:
     """Set the current colors.
 
     If no arguments are given, sets default colors.
@@ -118,20 +128,20 @@ def set_color(fg=None, bg=None, attributes=None, file=sys.stdout):
     _set_color(fg, bg, attributes, file)
 
 
-def reset_color(file=sys.stdout):
+def reset_color(file: TextIO=sys.stdout) -> None:
     """Reset all colors and attributes."""
     _reset_color(file)
 
 
 def cprint(
-    string,
-    fg=None,
-    bg=None,
-    attributes=None,
-    end=os.linesep,
-    file=sys.stdout,
-    enabled=True,
-):
+    string: str,
+    fg: str=None,
+    bg: str=None,
+    attributes: AttributeList=None,
+    end: str=os.linesep,
+    file: TextIO=sys.stdout,
+    enabled: bool=True,
+) -> None:
     """Print a string to a target stream with colors and attributes.
 
     The fg and bg keywords specify foreground- and background colors while
@@ -168,7 +178,12 @@ def cprint(
 _COLOR_FORMATTER = colorise.formatter.ColorFormatter(set_color, reset_color)
 
 
-def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
+def fprint(
+    fmt: str,
+    autoreset: bool=True, end: str=os.linesep,
+    file: TextIO=sys.stdout,
+    enabled: bool=True,
+) -> None:
     """Print a string with color formatting.
 
     The autoreset keyword controls if colors and attributes are reset before
@@ -205,15 +220,15 @@ def fprint(fmt, autoreset=True, end=os.linesep, file=sys.stdout, enabled=True):
 
 
 def highlight(
-    string,
-    indices,
-    fg=None,
-    bg=None,
-    attributes=None,
-    end=os.linesep,
-    file=sys.stdout,
-    enabled=True,
-):
+    string: str,
+    indices: List[int],
+    fg: str=None,
+    bg: str=None,
+    attributes: AttributeList=None,
+    end: str=os.linesep,
+    file: TextIO=sys.stdout,
+    enabled: bool=True,
+) -> None:
     """Highlight characters using indices and print to a target stream.
 
     The indices argument is a list of indices (not necessarily sorted) for
@@ -275,7 +290,7 @@ def highlight(
     file.write(end)
 
 
-def safe_atexit_reset_colors():
+def safe_atexit_reset_colors() -> None:
     """Safely reset colors."""
     # This is necessary when running the tests since pytest will redirect
     # stdout and stderr then restore them to the original values after the test

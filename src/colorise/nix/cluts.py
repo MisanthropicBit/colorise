@@ -4,9 +4,13 @@
 """Nix color look-up tables (CLUTs) and functions."""
 
 import collections
+from typing import Dict, TextIO, Tuple
 
 from colorise.color_tools import closest_color
 from colorise.terminal import terminal_name
+
+
+ColorLookupTable = Dict[int, Tuple[int, int, int]]
 
 _COLOR_ESCAPE_CODE = '\x1b['
 _COLOR_PREFIX_16 = _COLOR_ESCAPE_CODE + '{0}m'
@@ -113,12 +117,12 @@ _XTERM_CLUT_256.update(
 )
 
 
-def get_prefix(color_count, bg):
+def get_prefix(color_count: int, bg: bool) -> str:
     """Get the color code prefix corresponding to the supported color count."""
     return _PREFIX_MAP[color_count][int(bg)]
 
 
-def get_clut(color_count):
+def get_clut(color_count: int) -> ColorLookupTable:
     """Return the appropriate color look-up table."""
     if terminal_name() == 'iTerm.app' and color_count == 88:
         # Uses the 256 color table for 88 color indices
@@ -132,12 +136,17 @@ def get_clut(color_count):
     }[color_count]
 
 
-def can_redefine_colors(file):
+def can_redefine_colors(file: TextIO) -> bool:
     """Return whether the terminal allows redefinition of colors."""
     return False
 
 
-def color_from_name(name, color_count, bg, attributes):
+def color_from_name(
+    name: str,
+    color_count: int,
+    bg: bool,
+    attributes,
+) -> Tuple[str, int]:
     """Return the color value and color count for a given color name."""
     if name not in _NIX_SYSTEM_COLOR_NAMES:
         raise ValueError("Unknown color name '{0}'".format(name))
@@ -147,7 +156,13 @@ def color_from_name(name, color_count, bg, attributes):
     return _COLOR_PREFIX_16, _NIX_SYSTEM_COLOR_NAMES[name] + 10 * int(bg)
 
 
-def color_from_index(idx, color_count, bg, attributes, file):
+def color_from_index(
+    idx: int,
+    color_count: int,
+    bg: bool,
+    attributes,
+    file: TextIO,
+) -> Tuple[str, int]:
     """Return the color prefix and color value for a given color index."""
     if idx < 0 or idx > 255:
         raise ValueError('Color index must be in range 0-255 inclusive')
@@ -177,7 +192,13 @@ def color_from_index(idx, color_count, bg, attributes, file):
             return _COLOR_PREFIX_16, key + 10 * int(bg)
 
 
-def get_rgb_color(color_count, bg, rgb, attributes, file):
+def get_rgb_color(
+    color_count: int,
+    bg: bool,
+    rgb: Rgb,
+    attributes,
+    file: TextIO
+) -> Tuple[str, int]:
     """Get the color for an RGB triple or approximate it if necessary."""
     prefix = get_prefix(color_count, bg)
 

@@ -9,6 +9,7 @@ effect.
 """
 
 from enum import Enum
+from typing import Set
 
 
 class Attr(Enum):
@@ -28,7 +29,7 @@ class Attr(Enum):
     Reverse = 7
 
     @classmethod
-    def from_name(cls, attribute):
+    def from_name(cls, attribute: str) -> Attr:
         """Return an attribute object from its name.
 
         E.g. 'bold' -> Attr.Bold
@@ -37,11 +38,11 @@ class Attr(Enum):
         return cls[attribute.title()]
 
     @classmethod
-    def names(cls):
+    def names(cls) -> Set[str]:
         """Return a set of all attribute names."""
         return set(attr.name.lower() for attr in cls)
 
     @classmethod
-    def names_with_aliases(cls):
+    def names_with_aliases(cls) -> Set[str]:
         """Return a set of all attribute names with aliases."""
         return set(attr.lower() for attr in cls.__members__)
