@@ -205,6 +205,20 @@ argument for this purpose. Colors are enabled by default.
       </div>
    </div>
 
+Disabling colors means that *no* ANSI escape sequences are emitted and no
+Windows Console API calls are made so if a color has been set previously,
+outputting disabled colors are still affected.
+
+.. raw:: html
+
+   <div class="highlight-default notranslate">
+      <div class="highlight">
+         <pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+   <span style="color:red;">&gt;&gt;&gt; </span><span style="color:red;">colorise</span><span class="o">.</span><span style="color:red;">cprint</span><span style="color:red;font-weight:bold;">(</span><span style="color:red;">&#39;Disabled!&#39;</span><span style="color:red;font-weight:bold;">,</span> <span style="color:red;">fg</span><span style="color:red;">=</span><span style="color:red;font-weight:bold;"">&#39;red&#39;</span><span style="color:red;font-weight:bold;">,</span> <span style="color:red;">enabled</span><span style="color:red;">=</span><span style="color:red;font-weight:bold;">False</span><span style="color:red;font-weight:bold;">)</span>
+   <span style="color:red;">Disabled</span></pre>
+      </div>
+   </div>
+
 More Colors!
 ------------
 
