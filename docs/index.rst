@@ -14,7 +14,7 @@
    :target: https://github.com/MisanthropicBit/colorise/actions
 
 .. image:: https://readthedocs.org/projects/colorise/badge/?version=latest
-   :target: https://colorise.readthedocs.io/en/latest/?badge=latest
+   :target: https://colorise.readthedocs.io/en/latest
    :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/wheel/colorise
