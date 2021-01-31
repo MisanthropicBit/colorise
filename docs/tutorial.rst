@@ -237,7 +237,7 @@ index into color tables commonly supported by different platforms.
    <span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Via short-hand hex&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;#09c&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;0xfd9&#39;</span><span class="p">)</span>
    <span style="color:#09c;background:#fd9;">Via short-hand hex</span>
    <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{fg=rgb(255;0;135)}Via RGB&#39;</span><span class="p">)</span>
-   <span style="color:rgb(255,0,135);">Via hex</span>
+   <span style="color:rgb(255,0,135);">Via RGB</span>
    <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Via HSV&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;hsv(0.7;41.1;82)&#39;</span><span class="p">)</span>
    <span style="background:rgb(209,124,123);">Via HSV</span>
    <span class="gp">&gt;&gt;&gt; </span><span class="n">colorise</span><span class="o">.</span><span class="n">fprint</span><span class="p">(</span><span class="s1">&#39;{bg=hls(0.21;0.48;0.98)}Via HLS&#39;</span><span class="p">)</span>
