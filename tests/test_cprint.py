@@ -15,6 +15,7 @@ def test_valid_cprint():
     colorise.cprint('Hello', fg='red')
     colorise.cprint('Hello', fg=201)
     colorise.cprint('Hello', fg='#a696ff')
+    colorise.cprint('Hello', fg='#a9f')
     colorise.cprint('Hello', fg='0xa696ff')
     colorise.cprint('Hello', fg='hls(0.6919;0.7940;1.0)')
     colorise.cprint('Hello', fg='hsv(249;41;100)')
@@ -23,6 +24,7 @@ def test_valid_cprint():
     colorise.cprint('Hello', bg='red')
     colorise.cprint('Hello', bg=201)
     colorise.cprint('Hello', bg='#a696ff')
+    colorise.cprint('Hello', bg='#a9f')
     colorise.cprint('Hello', bg='0xa696ff')
     colorise.cprint('Hello', bg='hls(0.6919;0.7940;1.0)')
     colorise.cprint('Hello', bg='hsv(249;41;100)')
@@ -32,6 +34,7 @@ def test_valid_cprint():
     colorise.cprint('Hello', fg=201, bg=201)
     colorise.cprint('Hello', fg='#a696ff', bg='#a696ff')
     colorise.cprint('Hello', fg='0xa696ff', bg='0xa696ff')
+    colorise.cprint('Hello', fg='0xa9f', bg='0xa9f')
     colorise.cprint('Hello', fg='hls(0.6919;0.7940;1.0)',
                     bg='hls(0.6919;0.7940;1.0)')
     colorise.cprint('Hello', fg='hsv(249;41;100)', bg='hsv(249;41;100)')
@@ -44,6 +47,7 @@ def test_invalid_cprint():
         ({'fg': 256}, r"^Color index must be in range 0-255 inclusive$"),
         ({'bg': 300}, r"^Color index must be in range 0-255 inclusive$"),
         ({'bg': '#a69ff'}, r"^Unknown or invalid color format '#a69ff'$"),
+        ({'bg': '#a9'}, r"^Unknown or invalid color format '#a9'$"),
         ({'bg': '0xa69ff'}, r"^Unknown or invalid color format '0xa69ff'$"),
         (
             {'fg': 'hls(0.6923,0.7960;1.0='},
@@ -94,6 +98,10 @@ def test_valid_truecolor_cprint_output(test_stdout):
         (
             {'fg': '0xa696ff'},
             '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep
+        ),
+        (
+            {'fg': '0xa9f'},
+            '\x1b[0m\x1b[38;2;170;153;255mHello\x1b[0m' + os.linesep
         ),
         (
             {'fg': 'hls(0.6919;0.7940;1.0)'},

@@ -25,6 +25,7 @@ _RGB_RE = re.compile(
     + _DELIMITER
     + r'\s*\d{1,3})\)$'
 )
+_SHORT_HEX_RE = re.compile(r'^(0x|#)?([0-9a-fA-F]{3})$')
 _HEX_RE = re.compile(r'^(0x|#)?(([0-9a-fA-F]{2}){3})$')
 _HSV_RE = re.compile(
     r'^(hsv)\((\d+(\.\d+)?'
@@ -47,6 +48,7 @@ _FORMATS = [
     (str.isdigit, 'index'),
     (str.isalpha, 'name'),
     (_HEX_RE.match, 'hex'),
+    (_SHORT_HEX_RE.match, 'short_hex'),
     (_HLS_RE.match, 'hls'),
     (_HSV_RE.match, 'hsv')
 ]
@@ -92,6 +94,9 @@ def get_color(
     elif colorspace == 'hex':
         value = match.group(2)
         rgb = [int(value[i:i + 2], 16) for i in range(0, 6, 2)]
+    elif colorspace == 'short_hex':
+        value = match.group(2)
+        rgb = [int(value[i] + value[i], 16) for i in range(0, 3)]
     elif colorspace == 'hsv':
         rgb = hsv_to_rgb(*[float(c) for c in match.group(2).split(_DELIMITER)])
     elif colorspace == 'hls':

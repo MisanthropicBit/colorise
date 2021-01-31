@@ -15,7 +15,9 @@ def test_valid_fprint():
     colorise.fprint('Hello {fg=red}world')
     colorise.fprint('Hello {fg=201}world')
     colorise.fprint('Hello {fg=#a696ff}world')
+    colorise.fprint('Hello {fg=#a9f}world')
     colorise.fprint('Hello {fg=0xa696ff}world')
+    colorise.fprint('Hello {fg=0xa9f}world')
     colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0)}world')
     colorise.fprint('Hello {fg=hsv(249;41;100)}world')
     colorise.fprint('Hello {fg=rgb(167;151;255)}world')
@@ -23,7 +25,9 @@ def test_valid_fprint():
     colorise.fprint('Hello {bg=red}world')
     colorise.fprint('Hello {bg=201}world')
     colorise.fprint('Hello {bg=#a696ff}world')
+    colorise.fprint('Hello {bg=#a9f}world')
     colorise.fprint('Hello {bg=0xa696ff}world')
+    colorise.fprint('Hello {bg=0xa9f}world')
     colorise.fprint('Hello {bg=hls(0.6923;0.7960;1.0)}world')
     colorise.fprint('Hello {bg=hsv(249;41;100)}world')
     colorise.fprint('Hello {bg=rgb(167;151;255)}world')
@@ -31,6 +35,7 @@ def test_valid_fprint():
     colorise.fprint('Hello {fg=red ,bg=red}world')
     colorise.fprint('Hello { fg=201,bg=201}world')
     colorise.fprint('Hello {fg=0xa696ff,bg=0xa696ff}world')
+    colorise.fprint('Hello {fg=0xa9f,bg=0xa9f}world')
     colorise.fprint('Hello {fg=hls(0.6923;0.7960;1.0),'
                     'bg=hls(0.6923;0.7960;1.0)}world')
     colorise.fprint('Hello {fg=hsv(249;41;100),bg=hsv(249;41;100)}world')
@@ -43,6 +48,7 @@ def test_invalid_fprint():
         (256, r"^Color index must be in range 0-255 inclusive$"),
         (300, r"^Color index must be in range 0-255 inclusive$"),
         ('#a69ff', r"^Unknown or invalid color format '#a69ff'$"),
+        ('#a9', r"^Unknown or invalid color format '#a9'$"),
         ('0xa69ff', r"^Unknown or invalid color format '0xa69ff'$"),
         (
             'hls(0.6923,0.7960;1.0=',
@@ -99,8 +105,8 @@ def test_valid_truecolor_fprint_output(test_stdout):
     tests = [
         ('fg=0xa696ff',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
-        ('fg=0xa696ff',
-         '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
+        ('fg=0xa9f',
+         '\x1b[0m\x1b[38;2;170;153;255mHello\x1b[0m' + os.linesep),
         ('fg=hsv(249.2;41.0;100.078)',
          '\x1b[0m\x1b[38;2;166;150;255mHello\x1b[0m' + os.linesep),
         ('fg=rgb(167;151;255)',
